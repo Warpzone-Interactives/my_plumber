@@ -5,4 +5,26 @@
 ## Makefile
 ##
 
-## c'est toi le pro là dedans donc pour l'instant je mets rien
+NAME =	myplumber
+
+SRC	=	main.cpp
+
+OBJ	=	$(SRC:.cpp=.o)
+
+all: $(OBJ)
+	g++ -o $(NAME) $(OBJ)
+
+clean:
+	rm -f $(OBJ)
+	rm -f *~
+
+fclean:	clean
+	rm -f $(NAME)
+
+re: fclean
+	make
+
+now:
+	fclean
+	make
+	./${NAME}

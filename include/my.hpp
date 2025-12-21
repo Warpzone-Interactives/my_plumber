@@ -11,6 +11,8 @@
     #include <SFML/Window.hpp>
     #include <SFML/System.hpp>
     #include <SFML/Audio.hpp>
+    #include <fstream>
+    #include <cstdio>
 
 
 #endif
