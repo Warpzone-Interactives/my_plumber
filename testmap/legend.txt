@@ -1,0 +1,8 @@
+la légende peut à tout moment changer.
+
+x = sol
+? = block ? avec une pièce
+m = block ? avec un mushroom
+b = block brique
+g = goomba
+p = pipe
