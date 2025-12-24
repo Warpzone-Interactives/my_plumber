@@ -1,5 +1,10 @@
 la légende peut à tout moment changer.
 
+OW = Overworld
+UG = Underground
+Castle = Castle
+UW = Underworld (eau(non))
+
 x = sol
 ? = block ? avec une pièce
 m = block ? avec un mushroom
