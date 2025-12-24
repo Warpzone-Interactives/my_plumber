@@ -13,6 +13,8 @@
     #include <SFML/Audio.hpp>
     #include <fstream>
     #include <cstdio>
-
+    
+sf::RenderWindow create_window(void);
+void handle_window(sf::RenderWindow *window);
 
 #endif

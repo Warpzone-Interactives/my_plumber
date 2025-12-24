@@ -27,6 +27,9 @@ void read_file(char *filepath)
 
 int main(int ac, char **av)
 {
+    sf::RenderWindow window(sf::VideoMode({1920, 1080}), "First window");
     read_file(av[1]);
+    while (window.isOpen())
+        handle_window(&window);
     return 0;
 }

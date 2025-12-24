@@ -7,12 +7,13 @@
 
 NAME =	myplumber
 
-SRC	=	main.cpp
+SRC	=	main.cpp	\
+		window.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
 all: $(OBJ)
-	g++ -o $(NAME) $(OBJ)
+	g++ -o $(NAME) $(OBJ) -lsfml-graphics -lsfml-window -lsfml-system
 
 clean:
 	rm -f $(OBJ)
