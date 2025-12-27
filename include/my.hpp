@@ -13,8 +13,10 @@
     #include <SFML/Audio.hpp>
     #include <fstream>
     #include <cstdio>
-    
-sf::RenderWindow create_window(void);
+    #include <iostream>
+
 void handle_window(sf::RenderWindow *window);
+sf::Vector2f **create_grid(int x_size);
+std::vector<std::string> load_map(std::string filepath);
 
 #endif

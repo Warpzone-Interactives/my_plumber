@@ -8,7 +8,9 @@
 NAME =	myplumber
 
 SRC	=	main.cpp	\
-		window.cpp
+		window.cpp	\
+		grid.cpp	\
+		map_loading.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
