@@ -41,9 +41,7 @@ std::vector<std::string> load_map(std::string filepath)
     std::string line;
 
     getline(input, line);
-    while (getline(input, line)) {
-        line += '\n';
+    while (getline(input, line))
         map.push_back(line);
-    }
     return map;
 }
