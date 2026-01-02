@@ -45,7 +45,7 @@ std::string choose_texture(char c)
 void create_element(char c, sf::Vector2f square,
     std::vector<sf::Sprite> &sprites, std::vector<sf::Texture> &textures)
 {
-    std::string filepath = "ow/" + choose_texture(c) + ".png";
+    std::string filepath = "ressources/ow/" + choose_texture(c) + ".png";
 
     textures.emplace_back();
     textures.back().loadFromFile(filepath);
@@ -56,7 +56,7 @@ void create_element(char c, sf::Vector2f square,
 }
 
 
-void create_line(const std::string &map_line, sf::Vector2f *grid_line,
+void create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_line,
     std::vector<sf::Sprite> &sprites, std::vector<sf::Texture> &textures)
 {
     for (size_t i = 0; i < map_line.size(); i++) {
@@ -69,8 +69,16 @@ void create_line(const std::string &map_line, sf::Vector2f *grid_line,
 void create_level(const std::vector<std::string> &map,
     std::vector<sf::Sprite> &sprites, std::vector<sf::Texture> &textures)
 {
+    size_t count = 0;
+    for (const auto &line : map)
+        for (char c : line)
+            if (c != ' ')
+                count++;
+    sprites.reserve(count);
+    textures.reserve(count);
+
     int level_length = max_length(map);
-    sf::Vector2f **grid = create_grid(level_length);
+    std::vector<std::vector<sf::Vector2f>> grid = create_grid(level_length);
 
     for (size_t i = 0; i < map.size(); i++)
         create_line(map[i], grid[i], sprites, textures);

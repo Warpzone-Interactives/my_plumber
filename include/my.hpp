@@ -15,8 +15,8 @@
     #include <cstdio>
     #include <iostream>
 
-void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite> sprites);
-sf::Vector2f **create_grid(int x_size);
+void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite> &sprites);
+std::vector<std::vector<sf::Vector2f>> create_grid(int x_size);
 std::vector<std::string> load_map(std::string filepath);
 void create_level(const std::vector<std::string> &map,
     std::vector<sf::Sprite> &sprites, std::vector<sf::Texture> &textures);

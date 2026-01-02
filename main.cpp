@@ -16,8 +16,6 @@ int main(int ac, char **av)
         return 84;
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "First window");
     auto map = load_map(av[1]);
-    for (size_t i = 0; i < map.size(); i++)
-        std::cout << map[i];
     create_level(map, sprites, textures);
 
     while (window.isOpen())

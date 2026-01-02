@@ -17,10 +17,11 @@ void analyse_events(sf::RenderWindow *window)
     }
 }
 
-void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite>sprites)
+void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite> &sprites)
 {
     analyse_events(window);
     window->clear();
     for (const sf::Sprite &s : sprites)
         window->draw(s);
+    window->display();
 }
