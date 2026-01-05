@@ -11,10 +11,9 @@ void analyse_events(sf::RenderWindow *window)
 {
     sf::Event event;
 
-    while (window->pollEvent(event)) {
+    while (window->pollEvent(event))
         if (event.type == sf::Event::Closed)
             window->close();
-    }
 }
 
 void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite> &sprites)

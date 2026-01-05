@@ -12,9 +12,9 @@ int main(int ac, char **av)
     std::vector<sf::Sprite> sprites;
     std::vector<sf::Texture> textures;
 
-    if (ac < 2)
+    if (ac != 2)
         return 84;
-    sf::RenderWindow window(sf::VideoMode(1920, 1080), "First window");
+    sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber");
     auto map = load_map(av[1]);
     create_level(map, sprites, textures);
 
