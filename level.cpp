@@ -5,7 +5,7 @@
 ** main
 */
 
-#include "include/my.hpp"
+#include "my.hpp"
 
 int max_length(std::vector<std::string> map)
 {
@@ -13,7 +13,7 @@ int max_length(std::vector<std::string> map)
     int testing = 0;
 
     for (size_t i = 0; i < map.size(); i++) {
-        for (int j = 0; j < map[i].size(); j++)
+        for (size_t j = 0; j < map[i].size(); j++)
             testing++;
         if (testing > max)
             max = testing;

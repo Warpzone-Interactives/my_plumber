@@ -5,7 +5,7 @@
 ** grid related functions
 */
 
-#include "include/my.hpp"
+#include "my.hpp"
 
 std::vector<std::vector<sf::Vector2f>> create_grid(int x_size)
 {

@@ -5,7 +5,7 @@
 ** map related functions
 */
 
-#include "include/my.hpp"
+#include "my.hpp"
 
 /* Explication de trucs chelous :
 std = "l'origine" de la classe (ici standard)

@@ -5,8 +5,8 @@
 ** my.hpp
 */
 
-#ifndef MY_HPP_
-    #define MY_HPP_
+#ifndef MY_HPP
+    #define MY_HPP
     #include <SFML/Graphics.hpp>
     #include <SFML/Window.hpp>
     #include <SFML/System.hpp>
@@ -14,6 +14,7 @@
     #include <fstream>
     #include <cstdio>
     #include <iostream>
+    #include "struct.hpp"
 
 void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite> &sprites);
 std::vector<std::vector<sf::Vector2f>> create_grid(int x_size);

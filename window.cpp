@@ -5,7 +5,7 @@
 ** window related functions
 */
 
-#include "include/my.hpp"
+#include "my.hpp"
 
 void analyse_events(sf::RenderWindow *window)
 {

@@ -5,21 +5,38 @@
 ## Makefile
 ##
 
-NAME =	myplumber
 
-SRC	=	main.cpp	\
-		window.cpp	\
+CC	=	g++
+
+LIB_NAME	=	libmy.a
+
+LIB_SRC	=	window.cpp	\
 		grid.cpp	\
 		map_loading.cpp	\
 		level.cpp
 
+FLAG_LIB	=	-L./ -lmy
+
+LIB_OBJ	=	$(LIB_SRC:.cpp=.o)
+
+NAME =	myplumber
+
+SRC	=	main.cpp
+
 OBJ	=	$(SRC:.cpp=.o)
 
-all: $(OBJ)
-	g++ -o $(NAME) $(OBJ) -lsfml-graphics -lsfml-window -lsfml-system
+CPPFLAGS	=	-I./include -Wextra -Wall
+
+FLAG_SFML	=	-lsfml-graphics -lsfml-window -lsfml-system
+
+all: $(OBJ)	\
+	$(LIB_OBJ)
+	ar rc $(LIB_NAME) $(LIB_OBJ)
+	$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
 
 clean:
 	rm -f $(OBJ)
+	rm -f $(LIB_OBJ)
 	rm -f *~
 
 fclean:	clean
@@ -28,7 +45,11 @@ fclean:	clean
 re: fclean
 	make
 
-now:
-	fclean
-	make
-	./${NAME}
+now: clean	\
+	$(OBJ)	\
+	$(LIB_OBJ)
+	@ar rc $(LIB_NAME) $(LIB_OBJ)
+	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
+	@echo "\033[1;33mGood Luck\033[0;0m"
+	@sleep 1
+	@./${NAME} testmap/1-1.txt
