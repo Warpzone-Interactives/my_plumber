@@ -42,44 +42,43 @@ std::string choose_texture(char c)
     return texture;
 }
 
-void create_element(char c, sf::Vector2f square,
-    std::vector<sf::Sprite> &sprites, std::vector<sf::Texture> &textures)
+void create_element(char c, sf::Vector2f square, general_stat *g_stat)
 {
-    std::string filepath = "ressources/ow/" + choose_texture(c) + ".png";
+    std::string filepath = "ressources/" + g_stat->where + "/" + choose_texture(c) + ".png";
+    sf::IntRect rect({0, 0}, {16, 16});
 
-    textures.emplace_back();
-    textures.back().loadFromFile(filepath);
+    g_stat->textures.emplace_back();
+    g_stat->textures.back().loadFromFile(filepath);
 
-    sf::Sprite sprite(textures.back());
+    sf::Sprite sprite(g_stat->textures.back());
+    sprite.setTextureRect(rect);
     sprite.setPosition(square);
-    sprites.push_back(sprite);
+    g_stat->sprites.push_back(sprite);
 }
 
 
-void create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_line,
-    std::vector<sf::Sprite> &sprites, std::vector<sf::Texture> &textures)
+void create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_line, general_stat *g_stat)
 {
     for (size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        create_element(map_line[i], grid_line[i], sprites, textures);
+        create_element(map_line[i], grid_line[i], g_stat);
     }
 }
 
-void create_level(const std::vector<std::string> &map,
-    std::vector<sf::Sprite> &sprites, std::vector<sf::Texture> &textures)
+void create_level(general_stat *g_stat)
 {
     size_t count = 0;
-    for (const auto &line : map)
+    for (const auto &line : g_stat->map)
         for (char c : line)
             if (c != ' ')
                 count++;
-    sprites.reserve(count);
-    textures.reserve(count);
+    g_stat->sprites.reserve(count);
+    g_stat->textures.reserve(count);
 
-    int level_length = max_length(map);
+    int level_length = max_length(g_stat->map);
     std::vector<std::vector<sf::Vector2f>> grid = create_grid(level_length);
 
-    for (size_t i = 0; i < map.size(); i++)
-        create_line(map[i], grid[i], sprites, textures);
+    for (size_t i = 0; i < g_stat->map.size(); i++)
+        create_line(g_stat->map[i], grid[i], g_stat);
 }

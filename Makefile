@@ -12,8 +12,10 @@ LIB_NAME	=	libmy.a
 
 LIB_SRC	=	window.cpp	\
 		grid.cpp	\
-		map_loading.cpp	\
-		level.cpp
+		level.cpp	\
+		src/get_where.cpp	\
+		src/map_loading.cpp	\
+		src/init_general.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
@@ -45,11 +47,18 @@ fclean:	clean
 re: fclean
 	make
 
-now: clean	\
-	$(OBJ)	\
+now:$(OBJ)	\
 	$(LIB_OBJ)
 	@ar rc $(LIB_NAME) $(LIB_OBJ)
 	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
 	@echo "\033[1;33mGood Luck\033[0;0m"
 	@sleep 1
 	@./${NAME} testmap/1-1.txt
+
+vnow:$(OBJ)	\
+	$(LIB_OBJ)
+	@ar rc $(LIB_NAME) $(LIB_OBJ)
+	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
+	@echo "\033[1;33mGood Luck\033[0;0m"
+	@sleep 1
+	@valgrind ./${NAME} testmap/1-1.txt

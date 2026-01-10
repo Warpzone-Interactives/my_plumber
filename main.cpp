@@ -9,14 +9,12 @@
 
 int lauch_game(char **av)
 {
-    std::vector<sf::Sprite> sprites;
-    std::vector<sf::Texture> textures;
+    general_stat g_stat = init_general(av);
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber");
-    std::vector<std::string> map = load_map(av[1]);
 
-    create_level(map, sprites, textures);
+    create_level(&(g_stat));
     while (window.isOpen())
-        handle_window(&window, sprites);
+        handle_window(&(window), g_stat.sprites);
     return 0;
 }
 

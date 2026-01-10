@@ -10,9 +10,18 @@
 #ifndef GENERAL
     #define GENERAL
 
-typedef struct g_stat
+class general_stat
 {
-    sf::RenderWindow test;
-} g_stat_t;
+public:
+    std::string where;
+    std::vector<std::string> map;
+    std::vector<sf::Sprite> sprites;
+    std::vector<sf::Texture> textures;
+};
+
+struct block
+{
+    sf::Sprite sprite;
+};
 
 #endif
