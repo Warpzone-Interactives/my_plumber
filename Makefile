@@ -47,7 +47,8 @@ fclean:	clean
 re: fclean
 	make
 
-now:$(OBJ)	\
+now:clean	\
+	$(OBJ)	\
 	$(LIB_OBJ)
 	@ar rc $(LIB_NAME) $(LIB_OBJ)
 	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)

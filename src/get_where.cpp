@@ -15,5 +15,7 @@ std::string get_where(std::string filepath)
 
     getline(input, line);
     where = line;
+    if (where != "ow" && where != "ug" && where != "castel" && where != "uw")
+        return "error";
     return where;
 }
