@@ -12,10 +12,8 @@ int lauch_game(char **av)
     general_stat g_stat = init_general(av);
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber");
 
-    if (g_stat.status != 0) {
-        printf("error with the style of map\n");
-        return 0;
-    }
+    if (g_stat.status != 0)
+        return init_error(g_stat);
     create_level(&(g_stat));
     while (window.isOpen())
         handle_window(&(window), g_stat.sprites);

@@ -14,7 +14,7 @@ general_stat init_general(char **av)
     g_stat.status = 0;
     g_stat.where = get_where(av[1]);
     if (g_stat.where == "error") {
-        g_stat.status = 84;
+        g_stat.status += 1;
         return g_stat;
     }
     g_stat.map = load_map(av[1]);
