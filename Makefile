@@ -13,9 +13,9 @@ LIB_NAME	=	libmy.a
 LIB_SRC	=	window.cpp	\
 		grid.cpp	\
 		level.cpp	\
-		src/get_where.cpp	\
-		src/map_loading.cpp	\
-		src/init_general.cpp	\
+		src/init_game/get_where.cpp	\
+		src/init_game/map_loading.cpp	\
+		src/init_game/init_general.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
