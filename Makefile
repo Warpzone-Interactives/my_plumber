@@ -14,6 +14,7 @@ LIB_SRC	=	window.cpp	\
 		grid.cpp	\
 		level.cpp	\
 		src/init_game/get_where.cpp	\
+		src/init_game/init_texture.cpp	\
 		src/init_game/init_error.cpp	\
 		src/init_game/map_loading.cpp	\
 		src/init_game/init_general.cpp	\
@@ -64,3 +65,13 @@ vnow:$(OBJ)	\
 	@echo "\033[1;33mGood Luck\033[0;0m"
 	@sleep 1
 	@valgrind ./${NAME} testmap/1-1.txt
+
+test:clean	\
+	$(OBJ)	\
+	$(LIB_OBJ)
+	@ar rc $(LIB_NAME) $(LIB_OBJ)
+	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
+	@./${NAME} testmap/text_test/ow
+	@./${NAME} testmap/text_test/ug
+	@./${NAME} testmap/text_test/castel
+	@./${NAME} testmap/text_test/uw

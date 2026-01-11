@@ -2,7 +2,7 @@
 ** EPITECH PROJECT, 2025
 ** my_plumber
 ** File description:
-** main
+** init_general
 */
 
 #include "my.hpp"
@@ -17,6 +17,7 @@ general_stat init_general(char **av)
         g_stat.status += 1;
         return g_stat;
     }
+    init_texture(&g_stat);
     g_stat.map = load_map(av[1]);
     return g_stat;
 }

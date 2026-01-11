@@ -26,6 +26,13 @@ int lauch_game(char **av)
 
 int main(int ac, char **av)
 {
+    // std::map<char, std::string> my_map = {
+    //     { 'b', "texture brick\n" },
+    //     { 'B', "2\n" },
+    //     { 'C', "3\n" }
+    // };
+    // my_map.insert({ '?', "lucky block\n" });
+    // if ( my_map.count('?') ) {std::cout <<  "Yes";} else {std::cout << "Nop";}
     if (ac != 2)
         return 84;
     return lauch_game(av);

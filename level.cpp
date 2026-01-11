@@ -44,13 +44,14 @@ std::string choose_texture(char c)
 
 void create_element(char c, sf::Vector2f square, general_stat *g_stat)
 {
-    std::string filepath = "ressources/" + g_stat->where + "/" + choose_texture(c) + ".png";
     sf::IntRect rect({0, 0}, {16, 16});
+    sf::Sprite sprite;
 
-    g_stat->textures.emplace_back();
-    g_stat->textures.back().loadFromFile(filepath);
-
-    sf::Sprite sprite(g_stat->textures.back());
+    if ( g_stat->textures.count(c) ) {
+        sprite.setTexture(g_stat->textures[c]);
+    } else {
+        sprite.setTexture(g_stat->textures['/']);
+    }
     sprite.setTextureRect(rect);
     sprite.setPosition(square);
     g_stat->sprites.push_back(sprite);
@@ -74,7 +75,6 @@ void create_level(general_stat *g_stat)
             if (c != ' ')
                 count++;
     g_stat->sprites.reserve(count);
-    g_stat->textures.reserve(count);
 
     int level_length = max_length(g_stat->map);
     std::vector<std::vector<sf::Vector2f>> grid = create_grid(level_length);

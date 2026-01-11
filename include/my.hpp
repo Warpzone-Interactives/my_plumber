@@ -26,5 +26,6 @@ std::vector<std::string> load_map(std::string filepath);
 int init_error(general_stat g_stat);
 general_stat init_general(char **av);
 std::string get_where(std::string filepath);
+void init_texture(general_stat *g_stat);
 
 #endif

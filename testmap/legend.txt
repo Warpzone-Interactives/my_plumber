@@ -7,7 +7,12 @@ UW = Underworld (eau(non))
 
 x = sol
 ? = block ? avec une pièce
-m = block ? avec un mushroom
+U = block ? avec un power-up auto
+S = block ? avec une etoile
+M = block ? avec un mushroom
+F = block ? avec un fleur de fleur
+m = mushroom
+f = fleur de feu
 b = block brique
 g = goomba
 p = pipe
