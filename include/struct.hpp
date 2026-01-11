@@ -13,6 +13,7 @@
 class general_stat
 {
 public:
+    int status;
     std::string where;
     std::vector<std::string> map;
     std::vector<sf::Sprite> sprites;
