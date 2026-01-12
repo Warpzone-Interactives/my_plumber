@@ -22,26 +22,6 @@ int max_length(std::vector<std::string> map)
     return max;
 }
 
-std::string choose_texture(char c)
-{
-    std::string texture;
-    switch(c) {
-        case 'b':
-            texture = "brick";
-            break;
-        case '?':
-            texture = "lucky_block";
-            break;
-        case 'x':
-            texture = "floor";
-            break;
-        default:
-            texture = "placeholder";
-            break;
-    }
-    return texture;
-}
-
 void create_element(char c, sf::Vector2f square, general_stat *g_stat)
 {
     sf::IntRect rect({0, 0}, {16, 16});

@@ -17,7 +17,6 @@ public:
     std::string where;
     std::vector<std::string> map;
     std::vector<sf::Sprite> sprites;
-    // std::vector<sf::Texture> textures;
     std::map<char, sf::Texture> textures;
 };
 

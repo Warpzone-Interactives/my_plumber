@@ -15,4 +15,7 @@ m = mushroom
 f = fleur de feu
 b = block brique
 g = goomba
+k = shell but if is k it's a koopa troopa
+                    k
+P = pipe enter
 p = pipe

@@ -20,19 +20,20 @@ int lauch_game(char **av)
     return 0;
 }
 
-// int loop(void)
-// {
-// }
-
+#include <list>
 int main(int ac, char **av)
 {
-    // std::map<char, std::string> my_map = {
-    //     { 'b', "texture brick\n" },
-    //     { 'B', "2\n" },
-    //     { 'C', "3\n" }
+    // std::map<char, std::vector<std::string>> my_map = {
+    //     { 'b', {"texture brick\n", "1"}},
+    //     { 'B', {"2\n", "1"}},
+    //     { 'C', {"3\n", "1"}}
     // };
-    // my_map.insert({ '?', "lucky block\n" });
-    // if ( my_map.count('?') ) {std::cout <<  "Yes";} else {std::cout << "Nop";}
+    // my_map.insert({ '?', {"lucky_block", "1"}});
+    // if ( my_map.count('?') ) {
+    //     std::cout << "Yes\n";
+    //     std::cout << "in file is ?\n";
+    //     std::cout << my_map['?'][0];
+    // } else {std::cout << "Nop\n";}
     if (ac != 2)
         return 84;
     return lauch_game(av);
