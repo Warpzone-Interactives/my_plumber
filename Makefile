@@ -18,6 +18,7 @@ LIB_SRC	=	window.cpp	\
 		src/init_game/init_error.cpp	\
 		src/init_game/map_loading.cpp	\
 		src/init_game/init_general.cpp	\
+		player/player.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
