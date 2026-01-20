@@ -26,6 +26,14 @@ player::player(int size, sf::Vector2f position, char m)
     _sprite.setPosition(_position);
 }
 
+void player::actualize()
+{
+    //check le mouvement input
+    //réduire la vélocité si elle est pas nulle
+    //actualiser la postion du mouvement
+    //draw  
+}
+
 void player::_chooseTexture()
 {
     std::string filePath = "player/" + _character + "/";
@@ -52,7 +60,7 @@ void player::_kill()
     // _playDeathAnimation(); ??
 }
 
-void player::draw(sf::RenderWindow &window)
+void player::_draw(sf::RenderWindow &window)
 {
     window.draw(_sprite);
 }

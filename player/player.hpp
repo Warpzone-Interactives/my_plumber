@@ -21,7 +21,7 @@ public:
     void giveStar();
     void shoot();
 
-    void draw(sf::RenderWindow &window);
+    void actualize();
 
 private:
     std::string _character; // mario ou luigi
@@ -41,6 +41,7 @@ private:
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
 
+    void _draw(sf::RenderWindow &window);
     void _kill();
     void _chooseTexture();
     void _setTexture(std::string filePath);
