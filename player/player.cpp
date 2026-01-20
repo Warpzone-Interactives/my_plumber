@@ -12,9 +12,9 @@ player::player(int size, sf::Vector2f position, char m)
     _size = size;
     _position = position;
     if (m == 'm')
-        character = "mario";
+        _character = "mario";
     else
-        character = "luigi";
+        _character = "luigi";
     _alive = true;
     _invincible = false;
     _invincibilityDuration = 0.0f;
@@ -28,7 +28,7 @@ player::player(int size, sf::Vector2f position, char m)
 
 void player::_chooseTexture()
 {
-    std::string filePath = "player/" + character + "/";
+    std::string filePath = "player/" + _character + "/";
 
     if (_size == 0)
         filePath += "small.png";

@@ -24,7 +24,7 @@ public:
     void draw(sf::RenderWindow &window);
 
 private:
-    std::string character; // mario ou luigi
+    std::string _character; // mario ou luigi
 
     int _size;              // 0: small, 1: big, 2: fire
     bool _alive;            // true: vivant, false: mort
