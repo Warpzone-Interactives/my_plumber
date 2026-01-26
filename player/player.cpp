@@ -21,22 +21,89 @@ player::player(int size, sf::Vector2f position, char m)
     _velocity = sf::Vector2f(0.0f, 0.0f);
     _onGround = true;
     _facingRight = true;
+    _running = false;
     _chooseTexture();
     _sprite = sf::Sprite(_texture);
     _sprite.setPosition(_position);
 }
 
-void player::actualize()
+void player::_checkInvincibility()
 {
-    //check le mouvement input
-    //réduire la vélocité si elle est pas nulle
-    //actualiser la postion du mouvement
-    //draw  
+    if (_invincible) {
+        if (_invincibilityClock.getElapsedTime().asSeconds() > _invincibilityDuration) {
+            _invincible = false;
+            _invincibilityDuration = 0.0f;
+        }
+    }
+}
+
+void player::_turnPlayer(int direction)
+{
+    if (player::_facingRight == (1 - direction) && player::_onGround == true && (direction == 1 ? player::_velocity.x > 0 : player::_velocity.x < 0))
+        player::_facingRight = direction;
+}
+
+void player::_handleIdleInput()
+{
+    if (player::_velocity.x > 0.032f)
+        player::_velocity.x -= 0.032f;
+    if (player::_velocity.x < -0.032f)
+        player::_velocity.x += 0.032f;
+    if (-0.032f <= player::_velocity.x && player::_velocity.x <= 0.032f)
+        player::_velocity.x = 0;
+} //On suppose ici qu'il y a pas de skidding (cf _updateMovement)
+
+void player::_updateMovement(int direction)
+{
+    if (direction == -1)
+        return player::_handleIdleInput();
+    player::_turnPlayer(direction);
+    if (direction == 1) {
+        if (player::_velocity.x >= 0)
+            player::_velocity.x += 0.023f;
+        else
+            player::_velocity.x += 0.063f;
+        if (player::_velocity.x > 0.977f)
+            player::_velocity.x = 0.977f;
+    }
+    if (direction == 0) {
+        if (player::_velocity.x <= 0)
+            player::_velocity.x -= 0.023f; //on va vers la gauche
+        else
+            player::_velocity.x -= 0.063f; //on ralentit en appuyant sur gauche
+        if (player::_velocity.x < -0.977f)
+            player::_velocity.x = -0.977f; //on vérifie qu'on dépasse pas le max
+    }
+} //dans l'idée ça "passe" mais y'a encore des trucs à faire comme le skidding à gérer (tant que y'a pas
+  //un autre input mario continue de skid) (aussi skid turnaround speed à implémenter)
+  //Ah et la course aussi est pas implémentée 
+
+void player::_handleInput()
+{
+    int direction = -1;
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+        direction = 0;
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        direction = 1;
+    player::_updateMovement(direction);
+    printf("%f\n", player::_velocity.x);
+}
+
+void player::actualize(sf::RenderWindow &window)
+{
+    player::_checkInvincibility();
+    player::_handleInput();
+    if (player::_velocity.x >= 0.074f || player::_velocity.x <= -0.074f) {
+        player::_position += player::_velocity;
+        player::_sprite.setPosition(player::_position);
+    }
+    player::_draw(window);
 }
 
 void player::_chooseTexture()
 {
-    std::string filePath = "player/" + _character + "/";
+    std::string filePath = "ressources/player/" + _character + "/";
 
     if (_size == 0)
         filePath += "small.png";
@@ -45,7 +112,7 @@ void player::_chooseTexture()
     else if (_size == 2)
         filePath += "fire.png";
     _setTexture(filePath);
-} // En théorie ça devrait marcher mais du coup faut setup les intRect aussi je crois ?? jsp :/
+} // En théorie ça devrait marcher mais du coup faut setup les intRect aussi je crois ??
 
 void player::_setTexture(std::string filepath)
 {

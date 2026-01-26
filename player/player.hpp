@@ -7,8 +7,9 @@
 
 #include "my.hpp"
 
-//btw le facingRight et pas facing_right c'est camel case contrairement à snake case (en C)
-//jsp si c'est mieux mais alecsandra l'a fait comme ça donc bon
+
+#ifndef PLAYER_HPP
+#define PLAYER_HPP
 
 class player
 {
@@ -21,7 +22,7 @@ public:
     void giveStar();
     void shoot();
 
-    void actualize();
+    void actualize(sf::RenderWindow &window);
 
 private:
     std::string _character; // mario ou luigi
@@ -36,6 +37,7 @@ private:
     sf::Vector2f _position; // Position (mais nan jure)
     sf::Vector2f _velocity; // Vitesse
     bool _onGround; //Pour check si il peut sauter
+    bool _running;
     bool _facingRight; // true: droite, false: gauche
 
     sf::Sprite _sprite; //sprite
@@ -45,6 +47,15 @@ private:
     void _kill();
     void _chooseTexture();
     void _setTexture(std::string filePath);
+    void _handleInput();
+    void _checkInvincibility();
+
+    //Movement :
+    void _handleIdleInput();
+    void _updateMovement(int direction);
+    void _turnPlayer(int direction);
 
     //Il reste bcp de méthodes à mettre et surement deux trois variables mais il est tard :(
 };
+
+#endif /* PLAYER_HPP */
