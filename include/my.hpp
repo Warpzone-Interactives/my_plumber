@@ -16,8 +16,9 @@
 #include <cstdio>
 #include <iostream>
 #include "struct.hpp"
+#include "player.hpp"
 
-void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite> &sprites);
+void handle_window(sf::RenderWindow *window, std::vector<sf::Sprite> &sprites, player *player);
 std::vector<std::vector<sf::Vector2f>> create_grid(int x_size);
 void create_level(general_stat *g_stat);
 
