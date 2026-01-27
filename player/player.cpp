@@ -23,7 +23,9 @@ player::player(int size, sf::Vector2f position, char m)
     _facingRight = true;
     _running = false;
     _chooseTexture();
+    _rect = sf::IntRect({0, 0}, {16, 16});
     _sprite = sf::Sprite(_texture);
+    _sprite.setTextureRect(_rect);
     _sprite.setPosition(_position);
 }
 
@@ -87,7 +89,7 @@ void player::_handleInput()
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
         direction = 1;
     player::_updateMovement(direction);
-    printf("%f\n", player::_velocity.x);
+    // printf("%f\n", player::_velocity.x);
 }
 
 void player::actualize(sf::RenderWindow &window)
