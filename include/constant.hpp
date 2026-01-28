@@ -17,6 +17,6 @@
     #define RELEASE_DECELERATION       0.05078125
     #define MAXIMUM_RUNNING_SPEED      2.5625
     #define SKIDDING_DECELERATION      0.1015625 //Quand tu vas dans la direction opposée
-    #define SKID_TURNAROUND_SPEED      0.5625    //en dessous de cette vitesse si tu skid tu te retourneras
+    #define SKID_TURNAROUND_SPEED      0.5625    // ???
 
 #endif
