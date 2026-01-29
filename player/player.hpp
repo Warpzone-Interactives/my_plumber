@@ -7,7 +7,6 @@
 
 #include "my.hpp"
 
-
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
@@ -34,12 +33,13 @@ private:
                                    //et on destroy la clock ?
     float _invincibilityDuration;  //temps d'invincibilité en secondes (donc différent si étoile ou dégats)
 
-    sf::Vector2f _position; // Position (mais nan jure)
+    sf::Vector2f _position; // Position (mais nan jure) (MDR)
     sf::Vector2f _velocity; // Vitesse
     bool _onGround; //Pour check si il peut sauter
     bool _running;
     bool _facingRight; // true: droite, false: gauche
 
+    sf::IntRect _rect; // rect for texture
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
 
