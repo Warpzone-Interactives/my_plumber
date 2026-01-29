@@ -24,17 +24,11 @@ int max_length(std::vector<std::string> map)
 
 void create_element(char c, sf::Vector2f square, general_stat *g_stat)
 {
-    sf::IntRect rect({0, 0}, {16, 16});
-    sf::Sprite sprite;
+    if (!g_stat->_textures.count('/'))
+        std::cout << "error\n";
+    block *n_block = new block(square, c, g_stat->get_texture(c), g_stat->_block);
 
-    if ( g_stat->textures.count(c) ) {
-        sprite.setTexture(g_stat->textures[c]);
-    } else {
-        sprite.setTexture(g_stat->textures['/']);
-    }
-    sprite.setTextureRect(rect);
-    sprite.setPosition(square);
-    g_stat->sprites.push_back(sprite);
+    g_stat->_block = n_block;
 }
 
 
@@ -50,15 +44,14 @@ void create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_lin
 void create_level(general_stat *g_stat)
 {
     size_t count = 0;
-    for (const auto &line : g_stat->map)
+    for (const auto &line : g_stat->_map)
         for (char c : line)
             if (c != ' ')
                 count++;
-    g_stat->sprites.reserve(count);
 
-    int level_length = max_length(g_stat->map);
+    int level_length = max_length(g_stat->_map);
     std::vector<std::vector<sf::Vector2f>> grid = create_grid(level_length);
 
-    for (size_t i = 0; i < g_stat->map.size(); i++)
-        create_line(g_stat->map[i], grid[i], g_stat);
+    for (size_t i = 0; i < g_stat->_map.size(); i++)
+        create_line(g_stat->_map[i], grid[i], g_stat);
 }
