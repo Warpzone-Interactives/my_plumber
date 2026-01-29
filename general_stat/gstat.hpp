@@ -1,0 +1,30 @@
+/*
+** EPITECH PROJECT, 2025
+** my_plumber
+** File description:
+** my.hpp
+*/
+
+#include "my.hpp"
+
+#ifndef GENERAL_HPP
+    #define GENERAL_HPP
+
+class general_stat
+{
+public:
+    general_stat(char *map);
+    ~general_stat() = default;
+
+    void init_texture();
+    sf::Texture get_texture(char c);
+
+    int status;
+    std::string where;
+    std::vector<std::string> _map;
+    std::vector<sf::Sprite> _sprites;
+    std::map<char, sf::Texture> _textures;
+    block *_block; // next for chained list
+};
+
+#endif
