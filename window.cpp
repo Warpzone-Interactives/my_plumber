@@ -44,8 +44,10 @@ void handle_window(sf::RenderWindow *window, general_stat g_stat, player *player
 {
     poll_event(window);
     window->clear();
-    if (g_stat._block != NULL)
+    if (g_stat._block != NULL) {
+        g_stat._block->anime();
         g_stat._block->draw(*window);
+    }
     // for (const sf::Sprite &s : sprites)
     //     window->draw(s);
     player->actualize(*window);
