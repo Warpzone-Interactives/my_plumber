@@ -12,18 +12,13 @@ int lauch_game(char **av)
     general_stat g_stat(av[1]);
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber");
     player player(0, {50.0f, 50.0f}, 'm');
-    sf::Clock frames;
 
     if (!g_stat._textures.count('/'))
         std::cout << "error\n";
     if (g_stat.status != 0)
         return init_error(g_stat);
     create_level(&(g_stat));
-    while (window.isOpen())
-        if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
-            handle_window(&(window), g_stat, &player);
-            frames.restart();
-        }
+    gameLoop(&(window), g_stat, &player);
     return 0;
 }
 

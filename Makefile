@@ -30,7 +30,7 @@ SRC	=	main.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
-CPPFLAGS	=	-I./include -I./player -I./general_stat -I./block -Wextra -Wall -g
+CPPFLAGS	=	-I./include -I./player -I./general_stat -I./block -g
 
 FLAG_SFML	=	-lsfml-graphics -lsfml-window -lsfml-system
 
