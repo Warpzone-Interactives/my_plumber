@@ -16,6 +16,7 @@ public:
     block(sf::Vector2f position, char type, sf::Texture texture, block *next);
     ~block() = default;
 
+    void initLuckyBlock(char type); //je peut la mettre en privé
     void anime();
     void try_break();
     void draw(sf::RenderWindow &window);
@@ -25,7 +26,7 @@ public:
 
 private:
 
-    int _nb_anim; // nb animation frame
+    int _nbAnime; // nb animation frame
     std::string loot; // what in (power up, cion)
     bool _can_break; // if is breacable block
     sf::Vector2f _position; // Position
