@@ -40,6 +40,8 @@ void general_stat::init_texture()
 
 sf::Texture general_stat::get_texture(char c)
 {
+    if (c == 'a' || c == 's' || c == 'm' || c == 'f' || c == 'v')
+        return _textures['?'];
     if (_textures.count(c)) {
         return  _textures[c];
     } else {
