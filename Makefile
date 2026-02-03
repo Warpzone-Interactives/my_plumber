@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-
+## x86_64-w64-mingw32-g++
 CC	=	g++
 
 LIB_NAME	=	libmy.a
@@ -14,11 +14,11 @@ LIB_SRC	=	window.cpp	\
 		grid.cpp	\
 		level.cpp	\
 		src/init_game/get_where.cpp	\
-		src/init_game/init_texture.cpp	\
 		src/init_game/init_error.cpp	\
 		src/init_game/map_loading.cpp	\
-		src/init_game/init_general.cpp	\
 		player/player.cpp	\
+		block/block.cpp	\
+		general_stat/gstat.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
@@ -30,7 +30,7 @@ SRC	=	main.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
-CPPFLAGS	=	-I./include -I./player -Wextra -Wall
+CPPFLAGS	=	-I./include -I./player -I./general_stat -I./block -g
 
 FLAG_SFML	=	-lsfml-graphics -lsfml-window -lsfml-system
 
@@ -49,6 +49,9 @@ fclean:	clean
 
 re: fclean
 	make
+
+windows :
+	$(CC) -o my_plumber.exe $(SRC) $(LIB_SRC) $(FLAG_LIB) $(FLAG_SFML)
 
 now:clean	\
 	$(OBJ)	\
