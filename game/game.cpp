@@ -5,9 +5,9 @@
 ** init_general
 */
 
-#include "gstat.hpp"
+#include "game.hpp"
 
-int generalStat::getWhere(std::string filepath)
+int game::getWhere(std::string filepath)
 {
     std::ifstream input(filepath);
     std::string line;
@@ -19,7 +19,7 @@ int generalStat::getWhere(std::string filepath)
     return 0;
 }
 
-generalStat::generalStat(char *filepath, sf::RenderWindow *window, player *player)
+game::game(char *filepath, sf::RenderWindow *window, player *player)
 {
     _player = player;
     _window = window;
@@ -32,7 +32,7 @@ generalStat::generalStat(char *filepath, sf::RenderWindow *window, player *playe
     initTexture();
 }
 
-void generalStat::loadMap(std::string filepath)
+void game::loadMap(std::string filepath)
 {
     std::ifstream input(filepath);
     std::string line;
@@ -43,7 +43,7 @@ void generalStat::loadMap(std::string filepath)
     return;
 }
 
-void generalStat::initTexture()
+void game::initTexture()
 {
     sf::Texture loading_texture;
 
@@ -61,7 +61,7 @@ void generalStat::initTexture()
     _textures.insert({ 'c',  loading_texture});
 }
 
-int generalStat::getError()
+int game::getError()
 {
     if (status == 0)
         return 0;
@@ -74,7 +74,7 @@ int generalStat::getError()
 
 // -------------------| init map |-------------------
 
-int generalStat::maxLength()
+int game::maxLength()
 {
     int max = 0;
     int testing = 0;
@@ -89,7 +89,7 @@ int generalStat::maxLength()
     return max;
 }
 
-void generalStat::createElement(char c, sf::Vector2f square)
+void game::createElement(char c, sf::Vector2f square)
 {
     if (!_textures.count('/'))
         std::cout << "error\n";
@@ -99,7 +99,7 @@ void generalStat::createElement(char c, sf::Vector2f square)
 }
 
 
-void generalStat::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
+void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
 {
     for (size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
@@ -108,7 +108,7 @@ void generalStat::createLine(const std::string &map_line, std::vector<sf::Vector
     }
 }
 
-void generalStat::createGrid(int x_size)
+void game::createGrid(int x_size)
 {
     for (int j = 0; j < 15; j++) {
         std::vector<sf::Vector2f> line;
@@ -121,7 +121,7 @@ void generalStat::createGrid(int x_size)
     return;
 }
 
-void generalStat::createLevel()
+void game::createLevel()
 {
     size_t count = 0;
     int lvlHeight = 0;
@@ -141,12 +141,12 @@ void generalStat::createLevel()
 
 // -------------------| init map end |-------------------
 
-void generalStat::setScale(int ySize, int yNbElem)
+void game::setScale(int ySize, int yNbElem)
 {
     scale = ySize / yNbElem / 16;
 }
 
-sf::Texture generalStat::getTexture(char c)
+sf::Texture game::getTexture(char c)
 {
     if (c == 'a' || c == 's' || c == 'm' || c == 'f' || c == 'v')
         return _textures['?'];

@@ -10,11 +10,11 @@
 #ifndef GENERAL_HPP
     #define GENERAL_HPP
 
-class generalStat
+class game
 {
 public:
-    generalStat(char *map, sf::RenderWindow *window, player *player);
-    ~generalStat() = default;
+    game(char *map, sf::RenderWindow *window, player *player);
+    ~game() = default;
 
     int getError();
     void createLevel();

@@ -18,10 +18,10 @@
 #include <iostream>
 #include "block.hpp"
 #include "player.hpp"
-#include "gstat.hpp"
+#include "game.hpp"
 #include "constant.hpp"
 
-void gameLoop(generalStat *g_stat);
+void gameLoop(game *g_stat);
 std::vector<std::string> load_map(std::string filepath);
 
 #endif
