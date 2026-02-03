@@ -17,12 +17,12 @@ general_stat::general_stat(char *map, sf::RenderWindow *window)
         status += 1;
     _block = NULL;
     _map = load_map(map);
-    init_texture();
+    initTexture();
     if (!_textures.count('/'))
         std::cout << "error\n";
 }
 
-void general_stat::init_texture()
+void general_stat::initTexture()
 {
     sf::Texture loading_texture;
 
@@ -42,7 +42,18 @@ void general_stat::init_texture()
 
 // -------------------| init map |-------------------
 
-int general_stat::max_length()
+int general_stat::getError()
+{
+    if (status == 0)
+        return 0;
+    if (status && 1 == 1)
+        printf("error with the style of map\n");
+    if (status && 2 == 2)
+        printf("error with idk(exemple)\n");
+    return 84;
+}
+
+int general_stat::maxLength()
 {
     int max = 0;
     int testing = 0;
@@ -57,26 +68,26 @@ int general_stat::max_length()
     return max;
 }
 
-void general_stat::create_element(char c, sf::Vector2f square)
+void general_stat::createElement(char c, sf::Vector2f square)
 {
     if (!_textures.count('/'))
         std::cout << "error\n";
-    block *n_block = new block(square, c, get_texture(c), _block, scale);
+    block *n_block = new block(square, c, getTexture(c), _block, scale);
 
     _block = n_block;
 }
 
 
-void general_stat::create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
+void general_stat::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
 {
     for (size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        create_element(map_line[i], grid_line[i]);
+        createElement(map_line[i], grid_line[i]);
     }
 }
 
-void general_stat::create_grid(int x_size)
+void general_stat::createGrid(int x_size)
 {
     for (int j = 0; j < 15; j++) {
         std::vector<sf::Vector2f> line;
@@ -89,7 +100,7 @@ void general_stat::create_grid(int x_size)
     return;
 }
 
-void general_stat::create_level()
+void general_stat::createLevel()
 {
     size_t count = 0;
     int level_with = 0;
@@ -100,21 +111,21 @@ void general_stat::create_level()
                 count++;
     }
 
-    int level_length = max_length();
-    set_scale(_window->getSize().y, level_with);
-    create_grid(level_length);
+    int level_length = maxLength();
+    setScale(_window->getSize().y, level_with);
+    createGrid(level_length);
     for (size_t i = 0; i < _map.size(); i++)
-        create_line(_map[i], grid[i]);
+        createLine(_map[i], grid[i]);
 }
 
 // -------------------| init map end |-------------------
 
-void general_stat::set_scale(int ySize, int yNbElem)
+void general_stat::setScale(int ySize, int yNbElem)
 {
     scale = floor(ySize / yNbElem / 16);
 }
 
-sf::Texture general_stat::get_texture(char c)
+sf::Texture general_stat::getTexture(char c)
 {
     if (c == 'a' || c == 's' || c == 'm' || c == 'f' || c == 'v')
         return _textures['?'];

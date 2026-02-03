@@ -13,9 +13,9 @@ int lauch_game(char **av)
     general_stat g_stat(av[1], &window);
     player player(0, {50.0f, 50.0f}, 'm');
 
-    if (g_stat.status != 0)
-        return init_error(g_stat);
-    g_stat.create_level();
+    if (g_stat.getError() != 0)
+        return 84;
+    g_stat.createLevel();
     // create_level(&(g_stat));
     gameLoop(&(window), g_stat, &player);
     return 0;

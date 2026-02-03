@@ -16,20 +16,21 @@ public:
     general_stat(char *map, sf::RenderWindow *window);
     ~general_stat() = default;
 
-    void create_level();
-    sf::Texture get_texture(char c);
+    int getError();
+    void createLevel();
+    sf::Texture getTexture(char c);
 
     int status;
     block *_block; // next for chained list
 
 private:
 
-    void set_scale(int ySize, int yNbElem);
-    void init_texture();
-    int max_length();
-    void create_element(char c, sf::Vector2f square);
-    void create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
-    void create_grid(int x_size);
+    void setScale(int ySize, int yNbElem);
+    void initTexture();
+    int maxLength();
+    void createElement(char c, sf::Vector2f square);
+    void createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
+    void createGrid(int x_size);
 
     int scale;
     std::string where;
