@@ -7,10 +7,13 @@
 
 #include "block.hpp"
 
-block::block(sf::Vector2f position, char type, sf::Texture texture, block *next)
+block::block(sf::Vector2f position, char type, sf::Texture texture, block *next, int scale)
 {
     _type = type;
     _position = position;
+    _scale = scale;
+    _position.y *= scale;
+    _position.x *= scale;
     _nbAnime = 1;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;
@@ -18,6 +21,7 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, block *next)
     _sprite.setTexture(_texture);
     _sprite.setTextureRect(_rect);
     _sprite.setPosition(_position);
+    _sprite.setScale({_scale, _scale});
     _next = next;
     if (type == '?' || type == 'a' || type == 's' ||
         type == 'm' || type == 'f' || type == 'v')

@@ -5,7 +5,7 @@
 ## Makefile
 ##
 
-
+## x86_64-w64-mingw32-g++
 CC	=	g++
 
 LIB_NAME	=	libmy.a
@@ -49,6 +49,9 @@ fclean:	clean
 
 re: fclean
 	make
+
+windows :
+	$(CC) -o my_plumber.exe $(SRC) $(LIB_SRC) $(FLAG_LIB) $(FLAG_SFML)
 
 now:clean	\
 	$(OBJ)	\

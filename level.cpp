@@ -26,7 +26,7 @@ void create_element(char c, sf::Vector2f square, general_stat *g_stat)
 {
     if (!g_stat->_textures.count('/'))
         std::cout << "error\n";
-    block *n_block = new block(square, c, g_stat->get_texture(c), g_stat->_block);
+    block *n_block = new block(square, c, g_stat->get_texture(c), g_stat->_block, g_stat->scale);
 
     g_stat->_block = n_block;
 }
@@ -44,14 +44,17 @@ void create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_lin
 void create_level(general_stat *g_stat)
 {
     size_t count = 0;
-    for (const auto &line : g_stat->_map)
+    int level_with = 0;
+    for (const auto &line : g_stat->_map) {
+        level_with += 1;
         for (char c : line)
             if (c != ' ')
                 count++;
+    }
 
     int level_length = max_length(g_stat->_map);
+    g_stat->set_scale(g_stat->_window->getSize().y, level_with);
     std::vector<std::vector<sf::Vector2f>> grid = create_grid(level_length);
-
     for (size_t i = 0; i < g_stat->_map.size(); i++)
         create_line(g_stat->_map[i], grid[i], g_stat);
 }

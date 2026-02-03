@@ -13,14 +13,17 @@
 class general_stat
 {
 public:
-    general_stat(char *map);
+    general_stat(char *map, sf::RenderWindow *window);
     ~general_stat() = default;
 
+    void set_scale(int ySize, int yNbElem);
     void init_texture();
     sf::Texture get_texture(char c);
 
+    int scale;
     int status;
     std::string where;
+    sf::RenderWindow *_window;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;
     std::map<char, sf::Texture> _textures;
