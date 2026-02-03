@@ -12,8 +12,8 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, block *next,
     _type = type;
     _position = position;
     _scale = scale;
-    _position.y *= scale;
     _position.x *= scale;
+    _position.y *= scale; // + (1080 % (16 * scale)) for rectifie the space at the bottom
     _nbAnime = 1;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;

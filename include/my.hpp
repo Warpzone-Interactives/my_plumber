@@ -22,7 +22,6 @@
 #include "constant.hpp"
 
 void gameLoop(sf::RenderWindow *window, general_stat g_stat, player *player);
-std::vector<std::vector<sf::Vector2f>> create_grid(int x_size);
 
 //------------------------------------ init game ------------------------------------
 std::vector<std::string> load_map(std::string filepath);

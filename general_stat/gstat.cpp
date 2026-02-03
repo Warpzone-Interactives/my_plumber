@@ -76,6 +76,19 @@ void general_stat::create_line(const std::string &map_line, std::vector<sf::Vect
     }
 }
 
+void general_stat::create_grid(int x_size)
+{
+    for (int j = 0; j < 15; j++) {
+        std::vector<sf::Vector2f> line;
+        for (int i = 0; i < x_size; i++) {
+            sf::Vector2f square(i * 16, j * 16);
+            line.push_back(square);
+        }
+        grid.push_back(line);
+    }
+    return;
+}
+
 void general_stat::create_level()
 {
     size_t count = 0;
@@ -89,7 +102,7 @@ void general_stat::create_level()
 
     int level_length = max_length();
     set_scale(_window->getSize().y, level_with);
-    std::vector<std::vector<sf::Vector2f>> grid = create_grid(level_length);
+    create_grid(level_length);
     for (size_t i = 0; i < _map.size(); i++)
         create_line(_map[i], grid[i]);
 }
