@@ -21,7 +21,7 @@
 #include "gstat.hpp"
 #include "constant.hpp"
 
-void gameLoop(sf::RenderWindow *window, general_stat g_stat, player *player);
+void gameLoop(sf::RenderWindow *window, generalStat g_stat, player *player);
 std::vector<std::string> load_map(std::string filepath);
 
 #endif

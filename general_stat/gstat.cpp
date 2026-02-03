@@ -7,7 +7,7 @@
 
 #include "gstat.hpp"
 
-int general_stat::getWhere(std::string filepath)
+int generalStat::getWhere(std::string filepath)
 {
     std::ifstream input(filepath);
     std::string line;
@@ -19,7 +19,7 @@ int general_stat::getWhere(std::string filepath)
     return 0;
 }
 
-general_stat::general_stat(char *filepath, sf::RenderWindow *window)
+generalStat::generalStat(char *filepath, sf::RenderWindow *window)
 {
     _window = window;
     status = 0;
@@ -31,7 +31,7 @@ general_stat::general_stat(char *filepath, sf::RenderWindow *window)
     initTexture();
 }
 
-void general_stat::loadMap(std::string filepath)
+void generalStat::loadMap(std::string filepath)
 {
     std::ifstream input(filepath);
     std::string line;
@@ -42,7 +42,7 @@ void general_stat::loadMap(std::string filepath)
     return;
 }
 
-void general_stat::initTexture()
+void generalStat::initTexture()
 {
     sf::Texture loading_texture;
 
@@ -60,7 +60,7 @@ void general_stat::initTexture()
     _textures.insert({ 'c',  loading_texture});
 }
 
-int general_stat::getError()
+int generalStat::getError()
 {
     if (status == 0)
         return 0;
@@ -73,7 +73,7 @@ int general_stat::getError()
 
 // -------------------| init map |-------------------
 
-int general_stat::maxLength()
+int generalStat::maxLength()
 {
     int max = 0;
     int testing = 0;
@@ -88,7 +88,7 @@ int general_stat::maxLength()
     return max;
 }
 
-void general_stat::createElement(char c, sf::Vector2f square)
+void generalStat::createElement(char c, sf::Vector2f square)
 {
     if (!_textures.count('/'))
         std::cout << "error\n";
@@ -98,7 +98,7 @@ void general_stat::createElement(char c, sf::Vector2f square)
 }
 
 
-void general_stat::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
+void generalStat::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
 {
     for (size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
@@ -107,7 +107,7 @@ void general_stat::createLine(const std::string &map_line, std::vector<sf::Vecto
     }
 }
 
-void general_stat::createGrid(int x_size)
+void generalStat::createGrid(int x_size)
 {
     for (int j = 0; j < 15; j++) {
         std::vector<sf::Vector2f> line;
@@ -120,7 +120,7 @@ void general_stat::createGrid(int x_size)
     return;
 }
 
-void general_stat::createLevel()
+void generalStat::createLevel()
 {
     size_t count = 0;
     int level_with = 0;
@@ -140,12 +140,12 @@ void general_stat::createLevel()
 
 // -------------------| init map end |-------------------
 
-void general_stat::setScale(int ySize, int yNbElem)
+void generalStat::setScale(int ySize, int yNbElem)
 {
     scale = floor(ySize / yNbElem / 16);
 }
 
-sf::Texture general_stat::getTexture(char c)
+sf::Texture generalStat::getTexture(char c)
 {
     if (c == 'a' || c == 's' || c == 'm' || c == 'f' || c == 'v')
         return _textures['?'];

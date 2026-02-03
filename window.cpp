@@ -40,7 +40,7 @@ void poll_event(sf::RenderWindow *window)
         analyse_events(&event, window);
 }
 
-void gameLoop(sf::RenderWindow *window, general_stat g_stat, player *player)
+void gameLoop(sf::RenderWindow *window, generalStat g_stat, player *player)
 {
     sf::Clock frames;
 
