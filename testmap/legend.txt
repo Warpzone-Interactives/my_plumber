@@ -36,7 +36,7 @@ k = shell but if is k it's a koopa troopa
 
 c = coin
 u = mushroom
-v = one up
+o = one up
 i = fleur de feu
 
 | = flagpole
