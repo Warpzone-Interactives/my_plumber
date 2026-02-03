@@ -19,9 +19,10 @@ player::player(int size, sf::Vector2f position, char m)
     _invincible = false;
     _invincibilityDuration = 0.0f;
     _velocity = sf::Vector2f(0.0f, 0.0f);
+    _runningFramesLeft = 0;
     _onGround = true;
     _facingRight = true;
-    _running = false;
+    _skidding= false;
     _chooseTexture();
     _sprite = sf::Sprite(_texture);
     _sprite.setTextureRect(_rect);
@@ -42,8 +43,8 @@ void player::_chooseTexture()
         _rect = sf::IntRect({0, 0}, {16, 32});
     }
     else if (_size == 2) {
-    filePath += "fire.png";
-    _rect = sf::IntRect({0, 0}, {16, 32});
+        filePath += "fire.png";
+        _rect = sf::IntRect({0, 0}, {16, 32});
     }
     _setTexture(filePath);
 } // En théorie ça devrait marcher mais du coup faut setup les intRect aussi je crois ??
@@ -69,7 +70,7 @@ void player::_draw(sf::RenderWindow &window)
 void player::sizeUp()
 {
     if (_size < 2)
-    _size++;
+        _size++;
     //powerup_animation ?
     _chooseTexture();
 }
@@ -77,9 +78,9 @@ void player::sizeUp()
 void player::sizeDown()
 {
     if (_size > 0)
-    _size--;
+        _size--;
     else
-    return _kill();
+        return _kill();
     //dmg_animation ?
     _invincible = true;
     _chooseTexture();
@@ -96,7 +97,7 @@ void player::giveStar()
 
 // void player::shoot()
 // {
-    //     if (_size == 2 && KeyPressed = "b") { // sfEvent ? 
+    //     if (_size == 2 && KeyPressed = "b") { 
     //         lancer une boule de feu  //ça pourrait être sa classe à part en soit, puisque "tout est classe"
     //     }
     // }
@@ -113,42 +114,86 @@ void player::_checkInvincibility()
 
 void player::_handleIdleInput()
 {
-    if (player::_velocity.x > RELEASE_DECELERATION)
-        player::_velocity.x -= RELEASE_DECELERATION;
-    if (player::_velocity.x < -RELEASE_DECELERATION)
-        player::_velocity.x += RELEASE_DECELERATION;
+    if (_skidding == false) {
+        if (player::_velocity.x > RELEASE_DECELERATION)
+            player::_velocity.x -= RELEASE_DECELERATION;
+        if (player::_velocity.x < -RELEASE_DECELERATION)
+            player::_velocity.x += RELEASE_DECELERATION;
+    }
+    else {
+        if (player::_velocity.x > SKIDDING_DECELERATION)
+            player::_velocity.x -= SKIDDING_DECELERATION;
+        if (player::_velocity.x < -SKIDDING_DECELERATION)
+            player::_velocity.x += SKIDDING_DECELERATION;
+    }
     if (-RELEASE_DECELERATION <= player::_velocity.x && player::_velocity.x <= RELEASE_DECELERATION)
         player::_velocity.x = 0;
-} //On suppose ici qu'il y a pas de skidding (cf _updateMovement)
+}
 
-void player::_updateMovement(int direction)
+void player::_updateMovementWalking(int direction)
 {
     if (direction == -1)
         return player::_handleIdleInput();
     if (direction == 1) {
-        if (player::_velocity.x >= 0)
+        if (player::_velocity.x >= -SKID_TURNAROUND_SPEED) {
             player::_velocity.x += WALKING_ACCELERATION;
-        else
+            _skidding = false;
+        }
+        else {
             player::_velocity.x += SKIDDING_DECELERATION;
+            _skidding = true;
+        }
         if (player::_velocity.x > MAXIMUM_WALK_SPEED)
             player::_velocity.x = MAXIMUM_WALK_SPEED;
     }
     if (direction == 0) {
-        if (player::_velocity.x <= 0)
-            player::_velocity.x -= WALKING_ACCELERATION; //on va vers la gauche
-        else
-            player::_velocity.x -= SKIDDING_DECELERATION; //on ralentit en appuyant sur gauche
+        if (player::_velocity.x <= SKID_TURNAROUND_SPEED) {
+            player::_velocity.x -= WALKING_ACCELERATION;
+            _skidding = false;
+        }
+        else {
+            player::_velocity.x -= SKIDDING_DECELERATION;
+            _skidding = true;
+        }
         if (player::_velocity.x < -MAXIMUM_WALK_SPEED)
-            player::_velocity.x = -MAXIMUM_WALK_SPEED; //on vérifie qu'on dépasse pas le max
+            player::_velocity.x = -MAXIMUM_WALK_SPEED;
     }
-} //dans l'idée ça "passe" mais y'a encore des trucs à faire comme le skidding à gérer (tant que y'a pas
-  //un autre input mario continue de skid) (aussi skid turnaround speed à implémenter)
-  //Ah et la course aussi est pas implémentée 
+}
+
+void player::_updateMovementRunning(int direction)
+{
+    if (direction == -1) {
+        _runningFramesLeft = 0;
+        return player::_handleIdleInput();
+    }
+    if (direction == 1) {
+        if (player::_velocity.x >= -SKID_TURNAROUND_SPEED)
+            player::_velocity.x += RUNNING_ACCELERATION;
+        else {
+            player::_velocity.x += SKIDDING_DECELERATION;
+            _runningFramesLeft = 0;
+        }
+        if (player::_velocity.x > MAXIMUM_RUNNING_SPEED)
+            player::_velocity.x = MAXIMUM_RUNNING_SPEED;
+    }
+    if (direction == 0) {
+        if (player::_velocity.x <= SKID_TURNAROUND_SPEED)
+            player::_velocity.x -= RUNNING_ACCELERATION;
+        else
+            player::_velocity.x -= SKIDDING_DECELERATION;
+        if (player::_velocity.x < -MAXIMUM_RUNNING_SPEED)
+            player::_velocity.x = -MAXIMUM_RUNNING_SPEED;
+    }
+} //actuellement mario "snap" à la walk speed directement quand il ne court plus (il ne ralentit pas progressivement).
 
 void player::_handleInput()
 {
     int direction = -1;
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
+        _runningFramesLeft = 10;
+    else if (_runningFramesLeft != 0)
+        _runningFramesLeft--;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         direction = 0;
         _facingRight = false;
@@ -157,7 +202,10 @@ void player::_handleInput()
         direction = 1;
         _facingRight = true;
     }
-    player::_updateMovement(direction);
+    if (_runningFramesLeft == 0)
+        player::_updateMovementWalking(direction);
+    else
+        player::_updateMovementRunning(direction);
 }
 
 void player::actualize(sf::RenderWindow &window)
