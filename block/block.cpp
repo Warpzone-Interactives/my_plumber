@@ -7,13 +7,13 @@
 
 #include "block.hpp"
 
-block::block(sf::Vector2f position, char type, sf::Texture texture, block *next, int scale)
+block::block(sf::Vector2f position, char type, sf::Texture texture, block *next, float scale)
 {
     _type = type;
     _position = position;
-    _scale = scale;
-    _position.x *= scale;
-    _position.y *= scale; // + (1080 % (16 * scale)) for rectifie the space at the bottom
+    _scale = int(scale);
+    _position.x *= _scale;
+    _position.y = _position.y * scale + 1.5 * (1080 % int(16 * scale)); //for rectifie the space at the bottom
     _nbAnime = 1;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;

@@ -19,8 +19,9 @@ int generalStat::getWhere(std::string filepath)
     return 0;
 }
 
-generalStat::generalStat(char *filepath, sf::RenderWindow *window)
+generalStat::generalStat(char *filepath, sf::RenderWindow *window, player *player)
 {
+    _player = player;
     _window = window;
     status = 0;
     scale = 1;
@@ -123,16 +124,16 @@ void generalStat::createGrid(int x_size)
 void generalStat::createLevel()
 {
     size_t count = 0;
-    int level_with = 0;
+    int lvlHeight = 0;
     for (const auto &line : _map) {
-        level_with += 1;
+        lvlHeight += 1;
         for (char c : line)
             if (c != ' ')
                 count++;
     }
 
     int level_length = maxLength();
-    setScale(_window->getSize().y, level_with);
+    setScale(_window->getSize().y, lvlHeight);
     createGrid(level_length);
     for (size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
@@ -142,7 +143,7 @@ void generalStat::createLevel()
 
 void generalStat::setScale(int ySize, int yNbElem)
 {
-    scale = floor(ySize / yNbElem / 16);
+    scale = ySize / yNbElem / 16;
 }
 
 sf::Texture generalStat::getTexture(char c)

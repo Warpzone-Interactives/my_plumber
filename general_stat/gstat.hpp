@@ -13,7 +13,7 @@
 class generalStat
 {
 public:
-    generalStat(char *map, sf::RenderWindow *window);
+    generalStat(char *map, sf::RenderWindow *window, player *player);
     ~generalStat() = default;
 
     int getError();
@@ -22,6 +22,8 @@ public:
 
     int status;
     block *_block; // next for chained list
+    sf::RenderWindow *_window;
+    player *_player;
 
 private:
 
@@ -34,9 +36,8 @@ private:
     void createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
     void createGrid(int x_size);
 
-    int scale;
+    float scale;
     std::string _where;
-    sf::RenderWindow *_window;
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;

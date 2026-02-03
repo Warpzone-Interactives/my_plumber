@@ -13,7 +13,7 @@
 class block
 {
 public:
-    block(sf::Vector2f position, char type, sf::Texture texture, block *next, int scale);
+    block(sf::Vector2f position, char type, sf::Texture texture, block *next, float scale);
     ~block() = default;
 
     void initLuckyBlock(char type); //je peut la mettre en privé

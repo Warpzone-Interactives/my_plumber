@@ -40,22 +40,22 @@ void poll_event(sf::RenderWindow *window)
         analyse_events(&event, window);
 }
 
-void gameLoop(sf::RenderWindow *window, generalStat g_stat, player *player)
+void gameLoop(generalStat *g_stat)
 {
     sf::Clock frames;
 
-    while (window->isOpen())
+    while (g_stat->_window->isOpen())
         if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
-            poll_event(window);
-            window->clear();
-            if (g_stat._block != NULL) {
-                g_stat._block->anime();
-                g_stat._block->draw(*window);
+            poll_event(g_stat->_window);
+            g_stat->_window->clear();
+            if (g_stat->_block != NULL) {
+                g_stat->_block->anime();
+                g_stat->_block->draw(*g_stat->_window);
             }
             // for (const sf::Sprite &s : sprites)
             //     window->draw(s);
-            player->actualize(*window);
-            window->display();
+            g_stat->_player->actualize(*g_stat->_window);
+            g_stat->_window->display();
             frames.restart();
         }
 }

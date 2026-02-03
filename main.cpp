@@ -10,14 +10,13 @@
 int lauch_game(char **av)
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber", sf::Style::Fullscreen);
-    generalStat g_stat(av[1], &window);
     player player(0, {50.0f, 50.0f}, 'm');
+    generalStat g_stat(av[1], &window, &player);
 
     if (g_stat.getError() != 0)
         return 84;
     g_stat.createLevel();
-    // create_level(&(g_stat));
-    gameLoop(&(window), g_stat, &player);
+    gameLoop(&g_stat);
     return 0;
 }
 
