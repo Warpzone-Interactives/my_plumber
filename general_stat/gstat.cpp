@@ -40,10 +40,67 @@ void general_stat::init_texture()
     _textures.insert({ 'c',  loading_texture});
 }
 
+// -------------------| init map |-------------------
+
+int general_stat::max_length()
+{
+    int max = 0;
+    int testing = 0;
+
+    for (size_t i = 0; i < _map.size(); i++) {
+        for (size_t j = 0; j < _map[i].size(); j++)
+            testing++;
+        if (testing > max)
+            max = testing;
+        testing = 0;
+    }
+    return max;
+}
+
+void general_stat::create_element(char c, sf::Vector2f square)
+{
+    if (!_textures.count('/'))
+        std::cout << "error\n";
+    block *n_block = new block(square, c, get_texture(c), _block, scale);
+
+    _block = n_block;
+}
+
+
+void general_stat::create_line(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
+{
+    for (size_t i = 0; i < map_line.size(); i++) {
+        if (map_line[i] == ' ')
+            continue;
+        create_element(map_line[i], grid_line[i]);
+    }
+}
+
+void general_stat::create_level()
+{
+    size_t count = 0;
+    int level_with = 0;
+    for (const auto &line : _map) {
+        level_with += 1;
+        for (char c : line)
+            if (c != ' ')
+                count++;
+    }
+
+    int level_length = max_length();
+    set_scale(_window->getSize().y, level_with);
+    std::vector<std::vector<sf::Vector2f>> grid = create_grid(level_length);
+    for (size_t i = 0; i < _map.size(); i++)
+        create_line(_map[i], grid[i]);
+}
+
+// -------------------| init map end |-------------------
+
 void general_stat::set_scale(int ySize, int yNbElem)
 {
     scale = floor(ySize / yNbElem / 16);
 }
+
 sf::Texture general_stat::get_texture(char c)
 {
     if (c == 'a' || c == 's' || c == 'm' || c == 'f' || c == 'v')

@@ -17,7 +17,8 @@ int lauch_game(char **av)
         std::cout << "error\n";
     if (g_stat.status != 0)
         return init_error(g_stat);
-    create_level(&(g_stat));
+    g_stat.create_level();
+    // create_level(&(g_stat));
     gameLoop(&(window), g_stat, &player);
     return 0;
 }

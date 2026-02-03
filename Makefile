@@ -12,7 +12,6 @@ LIB_NAME	=	libmy.a
 
 LIB_SRC	=	window.cpp	\
 		grid.cpp	\
-		level.cpp	\
 		src/init_game/get_where.cpp	\
 		src/init_game/init_error.cpp	\
 		src/init_game/map_loading.cpp	\
