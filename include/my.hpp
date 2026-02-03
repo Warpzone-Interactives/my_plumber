@@ -19,6 +19,7 @@
 #include "block.hpp"
 #include "player.hpp"
 #include "gstat.hpp"
+#include "constant.hpp"
 
 void gameLoop(sf::RenderWindow *window, general_stat g_stat, player *player);
 std::vector<std::vector<sf::Vector2f>> create_grid(int x_size);

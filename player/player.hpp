@@ -53,7 +53,6 @@ private:
     //Movement :
     void _handleIdleInput();
     void _updateMovement(int direction);
-    void _turnPlayer(int direction);
 
     //Il reste bcp de méthodes à mettre et surement deux trois variables mais il est tard :(
 };
