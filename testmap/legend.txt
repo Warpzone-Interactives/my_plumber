@@ -6,16 +6,37 @@ Castle = Castle
 UW = Underworld (eau(non))
 
 x = sol
+X = hard block
+b = block brick (empty)
+d = dead block (hit ? block)
+
 ? = block ? avec une pièce
-U = block ? avec un power-up auto
-S = block ? avec une etoile
-M = block ? avec un mushroom
-F = block ? avec un fleur de fleur
-m = mushroom
-f = fleur de feu
-b = block brique
+a = block ? avec un power-up auto
+s = block ? avec une etoile
+m = block ? avec un mushroom
+f = block ? avec un fleur de fleur
+v = block ? avec un one up
+
+! = block invisible avec une pièce
+A = block invisible avec un power-up auto
+S = block invisible avec une etoile
+M = block invisible avec un mushroom
+F = block invisible avec un fleur de fleur
+V = block invisible avec un one up
+
+// faut faire les briques qui contiennent des trucs aussi
+// et la quantité de pièces dans un block
+
+P = pipe enter
+p = pipe
+
 g = goomba
 k = shell but if is k it's a koopa troopa
                     k
-P = pipe enter
-p = pipe
+
+c = coin
+u = mushroom
+o = one up
+i = fleur de feu
+
+| = flagpole
