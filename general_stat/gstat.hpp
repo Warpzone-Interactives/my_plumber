@@ -25,6 +25,7 @@ public:
 
 private:
 
+    void loadMap(std::string filepath);
     int getWhere(std::string filepath);
     void setScale(int ySize, int yNbElem);
     void initTexture();

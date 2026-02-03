@@ -19,16 +19,27 @@ int general_stat::getWhere(std::string filepath)
     return 0;
 }
 
-general_stat::general_stat(char *map, sf::RenderWindow *window)
+general_stat::general_stat(char *filepath, sf::RenderWindow *window)
 {
     _window = window;
     status = 0;
     scale = 1;
-    if (getWhere(map) == 1)
+    if (getWhere(filepath) == 1)
         status += 1;
     _block = NULL;
-    _map = load_map(map);
+    loadMap(filepath);
     initTexture();
+}
+
+void general_stat::loadMap(std::string filepath)
+{
+    std::ifstream input(filepath);
+    std::string line;
+
+    getline(input, line);
+    while (getline(input, line))
+        _map.push_back(line);
+    return;
 }
 
 void general_stat::initTexture()

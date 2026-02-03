@@ -11,7 +11,6 @@ CC	=	g++
 LIB_NAME	=	libmy.a
 
 LIB_SRC	=	window.cpp	\
-		src/init_game/map_loading.cpp	\
 		player/player.cpp	\
 		block/block.cpp	\
 		general_stat/gstat.cpp	\
