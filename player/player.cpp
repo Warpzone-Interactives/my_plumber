@@ -27,6 +27,7 @@ player::player(int size, sf::Vector2f position, char m)
     _sprite = sf::Sprite(_texture);
     _sprite.setTextureRect(_rect);
     _sprite.setPosition(_position);
+    _sprite.setOrigin({8, 8});
 }
 
 void player::_checkInvincibility()
@@ -39,19 +40,14 @@ void player::_checkInvincibility()
     }
 }
 
-void player::_turnPlayer(int direction)
-{
-    if (player::_facingRight == (1 - direction) && player::_onGround == true && (direction == 1 ? player::_velocity.x > 0 : player::_velocity.x < 0))
-        player::_facingRight = direction;
-}
 
 void player::_handleIdleInput()
 {
-    if (player::_velocity.x > 0.032f)
-        player::_velocity.x -= 0.032f;
-    if (player::_velocity.x < -0.032f)
-        player::_velocity.x += 0.032f;
-    if (-0.032f <= player::_velocity.x && player::_velocity.x <= 0.032f)
+    if (player::_velocity.x > RELEASE_DECELERATION)
+        player::_velocity.x -= RELEASE_DECELERATION;
+    if (player::_velocity.x < -RELEASE_DECELERATION)
+        player::_velocity.x += RELEASE_DECELERATION;
+    if (-RELEASE_DECELERATION <= player::_velocity.x && player::_velocity.x <= RELEASE_DECELERATION)
         player::_velocity.x = 0;
 } //On suppose ici qu'il y a pas de skidding (cf _updateMovement)
 
@@ -59,22 +55,21 @@ void player::_updateMovement(int direction)
 {
     if (direction == -1)
         return player::_handleIdleInput();
-    player::_turnPlayer(direction);
     if (direction == 1) {
         if (player::_velocity.x >= 0)
-            player::_velocity.x += 0.023f;
+            player::_velocity.x += WALKING_ACCELERATION;
         else
-            player::_velocity.x += 0.063f;
-        if (player::_velocity.x > 0.977f)
-            player::_velocity.x = 0.977f;
+            player::_velocity.x += SKIDDING_DECELERATION;
+        if (player::_velocity.x > MAXIMUM_WALK_SPEED)
+            player::_velocity.x = MAXIMUM_WALK_SPEED;
     }
     if (direction == 0) {
         if (player::_velocity.x <= 0)
-            player::_velocity.x -= 0.023f; //on va vers la gauche
+            player::_velocity.x -= WALKING_ACCELERATION; //on va vers la gauche
         else
-            player::_velocity.x -= 0.063f; //on ralentit en appuyant sur gauche
-        if (player::_velocity.x < -0.977f)
-            player::_velocity.x = -0.977f; //on vérifie qu'on dépasse pas le max
+            player::_velocity.x -= SKIDDING_DECELERATION; //on ralentit en appuyant sur gauche
+        if (player::_velocity.x < -MAXIMUM_WALK_SPEED)
+            player::_velocity.x = -MAXIMUM_WALK_SPEED; //on vérifie qu'on dépasse pas le max
     }
 } //dans l'idée ça "passe" mais y'a encore des trucs à faire comme le skidding à gérer (tant que y'a pas
   //un autre input mario continue de skid) (aussi skid turnaround speed à implémenter)
@@ -84,22 +79,29 @@ void player::_handleInput()
 {
     int direction = -1;
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         direction = 0;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+        _facingRight = false;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         direction = 1;
+        _facingRight = true;
+    }
     player::_updateMovement(direction);
-    // printf("%f\n", player::_velocity.x);
 }
 
 void player::actualize(sf::RenderWindow &window)
 {
     player::_checkInvincibility();
     player::_handleInput();
-    if (player::_velocity.x >= 0.074f || player::_velocity.x <= -0.074f) {
+    if (player::_velocity.x >= MINIMUM_WALK_VELOCITY || player::_velocity.x <= MINIMUM_WALK_VELOCITY) {
         player::_position += player::_velocity;
         player::_sprite.setPosition(player::_position);
     }
+    if (!player::_facingRight)
+        player::_sprite.setScale({-1, 1});
+    else
+        player::_sprite.setScale({1, 1});
     player::_draw(window);
 }
 
