@@ -23,6 +23,5 @@
 
 void gameLoop(sf::RenderWindow *window, general_stat g_stat, player *player);
 std::vector<std::string> load_map(std::string filepath);
-std::string get_where(std::string filepath);
 
 #endif

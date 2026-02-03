@@ -25,6 +25,7 @@ public:
 
 private:
 
+    int getWhere(std::string filepath);
     void setScale(int ySize, int yNbElem);
     void initTexture();
     int maxLength();
@@ -33,7 +34,7 @@ private:
     void createGrid(int x_size);
 
     int scale;
-    std::string where;
+    std::string _where;
     sf::RenderWindow *_window;
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;

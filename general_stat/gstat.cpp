@@ -7,40 +7,47 @@
 
 #include "gstat.hpp"
 
+int general_stat::getWhere(std::string filepath)
+{
+    std::ifstream input(filepath);
+    std::string line;
+
+    getline(input, line);
+    _where = line;
+    if (_where != "ow" && _where != "ug" && _where != "castle" && _where != "uw")
+        return 1;
+    return 0;
+}
+
 general_stat::general_stat(char *map, sf::RenderWindow *window)
 {
     _window = window;
     status = 0;
     scale = 1;
-    where = get_where(map);
-    if (where == "error")
+    if (getWhere(map) == 1)
         status += 1;
     _block = NULL;
     _map = load_map(map);
     initTexture();
-    if (!_textures.count('/'))
-        std::cout << "error\n";
 }
 
 void general_stat::initTexture()
 {
     sf::Texture loading_texture;
 
-    loading_texture.loadFromFile("ressources/" + where + "/placeholder.png");
+    loading_texture.loadFromFile("ressources/" + _where + "/placeholder.png");
     _textures.insert({ '/',  loading_texture});
-    loading_texture.loadFromFile("ressources/" + where + "/lucky_block.png");
+    loading_texture.loadFromFile("ressources/" + _where + "/lucky_block.png");
     _textures.insert({ '?',  loading_texture});
-    loading_texture.loadFromFile("ressources/" + where + "/brick.png");
+    loading_texture.loadFromFile("ressources/" + _where + "/brick.png");
     _textures.insert({ 'b',  loading_texture});
-    loading_texture.loadFromFile("ressources/" + where + "/floor.png");
+    loading_texture.loadFromFile("ressources/" + _where + "/floor.png");
     _textures.insert({ 'x',  loading_texture});
-    loading_texture.loadFromFile("ressources/" + where + "/hard_block.png");
+    loading_texture.loadFromFile("ressources/" + _where + "/hard_block.png");
     _textures.insert({ 'X',  loading_texture});
-    loading_texture.loadFromFile("ressources/" + where + "/coin.png");
+    loading_texture.loadFromFile("ressources/" + _where + "/coin.png");
     _textures.insert({ 'c',  loading_texture});
 }
-
-// -------------------| init map |-------------------
 
 int general_stat::getError()
 {
@@ -52,6 +59,8 @@ int general_stat::getError()
         printf("error with idk(exemple)\n");
     return 84;
 }
+
+// -------------------| init map |-------------------
 
 int general_stat::maxLength()
 {
