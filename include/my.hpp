@@ -12,6 +12,7 @@
 #include <SFML/Window.hpp>
 #include <SFML/System.hpp>
 #include <SFML/Audio.hpp>
+#include <cmath>
 #include <fstream>
 #include <cstdio>
 #include <iostream>
@@ -19,7 +20,7 @@
 #include "player.hpp"
 #include "gstat.hpp"
 
-void handle_window(sf::RenderWindow *window, general_stat g_stat, player *player);
+void gameLoop(sf::RenderWindow *window, general_stat g_stat, player *player);
 std::vector<std::vector<sf::Vector2f>> create_grid(int x_size);
 void create_level(general_stat *g_stat);
 
