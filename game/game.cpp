@@ -141,6 +141,61 @@ void game::createLevel()
 
 // -------------------| init map end |-------------------
 
+// -------------------| game loop |-------------------
+
+void game::key_event(sf::Event *event)
+{
+    switch (event->key.code) {
+        case sf::Keyboard::Escape:
+            _window->close();
+            break;
+        default:
+            return;
+    }
+}
+
+void game::analyse_events(sf::Event *event)
+{
+    switch (event->type) {
+        case sf::Event::KeyPressed:
+            key_event(event);
+            break;
+        case sf::Event::Closed:
+            _window->close();
+            break;
+        default:
+            return;
+    }
+}
+
+void game::poll_event()
+{
+    sf::Event event;
+
+    while (_window->pollEvent(event))
+        analyse_events(&event);
+}
+
+void game::loop()
+{
+    sf::Clock frames;
+
+    while (_window->isOpen())
+        if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
+            poll_event();
+            _window->clear();
+            if (_block != NULL) {
+                _block->anime();
+                _block->draw(*_window);
+            }
+            _player->actualize(*_window);
+            _window->display();
+            frames.restart();
+        }
+}
+
+// -------------------| game loop end |-------------------
+
 void game::setScale(int ySize, int yNbElem)
 {
     scale = ySize / yNbElem / 16;

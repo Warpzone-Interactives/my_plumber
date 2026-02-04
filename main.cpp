@@ -16,11 +16,10 @@ int lauch_game(char **av)
     if (g_stat.getError() != 0)
         return 84;
     g_stat.createLevel();
-    gameLoop(&g_stat);
+    g_stat.loop();
     return 0;
 }
 
-#include <list>
 int main(int ac, char **av)
 {
     if (ac != 2)

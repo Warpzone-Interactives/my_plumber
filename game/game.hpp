@@ -19,6 +19,7 @@ public:
     int getError();
     void createLevel();
     sf::Texture getTexture(char c);
+    void loop();
 
     int status;
     block *_block; // next for chained list
@@ -27,6 +28,9 @@ public:
 
 private:
 
+    void key_event(sf::Event *event);
+    void analyse_events(sf::Event *event);
+    void poll_event();
     void loadMap(std::string filepath);
     int getWhere(std::string filepath);
     void setScale(int ySize, int yNbElem);

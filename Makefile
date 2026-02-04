@@ -10,8 +10,7 @@ CC	=	g++
 
 LIB_NAME	=	libmy.a
 
-LIB_SRC	=	window.cpp	\
-		player/player.cpp	\
+LIB_SRC	=	player/player.cpp	\
 		block/block.cpp	\
 		game/game.cpp	\
 

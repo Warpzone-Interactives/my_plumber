@@ -21,7 +21,4 @@
 #include "game.hpp"
 #include "constant.hpp"
 
-void gameLoop(game *g_stat);
-std::vector<std::string> load_map(std::string filepath);
-
 #endif
