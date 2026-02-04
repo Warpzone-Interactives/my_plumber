@@ -11,7 +11,7 @@ int lauch_game(char **av)
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber", sf::Style::Fullscreen);
     general_stat g_stat(av[1], &window);
-    player player(0, {50.0f, 50.0f}, 'm');
+    player player(0, {50.0f, 800.0f}, 'm');
 
     if (!g_stat._textures.count('/'))
         std::cout << "error\n";
