@@ -13,13 +13,14 @@
 class block
 {
 public:
-    block(sf::Vector2f position, char type, sf::Texture texture, block *next, int scale);
+    block(sf::Vector2f position, char type, sf::Texture texture, block *next, float scale);
     ~block() = default;
 
     void initLuckyBlock(char type); //je peut la mettre en privé
     void anime();
     void try_break();
     void draw(sf::RenderWindow &window);
+    sf::Vector2f pos();
 
     char _type;
     block *_next; // next for chained list
@@ -27,8 +28,9 @@ public:
 private:
 
     int _nbAnime; // nb animation frame
-    std::string loot; // what in (power up, cion)
-    bool _can_break; // if is breacable block
+    int _direction; // how chosse next sprite
+    std::string _loot; // what in (power up, cion)
+    bool _canBreak; // if is breacable block
     sf::Vector2f _position; // Position
     float _scale;
 

@@ -7,14 +7,15 @@
 
 #include "block.hpp"
 
-block::block(sf::Vector2f position, char type, sf::Texture texture, block *next, int scale)
+block::block(sf::Vector2f position, char type, sf::Texture texture, block *next, float scale)
 {
     _type = type;
     _position = position;
-    _scale = scale;
-    _position.y *= scale;
-    _position.x *= scale;
+    _scale = int(scale);
+    _position.x *= _scale;
+    _position.y = _position.y * scale + 1.5 * (1080 % int(16 * scale)); //for rectifie the space at the bottom
     _nbAnime = 1;
+    _direction = 0;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;
     _sprite = sf::Sprite();
@@ -30,31 +31,32 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, block *next,
 
 void block::initLuckyBlock(char type)
 {
+    _direction = 1;
     if (type > 90 || type == '?')
         _nbAnime = 3;
     else
         _nbAnime = 1;
     if (type == '?' || type == '!')
-        loot = "coin";
+        _loot = "coin";
     if (type == 'a' || type == 'A')
-        loot = "auto";
+        _loot = "auto";
     if (type == 's' || type == 'S')
-        loot = "star";
+        _loot = "star";
     if (type == 'm' || type == 'M')
-        loot = "mushroom";
+        _loot = "mushroom";
     if (type == 'f' || type == 'F')
-        loot = "flower";
+        _loot = "flower";
     if (type == 'v' || type == 'V')
-        loot = "one_up";
+        _loot = "one_up";
     return;
 }
 
 void block::anime()
 {
     if (_nbAnime > 1) {
-        _rect.left += 16;
-        if (_rect.left == _nbAnime * 16)
-            _rect.left = 0;
+        _rect.left += _direction * 16;
+        if (_rect.left == (_nbAnime - 1) * 16 || _rect.left == 0)
+            _direction *= -1;
         _sprite.setTextureRect(_rect);
     }
     if (block::_next != NULL)
@@ -68,4 +70,9 @@ void block::draw(sf::RenderWindow &window)
     if (block::_next != NULL)
         block::_next->draw(window);
     return;
+}
+
+sf::Vector2f block::pos()
+{
+    return _position;
 }

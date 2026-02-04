@@ -10,15 +10,10 @@ CC	=	g++
 
 LIB_NAME	=	libmy.a
 
-LIB_SRC	=	window.cpp	\
-		grid.cpp	\
-		level.cpp	\
-		src/init_game/get_where.cpp	\
-		src/init_game/init_error.cpp	\
-		src/init_game/map_loading.cpp	\
-		player/player.cpp	\
+LIB_SRC	=	player/player.cpp	\
 		block/block.cpp	\
-		general_stat/gstat.cpp	\
+		game/game.cpp	\
+		gameClock/gameClock.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
@@ -30,7 +25,7 @@ SRC	=	main.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
-CPPFLAGS	=	-I./include -I./player -I./general_stat -I./block -g
+CPPFLAGS	=	-I./include -I./player -I./game -I./block -I./gameClock -g
 
 FLAG_SFML	=	-lsfml-graphics -lsfml-window -lsfml-system
 
