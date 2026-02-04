@@ -27,9 +27,6 @@ V = block invisible avec un one up
 // faut faire les briques qui contiennent des trucs aussi
 // et la quantité de pièces dans un block
 
-P = pipe enter
-p = pipe
-
 g = goomba
 k = shell but if is k it's a koopa troopa
                     k
@@ -39,4 +36,9 @@ u = mushroom
 o = one up
 i = fleur de feu
 
-| = flagpole
+| = tuyau vertical
+- = tuyau horizontal
+< = sortie de tuyau vers la gauche
+^ = sortie de tuyau vers le haut
+> = sortie de tuyau vers la droite
+_ = sortie de tuyau vers le bas
