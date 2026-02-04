@@ -212,13 +212,20 @@ void player::actualize(sf::RenderWindow &window)
 {
     player::_checkInvincibility();
     player::_handleInput();
-    if (player::_velocity.x >= MINIMUM_WALK_VELOCITY || player::_velocity.x <= MINIMUM_WALK_VELOCITY) {
-        player::_position += player::_velocity;
-        player::_sprite.setPosition(player::_position);
+
+    if (_velocity.x >= MINIMUM_WALK_VELOCITY || _velocity.x <= MINIMUM_WALK_VELOCITY) {
+        _position += _velocity;
+        if (_position.x < 28) {
+            _position.x = 28;
+            _velocity.x = 0;
+        }
+        _sprite.setPosition(_position);
     }
-    if (!player::_facingRight)
-        player::_sprite.setScale({-4, 4});
+
+    if (!_facingRight)
+        _sprite.setScale({-4, 4});
     else
-        player::_sprite.setScale({4, 4});
+        _sprite.setScale({4, 4});
+
     player::_draw(window);
 }
