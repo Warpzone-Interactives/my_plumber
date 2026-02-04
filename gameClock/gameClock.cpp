@@ -11,7 +11,7 @@ gameClock::gameClock(std::vector<double> resetValue)
 {
     seconds = 0;
     resetTime = resetValue;
-    whatReset = 0;
+    resetId = 0;
 }
 
 void gameClock::clockUpdater()
@@ -23,14 +23,14 @@ void gameClock::clockUpdater()
 void gameClock::reset()
 {
     _clock.restart();
-    whatReset = (whatReset + 1) % (resetTime.size());
+    resetId = (resetId + 1) % (resetTime.size());
     seconds = 0;
 }
 
 int gameClock::actionNeed()
 {
     clockUpdater();
-    if ((seconds) > resetTime[whatReset]) {
+    if ((seconds) > resetTime[resetId]) {
         reset();
         return 1;
     }

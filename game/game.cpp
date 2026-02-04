@@ -26,7 +26,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player)
 void game::initLstBlock()
 {
     std::vector<block *> lst;
-    for (int y = 0; y < with; y++) {
+    for (int y = 0; y < width; y++) {
         lst.push_back(NULL);
     }
     for (int x = 0; x < length; x++) {
@@ -94,9 +94,9 @@ void game::get_Size()
     int max = 0;
     int testing = 0;
 
-    with = _map.size();
-    for (size_t i = 0; i < _map.size(); i++) {
-        for (size_t j = 0; j < _map[i].size(); j++)
+    width = _map.size();
+    for (std::size_t i = 0; i < _map.size(); i++) {
+        for (std::size_t j = 0; j < _map[i].size(); j++)
             testing++;
         if (testing > max)
             max = testing;
@@ -108,13 +108,13 @@ void game::get_Size()
 
 void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
 {
-    for (size_t i = 0; i < map_line.size(); i++) {
+    for (std::size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        printf("%.0f : %.0f\n", grid_line[i].x / 16, grid_line[i].y / 16);
+        // printf("%.0f : %.0f\n", grid_line[i].x / 16, grid_line[i].y / 16);
         block *n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), scale);
         lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
-        printf("%c\n", lstBlock[grid_line[i].x / 16][grid_line[i].y / 16]->_type);
+        // printf("%c\n", lstBlock[grid_line[i].x / 16][grid_line[i].y / 16]->_type);
     }
 }
 
@@ -133,7 +133,7 @@ void game::createGrid(int x_size)
 
 void game::createLevel()
 {
-    size_t count = 0;
+    std::size_t count = 0;
     int lvlHeight = 0;
     for (const auto &line : _map) {
         lvlHeight += 1;
@@ -143,7 +143,7 @@ void game::createLevel()
     }
     setScale(_window->getSize().y, lvlHeight);
     createGrid(length);
-    for (size_t i = 0; i < _map.size(); i++)
+    for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
 }
 
@@ -192,14 +192,15 @@ void game::loop()
         if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
             poll_event();
             _window->clear();
-            if (_block != NULL) {
-                if (animClock->actionNeed() == 1)
-                    _block->anime();
-                _window->draw(lstBlock[0][0]->_sprite);
-                lstBlock[0][1]->draw(*_window);
-                lstBlock[1][0]->draw(*_window);
-                lstBlock[1][1]->draw(*_window);
-            }
+            for (std::size_t i = 0; i < lstBlock.size(); i++)
+                for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
+                    if (lstBlock[i][j] != NULL) {
+                        printf("%d\n", lstBlock[i][j]->_type);
+                        lstBlock[i][j]->draw(*_window);
+                        // if (animClock->actionNeed() == 1) ça marche à moitié ça, tu regarderas, jsp
+                            // lstBlock[i][j]->anime();
+                    }
+                }
             _player->actualize(*_window);
             _window->display();
             frames.restart();

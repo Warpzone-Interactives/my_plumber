@@ -43,7 +43,7 @@ private:
     void createGrid(int x_size);
 
     int length;
-    int with;
+    int width;
     float scale;
     std::string _where;
     std::vector<std::vector<block *>> lstBlock;
