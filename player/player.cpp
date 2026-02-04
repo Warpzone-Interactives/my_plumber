@@ -47,7 +47,7 @@ void player::_chooseTexture()
         _rect = sf::IntRect({0, 0}, {16, 32});
     }
     _setTexture(filePath);
-} // En théorie ça devrait marcher mais du coup faut setup les intRect aussi je crois ??
+}
 
 void player::_setTexture(std::string filepath)
 {
@@ -217,8 +217,8 @@ void player::actualize(sf::RenderWindow &window)
         player::_sprite.setPosition(player::_position);
     }
     if (!player::_facingRight)
-        player::_sprite.setScale({-1, 1});
+        player::_sprite.setScale({-4, 4});
     else
-        player::_sprite.setScale({1, 1});
+        player::_sprite.setScale({4, 4});
     player::_draw(window);
 }
