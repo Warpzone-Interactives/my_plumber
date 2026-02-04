@@ -11,7 +11,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player)
 {
     _player = player;
     _window = window;
-    animClock = new gameClock({0.1, 0.5, 1});
+    animClock = new gameClock({1, 0.25, 0.25, 0.25});
     status = 0;
     scale = 1;
     if (getWhere(filepath) == 1)

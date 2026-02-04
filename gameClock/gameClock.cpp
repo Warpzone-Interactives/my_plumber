@@ -23,7 +23,7 @@ void gameClock::clockUpdater()
 void gameClock::reset()
 {
     _clock.restart();
-    whatReset = (whatReset + 1) % (resetTime.size() + 1);
+    whatReset = (whatReset + 1) % (resetTime.size());
     seconds = 0;
 }
 
