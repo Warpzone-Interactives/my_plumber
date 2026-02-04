@@ -7,6 +7,20 @@
 
 #include "game.hpp"
 
+game::game(char *filepath, sf::RenderWindow *window, player *player)
+{
+    _player = player;
+    _window = window;
+    animClock = new gameClock({0.1, 0.5, 1});
+    status = 0;
+    scale = 1;
+    if (getWhere(filepath) == 1)
+        status += 1;
+    _block = NULL;
+    loadMap(filepath);
+    initTexture();
+}
+
 int game::getWhere(std::string filepath)
 {
     std::ifstream input(filepath);
@@ -17,19 +31,6 @@ int game::getWhere(std::string filepath)
     if (_where != "ow" && _where != "ug" && _where != "castle" && _where != "uw")
         return 1;
     return 0;
-}
-
-game::game(char *filepath, sf::RenderWindow *window, player *player)
-{
-    _player = player;
-    _window = window;
-    status = 0;
-    scale = 1;
-    if (getWhere(filepath) == 1)
-        status += 1;
-    _block = NULL;
-    loadMap(filepath);
-    initTexture();
 }
 
 void game::loadMap(std::string filepath)
@@ -91,6 +92,7 @@ int game::maxLength()
 
 void game::createElement(char c, sf::Vector2f square)
 {
+
     if (!_textures.count('/'))
         std::cout << "error\n";
     block *n_block = new block(square, c, getTexture(c), _block, scale);
@@ -105,6 +107,7 @@ void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> gri
         if (map_line[i] == ' ')
             continue;
         createElement(map_line[i], grid_line[i]);
+        printf("x = %3.0f:\ny = %3.0f;\n\n", grid_line[i].x / 16, grid_line[i].y / 16);
     }
 }
 
@@ -185,7 +188,8 @@ void game::loop()
             poll_event();
             _window->clear();
             if (_block != NULL) {
-                _block->anime();
+                if (animClock->actionNeed() == 1)
+                    _block->anime();
                 _block->draw(*_window);
             }
             _player->actualize(*_window);

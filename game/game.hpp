@@ -21,6 +21,7 @@ public:
     sf::Texture getTexture(char c);
     void loop();
 
+    gameClock *animClock;
     int status;
     block *_block; // next for chained list
     sf::RenderWindow *_window;
@@ -42,6 +43,7 @@ private:
 
     float scale;
     std::string _where;
+    std::vector<std::vector<block *>> lstBlock;
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;

@@ -13,6 +13,7 @@ LIB_NAME	=	libmy.a
 LIB_SRC	=	player/player.cpp	\
 		block/block.cpp	\
 		game/game.cpp	\
+		gameClock/gameClock.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
@@ -24,7 +25,7 @@ SRC	=	main.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
-CPPFLAGS	=	-I./include -I./player -I./game -I./block -g
+CPPFLAGS	=	-I./include -I./player -I./game -I./block -I./gameClock -g
 
 FLAG_SFML	=	-lsfml-graphics -lsfml-window -lsfml-system
 
