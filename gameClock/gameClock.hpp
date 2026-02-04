@@ -24,7 +24,7 @@ private:
     sf::Clock _clock;
     sf::Time time;
     double seconds;
-    int whatReset;
+    int resetId;
     std::vector<double> resetTime;
 };
 

@@ -13,7 +13,7 @@
 class block
 {
 public:
-    block(sf::Vector2f position, char type, sf::Texture texture, block *next, float scale);
+    block(sf::Vector2f position, char type, sf::Texture texture, float scale);
     ~block() = default;
 
     void initLuckyBlock(char type); //je peut la mettre en privé
@@ -23,7 +23,7 @@ public:
     sf::Vector2f pos();
 
     char _type;
-    block *_next; // next for chained list
+    sf::Sprite _sprite; //sprite
 
 private:
 
@@ -36,7 +36,6 @@ private:
 
     sf::IntRect _rect; // rect for texture
     sf::Texture _texture; //texture
-    sf::Sprite _sprite; //sprite
 };
 
 #endif

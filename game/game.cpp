@@ -18,7 +18,21 @@ game::game(char *filepath, sf::RenderWindow *window, player *player)
         status += 1;
     _block = NULL;
     loadMap(filepath);
+    get_Size();
+    initLstBlock();
     initTexture();
+}
+
+void game::initLstBlock()
+{
+    std::vector<block *> lst;
+    for (int y = 0; y < width; y++) {
+        lst.push_back(NULL);
+    }
+    for (int x = 0; x < length; x++) {
+        lstBlock.push_back(lst);
+        
+    }
 }
 
 int game::getWhere(std::string filepath)
@@ -75,39 +89,32 @@ int game::getError()
 
 // -------------------| init map |-------------------
 
-int game::maxLength()
+void game::get_Size()
 {
     int max = 0;
     int testing = 0;
 
-    for (size_t i = 0; i < _map.size(); i++) {
-        for (size_t j = 0; j < _map[i].size(); j++)
+    width = _map.size();
+    for (std::size_t i = 0; i < _map.size(); i++) {
+        for (std::size_t j = 0; j < _map[i].size(); j++)
             testing++;
         if (testing > max)
             max = testing;
         testing = 0;
     }
-    return max;
+    length = max;
+    return;
 }
-
-void game::createElement(char c, sf::Vector2f square)
-{
-
-    if (!_textures.count('/'))
-        std::cout << "error\n";
-    block *n_block = new block(square, c, getTexture(c), _block, scale);
-
-    _block = n_block;
-}
-
 
 void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
 {
-    for (size_t i = 0; i < map_line.size(); i++) {
+    for (std::size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        createElement(map_line[i], grid_line[i]);
-        printf("x = %3.0f:\ny = %3.0f;\n\n", grid_line[i].x / 16, grid_line[i].y / 16);
+        // printf("%.0f : %.0f\n", grid_line[i].x / 16, grid_line[i].y / 16);
+        block *n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), scale);
+        lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
+        // printf("%c\n", lstBlock[grid_line[i].x / 16][grid_line[i].y / 16]->_type);
     }
 }
 
@@ -126,7 +133,7 @@ void game::createGrid(int x_size)
 
 void game::createLevel()
 {
-    size_t count = 0;
+    std::size_t count = 0;
     int lvlHeight = 0;
     for (const auto &line : _map) {
         lvlHeight += 1;
@@ -134,11 +141,9 @@ void game::createLevel()
             if (c != ' ')
                 count++;
     }
-
-    int level_length = maxLength();
     setScale(_window->getSize().y, lvlHeight);
-    createGrid(level_length);
-    for (size_t i = 0; i < _map.size(); i++)
+    createGrid(length);
+    for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
 }
 
@@ -187,11 +192,15 @@ void game::loop()
         if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
             poll_event();
             _window->clear();
-            if (_block != NULL) {
-                if (animClock->actionNeed() == 1)
-                    _block->anime();
-                _block->draw(*_window);
-            }
+            for (std::size_t i = 0; i < lstBlock.size(); i++)
+                for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
+                    if (lstBlock[i][j] != NULL) {
+                        printf("%d\n", lstBlock[i][j]->_type);
+                        lstBlock[i][j]->draw(*_window);
+                        // if (animClock->actionNeed() == 1) ça marche à moitié ça, tu regarderas, jsp
+                            // lstBlock[i][j]->anime();
+                    }
+                }
             _player->actualize(*_window);
             _window->display();
             frames.restart();

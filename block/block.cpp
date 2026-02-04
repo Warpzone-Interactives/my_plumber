@@ -7,7 +7,7 @@
 
 #include "block.hpp"
 
-block::block(sf::Vector2f position, char type, sf::Texture texture, block *next, float scale)
+block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
 {
     _type = type;
     _position = position;
@@ -23,7 +23,6 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, block *next,
     _sprite.setTextureRect(_rect);
     _sprite.setPosition(_position);
     _sprite.setScale({_scale, _scale});
-    _next = next;
     if (type == '?' || type == 'a' || type == 's' ||
         type == 'm' || type == 'f' || type == 'v')
         initLuckyBlock(type);
@@ -59,16 +58,12 @@ void block::anime()
             _direction *= -1;
         _sprite.setTextureRect(_rect);
     }
-    if (block::_next != NULL)
-        block::_next->anime();
     return;
 }
 
 void block::draw(sf::RenderWindow &window)
 {
     window.draw(_sprite);
-    if (block::_next != NULL)
-        block::_next->draw(window);
     return;
 }
 

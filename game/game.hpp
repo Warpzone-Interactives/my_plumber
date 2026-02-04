@@ -36,11 +36,14 @@ private:
     int getWhere(std::string filepath);
     void setScale(int ySize, int yNbElem);
     void initTexture();
-    int maxLength();
+    void get_Size();
+    void initLstBlock();
     void createElement(char c, sf::Vector2f square);
     void createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
     void createGrid(int x_size);
 
+    int length;
+    int width;
     float scale;
     std::string _where;
     std::vector<std::vector<block *>> lstBlock;
