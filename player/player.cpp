@@ -28,6 +28,7 @@ player::player(int size, sf::Vector2f position, char m)
     _sprite.setTextureRect(_rect);
     _sprite.setPosition(_position);
     _sprite.setOrigin({8, 8});
+    _sprite_nb = 1;
 }
 
 void player::_chooseTexture()
@@ -37,14 +38,20 @@ void player::_chooseTexture()
     if (_size == 0) {
         filePath += "small.png";
         _rect = sf::IntRect({0, 0}, {16, 16});
+        _sprite.setOrigin({8, 8});
+        _sprite.setTextureRect(_rect);
     }
     else if (_size == 1) {
         filePath += "big.png";
         _rect = sf::IntRect({0, 0}, {16, 32});
+        _sprite.setOrigin({8, 24});
+        _sprite.setTextureRect(_rect);
     }
     else if (_size == 2) {
         filePath += "fire.png";
         _rect = sf::IntRect({0, 0}, {16, 32});
+        _sprite.setOrigin({8, 24});
+        _sprite.setTextureRect(_rect);
     }
     _setTexture(filePath);
 }
@@ -59,7 +66,9 @@ void player::_setTexture(std::string filepath)
 void player::_kill()
 {
     _alive = false;
+    
     // _playDeathAnimation(); ??
+    //3 blocs + 7 pixels vers le haut
 }
 
 void player::_draw(sf::RenderWindow &window)
@@ -78,7 +87,7 @@ void player::sizeUp()
 void player::sizeDown()
 {
     if (_size > 0)
-        _size--;
+        _size = 0;
     else
         return _kill();
     //dmg_animation ?
@@ -194,6 +203,7 @@ void player::_handleInput()
         _runningFramesLeft = 10;
     else if (_runningFramesLeft != 0)
         _runningFramesLeft--;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         direction = 0;
         _facingRight = false;
@@ -202,6 +212,18 @@ void player::_handleInput()
         direction = 1;
         _facingRight = true;
     }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && _size == 1)
+        player::sizeDown();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && _size == 0)
+        player::sizeUp();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) && _size == 2)
+        player::sizeDown();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H) && _size == 1)
+        player::sizeUp();
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::L) && _size == 0)
+        player::sizeDown();
+
     if (_runningFramesLeft == 0)
         player::_updateMovementWalking(direction);
     else
@@ -215,8 +237,8 @@ void player::actualize(sf::RenderWindow &window)
 
     if (_velocity.x >= MINIMUM_WALK_VELOCITY || _velocity.x <= MINIMUM_WALK_VELOCITY) {
         _position += _velocity;
-        if (_position.x < 28) {
-            _position.x = 28;
+        if (_position.x < 36) {
+            _position.x = 36;
             _velocity.x = 0;
         }
         _sprite.setPosition(_position);

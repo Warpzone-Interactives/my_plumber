@@ -38,6 +38,8 @@ private:
     bool _onGround; //Pour check si il peut sauter
     bool _facingRight; // true: droite, false: gauche
 
+    int _sprite_nb;
+
     sf::IntRect _rect; // rect for texture
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
