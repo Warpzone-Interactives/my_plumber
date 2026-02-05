@@ -195,6 +195,37 @@ void player::_updateMovementRunning(int direction)
     }
 } //actuellement mario "snap" à la walk speed directement quand il ne court plus (il ne ralentit pas progressivement).
 
+void player::_handleJumping()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _onGround) {
+        if (_velocity.x < 1)
+            _velocity.y += V_L1_UP;
+        if (_velocity.x >= 1 && _velocity.x < 2.3125)
+            _velocity.y += V_1T24_UP;
+        if (_velocity.x >= 2.3125)
+            _velocity.y += V_25M_UP;
+        _onGround = false;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+        if (_velocity.x < 1)
+            _velocity.y += V_L1_DWN_A;
+        if (_velocity.x >= 1 && _velocity.x < 2.3125)
+            _velocity.y += V_1T24_DWN_A;
+        if (_velocity.x >= 2.3125)
+            _velocity.y += V_25M_DWN_A;
+    }
+    else if (_velocity.y != 0) {
+        if (_velocity.x < 1)
+            _velocity.y += V_L1_DWN;
+        if (_velocity.x >= 1 && _velocity.x < 2.3125)
+            _velocity.y += V_1T24_DWN;
+        if (_velocity.x >= 2.3125)
+            _velocity.y += V_25M_DWN;
+    }
+    if (_velocity.y > V_MAX)
+        _velocity.y = V_OVERFLOW;
+} // il faut faire le déplacement (x) quand en l'air (fun(non))
+
 void player::_handleInput()
 {
     int direction = -1;
@@ -223,6 +254,7 @@ void player::_handleInput()
         player::sizeUp();
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::L) && _size == 0)
         player::sizeDown();
+    _handleJumping();
 
     if (_runningFramesLeft == 0)
         player::_updateMovementWalking(direction);
@@ -243,11 +275,15 @@ void player::actualize(sf::RenderWindow &window)
         }
         _sprite.setPosition(_position);
     }
-
     if (!_facingRight)
         _sprite.setScale({-4, 4});
     else
         _sprite.setScale({4, 4});
 
     player::_draw(window);
+}
+
+void checkColision(std::vector<std::vector<block*>>)
+{
+
 }

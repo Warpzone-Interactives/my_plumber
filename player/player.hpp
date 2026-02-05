@@ -22,6 +22,7 @@ public:
     void shoot();
 
     void actualize(sf::RenderWindow &window);
+    void checkColision(std::vector<std::vector<block*>>);
 
 private:
     std::string _character; // mario ou luigi
@@ -57,6 +58,8 @@ private:
     void _handleIdleInput();
     void _updateMovementWalking(int direction);
     void _updateMovementRunning(int direction);
+    void _handleJumping();
+    // bool _isOnGround(std::vector<std::vector<block*>>);
 
     //Il reste bcp de méthodes à mettre et surement deux trois variables mais il est tard :(
 };
