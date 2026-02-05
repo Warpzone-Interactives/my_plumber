@@ -111,10 +111,8 @@ void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> gri
     for (std::size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        // printf("%.0f : %.0f\n", grid_line[i].x / 16, grid_line[i].y / 16);
         block *n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), scale);
         lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
-        // printf("%c\n", lstBlock[grid_line[i].x / 16][grid_line[i].y / 16]->_type);
     }
 }
 
@@ -195,7 +193,6 @@ void game::loop()
             for (std::size_t i = 0; i < lstBlock.size(); i++)
                 for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
                     if (lstBlock[i][j] != NULL) {
-                        printf("%d\n", lstBlock[i][j]->_type);
                         lstBlock[i][j]->draw(*_window);
                         // if (animClock->actionNeed() == 1) ça marche à moitié ça, tu regarderas, jsp
                             // lstBlock[i][j]->anime();

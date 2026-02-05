@@ -12,9 +12,8 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
     _type = type;
     _position = position;
     _scale = int(scale);
-    _position.x *= _scale;
-    _position.y = _position.y * scale + 1.5 * (1080 % int(16 * scale)); //for rectifie the space at the bottom
-    _nbAnime = 1;
+    _position.x = (_position.x + 8) *_scale;
+    _position.y = (_position.y + 8) *_scale;
     _direction = 0;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;
@@ -23,6 +22,7 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
     _sprite.setTextureRect(_rect);
     _sprite.setPosition(_position);
     _sprite.setScale({_scale, _scale});
+    _sprite.setOrigin({8, 8});
     if (type == '?' || type == 'a' || type == 's' ||
         type == 'm' || type == 'f' || type == 'v')
         initLuckyBlock(type);
