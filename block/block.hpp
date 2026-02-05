@@ -22,11 +22,11 @@ public:
     void draw(sf::RenderWindow &window);
     sf::Vector2f pos();
 
-    char _type;
-    sf::Sprite _sprite; //sprite
 
 private:
 
+    char _type;
+    sf::Sprite _sprite; //sprite
     int _nbAnime; // nb animation frame
     int _direction; // how chosse next sprite
     std::string _loot; // what in (power up, cion)

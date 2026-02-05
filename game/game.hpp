@@ -29,18 +29,23 @@ public:
 
 private:
 
+    // ---| game lauched |---
+    void manageBlock();
     void key_event(sf::Event *event);
     void analyse_events(sf::Event *event);
     void poll_event();
-    void loadMap(std::string filepath);
-    int getWhere(std::string filepath);
-    void setScale(int ySize, int yNbElem);
-    void initTexture();
+
+    // ---| init map |---
     void get_Size();
-    void initLstBlock();
-    void createElement(char c, sf::Vector2f square);
     void createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
     void createGrid(int x_size);
+    void setScale(int ySize, int yNbElem);
+    
+    // ---| init game |---
+    void initLstBlock();
+    int getWhere(std::string filepath);
+    void loadMap(std::string filepath);
+    void initTexture();
 
     int length;
     int width;

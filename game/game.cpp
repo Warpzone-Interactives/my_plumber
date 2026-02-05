@@ -7,6 +7,8 @@
 
 #include "game.hpp"
 
+// -------------------| init game |-------------------
+
 game::game(char *filepath, sf::RenderWindow *window, player *player)
 {
     _player = player;
@@ -76,6 +78,8 @@ void game::initTexture()
     _textures.insert({ 'c',  loading_texture});
 }
 
+// -------------------| end init game |-------------------
+
 int game::getError()
 {
     if (status == 0)
@@ -127,6 +131,11 @@ void game::createGrid(int x_size)
         grid.push_back(line);
     }
     return;
+}
+
+void game::setScale(int ySize, int yNbElem)
+{
+    scale = ySize / yNbElem / 16;
 }
 
 void game::createLevel()
@@ -182,6 +191,21 @@ void game::poll_event()
         analyse_events(&event);
 }
 
+void game::manageBlock()
+{
+    int animate = 0;
+    if (animClock->actionNeed() == 1) // ça marche à moitié ça, tu regarderas, jsp
+        animate = 1;
+    for (std::size_t i = 0; i < lstBlock.size(); i++)
+        for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
+            if (lstBlock[i][j] != NULL) {
+                lstBlock[i][j]->draw(*_window);
+                if (animate == 1)
+                    lstBlock[i][j]->anime();
+            }
+        }
+}
+
 void game::loop()
 {
     sf::Clock frames;
@@ -190,14 +214,7 @@ void game::loop()
         if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
             poll_event();
             _window->clear();
-            for (std::size_t i = 0; i < lstBlock.size(); i++)
-                for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
-                    if (lstBlock[i][j] != NULL) {
-                        lstBlock[i][j]->draw(*_window);
-                        // if (animClock->actionNeed() == 1) ça marche à moitié ça, tu regarderas, jsp
-                            // lstBlock[i][j]->anime();
-                    }
-                }
+            manageBlock();
             _player->actualize(*_window);
             _window->display();
             frames.restart();
@@ -205,11 +222,6 @@ void game::loop()
 }
 
 // -------------------| game loop end |-------------------
-
-void game::setScale(int ySize, int yNbElem)
-{
-    scale = ySize / yNbElem / 16;
-}
 
 sf::Texture game::getTexture(char c)
 {
