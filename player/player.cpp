@@ -198,33 +198,75 @@ void player::_updateMovementRunning(int direction)
 void player::_handleJumping()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _onGround) {
-        if (_velocity.x < 1)
+        if (_velocity.x < 1 * 4)
             _velocity.y += V_L1_UP;
-        if (_velocity.x >= 1 && _velocity.x < 2.3125)
+        if (_velocity.x >= 1 * 4 && _velocity.x < 2.3125 * 4)
             _velocity.y += V_1T24_UP;
-        if (_velocity.x >= 2.3125)
+        if (_velocity.x >= 2.3125 * 4)
             _velocity.y += V_25M_UP;
         _onGround = false;
+        _jumpStartingVelocity = _velocity.x;
+        if (_velocity.x < MAXIMUM_WALK_SPEED)
+            _maxAirSpeed = MAXIMUM_WALK_SPEED;
+        else
+            _maxAirSpeed = MAXIMUM_RUNNING_SPEED;
     }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        if (_velocity.x < 1)
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !_onGround) {
+        if (_velocity.x < 1 * 4)
             _velocity.y += V_L1_DWN_A;
-        if (_velocity.x >= 1 && _velocity.x < 2.3125)
+        if (_velocity.x >= 1 * 4 && _velocity.x < 2.3125 * 4)
             _velocity.y += V_1T24_DWN_A;
-        if (_velocity.x >= 2.3125)
+        if (_velocity.x >= 2.3125 * 4)
             _velocity.y += V_25M_DWN_A;
     }
-    else if (_velocity.y != 0) {
-        if (_velocity.x < 1)
+    else if (!_onGround) {
+        if (_velocity.x < 1 * 4)
             _velocity.y += V_L1_DWN;
-        if (_velocity.x >= 1 && _velocity.x < 2.3125)
+        if (_velocity.x >= 1 * 4 && _velocity.x < 2.3125 * 4)
             _velocity.y += V_1T24_DWN;
-        if (_velocity.x >= 2.3125)
+        if (_velocity.x >= 2.3125 * 4)
             _velocity.y += V_25M_DWN;
     }
     if (_velocity.y > V_MAX)
         _velocity.y = V_OVERFLOW;
-} // il faut faire le déplacement (x) quand en l'air (fun(non))
+}
+
+void player::_airPhysics(int direction)
+{
+    if (direction == 1 && _velocity.x >= 0) {
+        if (_velocity.x < MAXIMUM_WALK_SPEED)
+            _velocity.x += WALKING_ACCELERATION;
+        else
+            _velocity.x += RUNNING_ACCELERATION;
+    }
+    if (direction == 0 && _velocity.x >= 0) {
+        if (_velocity.x >= MAXIMUM_WALK_SPEED)
+            _velocity.x -= RUNNING_ACCELERATION;
+        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD)
+            _velocity.x -= RELEASE_DECELERATION;
+        else
+            _velocity.x -= WALKING_ACCELERATION;
+    }
+
+    if (direction == 0 && _velocity.x < 0) {
+        if (_velocity.x > -MAXIMUM_WALK_SPEED)
+            _velocity.x -= WALKING_ACCELERATION;
+        else
+            _velocity.x -= RUNNING_ACCELERATION;
+    }
+    if (direction == 1 && _velocity.x < 0) {
+        if (_velocity.x >= MAXIMUM_WALK_SPEED)
+            _velocity.x += RUNNING_ACCELERATION;
+        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD)
+            _velocity.x += RELEASE_DECELERATION;
+        else
+            _velocity.x += WALKING_ACCELERATION;
+    }
+    if (_velocity.x > _maxAirSpeed)
+        _velocity.x = _maxAirSpeed;
+    if (_velocity.x < -_maxAirSpeed)
+        _velocity.x = -_maxAirSpeed;
+}
 
 void player::_handleInput()
 {
@@ -237,29 +279,24 @@ void player::_handleInput()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         direction = 0;
-        _facingRight = false;
+        if (_onGround)
+            _facingRight = false;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         direction = 1;
-        _facingRight = true;
+        if (_onGround)
+            _facingRight = true;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && _size == 1)
-        player::sizeDown();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && _size == 0)
-        player::sizeUp();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) && _size == 2)
-        player::sizeDown();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H) && _size == 1)
-        player::sizeUp();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::L) && _size == 0)
-        player::sizeDown();
     _handleJumping();
-
-    if (_runningFramesLeft == 0)
-        player::_updateMovementWalking(direction);
+    if (_onGround) {
+        if (_runningFramesLeft == 0)
+            player::_updateMovementWalking(direction);
+        else
+            player::_updateMovementRunning(direction);
+    }
     else
-        player::_updateMovementRunning(direction);
+        player::_airPhysics(direction);
 }
 
 void player::actualize(sf::RenderWindow &window)

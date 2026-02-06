@@ -46,6 +46,8 @@ private:
     sf::Texture _texture; //texture
     int _runningFramesLeft;
     bool _skidding;
+    float _maxAirSpeed;
+    float _jumpStartingVelocity;
 
     void _draw(sf::RenderWindow &window);
     void _kill();
@@ -59,6 +61,7 @@ private:
     void _updateMovementWalking(int direction);
     void _updateMovementRunning(int direction);
     void _handleJumping();
+    void _airPhysics(int direction);
     // bool _isOnGround(std::vector<std::vector<block*>>);
 
     //Il reste bcp de méthodes à mettre et surement deux trois variables mais il est tard :(

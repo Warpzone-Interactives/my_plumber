@@ -39,5 +39,5 @@
     #define V_EN_DWN        0.15625 * 4
     #define V_MAX           4.5 * 4
     #define V_OVERFLOW      4.0 * 4
-
+    #define V_SLOW_TRESHOLD 1.8125 * 4
 #endif
