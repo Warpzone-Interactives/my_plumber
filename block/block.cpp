@@ -51,12 +51,10 @@ void block::initLuckyBlock(char type)
     return;
 }
 
-void block::anime()
+void block::anime(sf::IntRect *rect)
 {
     if (_nbAnime > 1) {
-        _rect.left += _direction * 16;
-        if (_rect.left == (_nbAnime - 1) * 16 || _rect.left == 0)
-            _direction *= -1;
+        _rect = *rect;
         _sprite.setTextureRect(_rect);
     }
     return;

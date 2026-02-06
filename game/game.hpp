@@ -17,7 +17,7 @@ public:
     ~game() = default;
 
     int getError();
-    void createLevel();
+    void initLevel();
     sf::Texture getTexture(char c);
     void loop();
 
@@ -47,15 +47,21 @@ private:
     void loadMap(std::string filepath);
     void initTexture();
 
+    // ---| loop game |---
+    void anime();
+
+    sf::IntRect _rect; // rect for texture
+    std::map<char, sf::Texture> _textures;
+    std::vector<std::vector<block *>> lstBlock;
+    int _direction; // how chosse next sprite
+
     int length;
     int width;
     float scale;
     std::string _where;
-    std::vector<std::vector<block *>> lstBlock;
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;
-    std::map<char, sf::Texture> _textures;
 };
 
 #endif

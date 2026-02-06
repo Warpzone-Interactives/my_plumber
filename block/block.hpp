@@ -17,8 +17,8 @@ public:
     ~block() = default;
 
     void initLuckyBlock(char type); //je peut la mettre en privé
-    void anime();
-    void try_break();
+    void anime(sf::IntRect *rect);
+    void try_break(sf::IntRect *rect);
     void draw(sf::RenderWindow &window);
     sf::Vector2f pos();
 
