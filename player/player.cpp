@@ -31,6 +31,11 @@ player::player(int size, sf::Vector2f position, char m)
     _sprite_nb = 1;
 }
 
+sf::Vector2f player::getPos()
+{
+    return _position;
+}
+
 void player::_chooseTexture()
 {
     std::string filePath = "ressources/player/" + _character + "/";

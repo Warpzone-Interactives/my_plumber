@@ -15,6 +15,7 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
     _position.x = (_position.x + 8) *_scale;
     _position.y = (_position.y + 8) *_scale;
     _direction = 0;
+    _nbAnime = 1;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;
     _sprite = sf::Sprite();

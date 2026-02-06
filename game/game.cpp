@@ -9,16 +9,17 @@
 
 // -------------------| init game |-------------------
 
-game::game(char *filepath, sf::RenderWindow *window, player *player)
+game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *view)
 {
     _player = player;
     _window = window;
+    camera = view;
+    window->setView(*camera);
     animClock = new gameClock({1, 0.25, 0.25, 0.25});
     status = 0;
     scale = 1;
     if (getWhere(filepath) == 1)
         status += 1;
-    _block = NULL;
     loadMap(filepath);
     get_Size();
     initLstBlock();
@@ -197,13 +198,12 @@ void game::manageBlock()
     if (animClock->actionNeed() == 1) // ça marche à moitié ça, tu regarderas, jsp
         animate = 1;
     for (std::size_t i = 0; i < lstBlock.size(); i++)
-        for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
+        for (std::size_t j = 0; j < lstBlock[i].size(); j++)
             if (lstBlock[i][j] != NULL) {
                 lstBlock[i][j]->draw(*_window);
                 if (animate == 1)
                     lstBlock[i][j]->anime();
             }
-        }
 }
 
 void game::loop()
@@ -218,6 +218,10 @@ void game::loop()
             _player->actualize(*_window);
             _window->display();
             frames.restart();
+            if (camera->getCenter().x < _player->getPos().x) {
+                camera->setCenter(_player->getPos().x, _window->getSize().y / 2);
+                _window->setView(*camera);
+            }
         }
 }
 

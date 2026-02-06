@@ -21,6 +21,8 @@ public:
     void giveStar();
     void shoot();
 
+    sf::Vector2f getPos();
+
     void actualize(sf::RenderWindow &window);
 
 private:

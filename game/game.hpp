@@ -13,7 +13,7 @@
 class game
 {
 public:
-    game(char *map, sf::RenderWindow *window, player *player);
+    game(char *map, sf::RenderWindow *window, player *player, sf::View *view);
     ~game() = default;
 
     int getError();
@@ -23,7 +23,7 @@ public:
 
     gameClock *animClock;
     int status;
-    block *_block; // next for chained list
+    sf::View *camera;
     sf::RenderWindow *_window;
     player *_player;
 
