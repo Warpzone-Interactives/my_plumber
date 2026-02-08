@@ -245,7 +245,7 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera)
     player::_checkInvincibility();
     player::_handleInput();
 
-    if (_velocity.x >= (MINIMUM_WALK_VELOCITY * _scale) || _velocity.x <= (MINIMUM_WALK_VELOCITY * _scale)) {
+    if (_velocity.x >= (MINIMUM_WALK_VELOCITY * _scale) || _velocity.x <= -(MINIMUM_WALK_VELOCITY * _scale)) {
         _position += _velocity;
         if (_position.x < int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale))) {
             _position.x = int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale));
