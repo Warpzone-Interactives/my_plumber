@@ -41,8 +41,9 @@ private:
     void createGrid(int x_size);
     void setScale(int ySize, int yNbElem);
     sf::IntRect getPipeRect(int x, int y);
+    sf::IntRect getVerticalPipeRect(int x, int y);
     void init_pipe();
-    
+
     // ---| init game |---
     void initLstBlock();
     int getWhere(std::string filepath);

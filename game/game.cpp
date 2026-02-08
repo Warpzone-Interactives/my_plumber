@@ -139,40 +139,75 @@ void game::setScale(int ySize, int yNbElem)
     scale = ySize / yNbElem / 16;
 }
 
+// -------------------| init map |-------------------
+// -------------------| pipe part |-------------------
+
+sf::IntRect game::getVerticalPipeRect(int x, int y)
+{
+    int xSize = 0;
+    int ySize = 0;
+    if ((x + 1 < lstBlock.size()) && lstBlock[x + 1][y] != NULL && lstBlock[x + 1][y]->getType() == '|') // si a droite c'est un pipe Vertical
+    {
+        if ((x > 0) && lstBlock[x - 1][y] != NULL &&
+            (lstBlock[x - 1][y]->getType() == '-' || // si a droite c'est un pipe horizontal
+             lstBlock[x - 1][y]->getType() == '<'))  // ou une sortie
+        {
+            ySize += 32;
+            if ((y > 0) && lstBlock[x - 1][y - 1] != NULL &&
+                (lstBlock[x - 1][y - 1]->getType() == '-' || // si c'est la partie du bas ou pas
+                 lstBlock[x - 1][y - 1]->getType() == '<'))
+                ySize += 16;
+        }
+    }
+    else
+    {
+        if ((x + 1 < lstBlock.size()) && lstBlock[x + 1][y] != NULL &&
+            (lstBlock[x + 1][y]->getType() == '-' ||
+             lstBlock[x + 1][y]->getType() == '>'))
+        {
+            ySize += 32;
+            if ((y > 0) && lstBlock[x + 1][y - 1] != NULL &&
+                (lstBlock[x + 1][y - 1]->getType() == '-' ||
+                 lstBlock[x + 1][y - 1]->getType() == '>'))
+                ySize += 16;
+        }
+        xSize += 16;
+    }
+    return {xSize, ySize, 16, 16};
+}
+
 sf::IntRect game::getPipeRect(int x, int y)
 {
     int xSize = 0;
     int ySize = 0;
     if (lstBlock[x][y] == NULL)
         return {xSize, y, 0, 0};
-    if (lstBlock[x][y]->getType() == '-') {
+    if (lstBlock[x][y]->getType() == '-') { // si tuyaux horizontal
         ySize += 16;
-        if (lstBlock[x][y - 1] != NULL && lstBlock[x][y - 1]->getType() == '-')
+        if ((y > 0) && lstBlock[x][y - 1] != NULL && lstBlock[x][y - 1]->getType() == '-') // si au dessus c'est un tuyaux vertical
             xSize += 16;
-    } else
-        if (lstBlock[x + 1][y] != NULL && lstBlock[x + 1][y]->getType() == '|') {
-            if (lstBlock[x - 1][y] != NULL && lstBlock[x - 1][y]->getType() == '-')
-                 ySize += 32;
-        }else
-            xSize += 16;
+        return {xSize, ySize, 16, 16};
+    } else {                                 // sinon tyaux vertical
+        return getVerticalPipeRect(x, y);
+    }
     return {xSize, ySize, 16, 16};
 }
 
 void game::init_pipe()
 {
-    std::vector<char> pipeChar = {'|', '-', '<', '>', '_', '^'};
     for (int x = 0; x < lstBlock.size(); x++) {
         for (int y = 0; y < lstBlock[x].size(); y++) {
             if (lstBlock[x][y] != NULL &&
                 (lstBlock[x][y]->getType() == '|' ||
-                lstBlock[x][y]->getType() == '-' ||
-                lstBlock[x][y]->getType() == '_' ||
-                lstBlock[x][y]->getType() == '^')) {
+                lstBlock[x][y]->getType() == '-')) {
                 lstBlock[x][y]->setTexture(getTexture('p'), getPipeRect(x, y));
             }
         }
     }
 }
+
+// -------------------| init map |-------------------
+// -------------------| end pipe part |-------------------
 
 void game::createLevel()
 {
@@ -237,7 +272,7 @@ void game::manageBlock()
         for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
             if (lstBlock[i][j] != NULL) {
                 lstBlock[i][j]->draw(*_window);
-                if (animate == 1)
+                if (lstBlock[i][j]->isAnimated() && animate == 1)
                     lstBlock[i][j]->anime();
             }
         }

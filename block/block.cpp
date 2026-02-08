@@ -15,6 +15,7 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
     _position.x = (_position.x + 8) *_scale;
     _position.y = (_position.y + 8) *_scale;
     _direction = 0;
+    _animated = false;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;
     _sprite = sf::Sprite();
@@ -30,6 +31,7 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
 
 void block::initLuckyBlock(char type)
 {
+    _animated = true;
     _direction = 1;
     if (type > 90 || type == '?')
         _nbAnime = 3;
@@ -78,6 +80,11 @@ void block::setTexture(sf::Texture newTexture, sf::IntRect nRect)
 char block::getType()
 {
     return _type;
+}
+
+bool block::isAnimated()
+{
+    return _animated;
 }
 
 sf::Vector2f block::getPos()

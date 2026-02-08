@@ -22,6 +22,7 @@ public:
     void draw(sf::RenderWindow &window);
     char getType();
     void setTexture(sf::Texture newTexture, sf::IntRect nRect);
+    bool isAnimated();
     sf::Vector2f getPos();
 
 
@@ -30,6 +31,7 @@ private:
     char _type;
     sf::Sprite _sprite; //sprite
     int _nbAnime; // nb animation frame
+    bool _animated; // if is animated
     int _direction; // how chosse next sprite
     std::string _loot; // what in (power up, cion)
     bool _canBreak; // if is breacable block
