@@ -21,7 +21,11 @@ public:
     void giveStar();
     void shoot();
 
-    void actualize(sf::RenderWindow &window);
+    void setScale(int scale);
+
+    sf::Vector2f getPos();
+
+void actualize(sf::RenderWindow &window, sf::View *camera);
 
 private:
     std::string _character; // mario ou luigi
@@ -32,6 +36,8 @@ private:
     sf::Clock _invincibilityClock; //durée d'invincibilité, quand > à Duration alors _invincible = false
                                    //et on destroy la clock ?
     float _invincibilityDuration;  //temps d'invincibilité en secondes (donc différent si étoile ou dégats)
+
+    float _scale; //scale of the map
 
     sf::Vector2f _position; // Position (mais nan jure) (MDR)
     sf::Vector2f _velocity; // Vitesse

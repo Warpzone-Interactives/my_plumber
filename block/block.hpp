@@ -17,16 +17,16 @@ public:
     ~block() = default;
 
     void initLuckyBlock(char type); //je peut la mettre en privé
-    void anime();
-    void try_break();
+    void anime(sf::IntRect *rect);
+    void try_break(sf::IntRect *rect);
     void draw(sf::RenderWindow &window);
     sf::Vector2f pos();
 
-    char _type;
-    sf::Sprite _sprite; //sprite
 
 private:
 
+    char _type;
+    sf::Sprite _sprite; //sprite
     int _nbAnime; // nb animation frame
     int _direction; // how chosse next sprite
     std::string _loot; // what in (power up, cion)

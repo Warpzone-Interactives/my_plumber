@@ -7,16 +7,21 @@
 
 #include "game.hpp"
 
-game::game(char *filepath, sf::RenderWindow *window, player *player)
+// -------------------| init game |-------------------
+
+game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *view)
 {
     _player = player;
     _window = window;
+    camera = view;
+    _direction = 1;
+    window->setView(*camera);
     animClock = new gameClock({1, 0.25, 0.25, 0.25});
+    _rect = sf::IntRect({0, 0}, {16, 16});
     status = 0;
     scale = 1;
     if (getWhere(filepath) == 1)
         status += 1;
-    _block = NULL;
     loadMap(filepath);
     get_Size();
     initLstBlock();
@@ -76,6 +81,8 @@ void game::initTexture()
     _textures.insert({ 'c',  loading_texture});
 }
 
+// -------------------| end init game |-------------------
+
 int game::getError()
 {
     if (status == 0)
@@ -111,10 +118,8 @@ void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> gri
     for (std::size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        // printf("%.0f : %.0f\n", grid_line[i].x / 16, grid_line[i].y / 16);
         block *n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), scale);
         lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
-        // printf("%c\n", lstBlock[grid_line[i].x / 16][grid_line[i].y / 16]->_type);
     }
 }
 
@@ -131,7 +136,12 @@ void game::createGrid(int x_size)
     return;
 }
 
-void game::createLevel()
+void game::setScale(int ySize, int yNbElem)
+{
+    scale = ySize / yNbElem / 16;
+}
+
+void game::initLevel()
 {
     std::size_t count = 0;
     int lvlHeight = 0;
@@ -142,6 +152,7 @@ void game::createLevel()
                 count++;
     }
     setScale(_window->getSize().y, lvlHeight);
+    _player->setScale(scale);
     createGrid(length);
     for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
@@ -184,6 +195,28 @@ void game::poll_event()
         analyse_events(&event);
 }
 
+void game::manageBlock()
+{
+    int animate = 0;
+    if (animClock->actionNeed() == 1)
+        anime();
+    for (std::size_t i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * scale));
+        i < lstBlock.size() && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * scale)); i++)
+        for (std::size_t j = 0; j < lstBlock[i].size(); j++)
+            if (lstBlock[i][j] != NULL) {
+                lstBlock[i][j]->draw(*_window);
+                lstBlock[i][j]->anime(&_rect);
+            }
+}
+
+void game::anime()
+{
+    _rect.left += _direction * 16;
+    if (_rect.left == 32 || _rect.left == 0)
+        _direction *= -1;
+    return;
+}
+
 void game::loop()
 {
     sf::Clock frames;
@@ -192,27 +225,18 @@ void game::loop()
         if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
             poll_event();
             _window->clear();
-            for (std::size_t i = 0; i < lstBlock.size(); i++)
-                for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
-                    if (lstBlock[i][j] != NULL) {
-                        printf("%d\n", lstBlock[i][j]->_type);
-                        lstBlock[i][j]->draw(*_window);
-                        // if (animClock->actionNeed() == 1) ça marche à moitié ça, tu regarderas, jsp
-                            // lstBlock[i][j]->anime();
-                    }
-                }
-            _player->actualize(*_window);
+            manageBlock();
+            _player->actualize(*_window, camera);
             _window->display();
             frames.restart();
+            if (camera->getCenter().x < _player->getPos().x) {
+                camera->setCenter(_player->getPos().x, _window->getSize().y / 2);
+                _window->setView(*camera);
+            }
         }
 }
 
 // -------------------| game loop end |-------------------
-
-void game::setScale(int ySize, int yNbElem)
-{
-    scale = ySize / yNbElem / 16;
-}
 
 sf::Texture game::getTexture(char c)
 {
