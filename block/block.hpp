@@ -20,7 +20,9 @@ public:
     void anime();
     void try_break();
     void draw(sf::RenderWindow &window);
-    sf::Vector2f pos();
+    char getType();
+    void setTexture(sf::Texture newTexture, sf::IntRect nRect);
+    sf::Vector2f getPos();
 
 
 private:
