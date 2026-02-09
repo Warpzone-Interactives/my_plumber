@@ -341,14 +341,15 @@ void player::_checkCollision(std::vector<std::vector<block*>> map)
     int left_pos = floor((_velocity.x + _position.x - (6 * _scale)) / (16 * _scale));
     int right_pos = floor((_velocity.x + _position.x + (6 * _scale)) / (16 * _scale));
 
-    if (map[left_pos][middle_pos] || map[right_pos][middle_pos]) {
+    if (map[left_pos][middle_pos] || map[right_pos][middle_pos])
         _velocity.x = 0;
-    }
     if  (map[left_pos][bottom_pos] || map[right_pos][bottom_pos]) {
         // printf("%f\n", _velocity.y);
         _onGround = true;
         _velocity.y = 0;
     }
+    if (map[left_pos][top_pos] || map[right_pos][top_pos])
+        _velocity.y = 0;
     // if (map[pos_x][pos_y - 1] || map[pos_x + 1][pos_y - 1]) {
     //     _velocity.y = 0;
     //     _onGround = true;
