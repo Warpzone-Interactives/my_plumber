@@ -200,7 +200,7 @@ void game::loop()
                             // lstBlock[i][j]->anime();
                     }
                 }
-            _player->actualize(*_window);
+            _player->actualize(*_window, lstBlock);
             _window->display();
             frames.restart();
         }

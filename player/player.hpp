@@ -21,8 +21,7 @@ public:
     void giveStar();
     void shoot();
 
-    void actualize(sf::RenderWindow &window);
-    void checkColision(std::vector<std::vector<block*>>);
+    void actualize(sf::RenderWindow &window, std::vector<std::vector<block*>> map);
 
 private:
     std::string _character; // mario ou luigi
@@ -62,6 +61,7 @@ private:
     void _updateMovementRunning(int direction);
     void _handleJumping();
     void _airPhysics(int direction);
+    void _checkCollision(std::vector<std::vector<block*>> map);
     // bool _isOnGround(std::vector<std::vector<block*>>);
 
     //Il reste bcp de méthodes à mettre et surement deux trois variables mais il est tard :(

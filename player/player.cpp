@@ -299,10 +299,11 @@ void player::_handleInput()
         player::_airPhysics(direction);
 }
 
-void player::actualize(sf::RenderWindow &window)
+void player::actualize(sf::RenderWindow &window, std::vector<std::vector<block*>> map)
 {
     player::_checkInvincibility();
     player::_handleInput();
+    player::_checkCollision(map);
 
     if (_velocity.x >= MINIMUM_WALK_VELOCITY || _velocity.x <= MINIMUM_WALK_VELOCITY) {
         _position += _velocity;
@@ -320,7 +321,26 @@ void player::actualize(sf::RenderWindow &window)
     player::_draw(window);
 }
 
-void checkColision(std::vector<std::vector<block*>>)
+void player::_checkCollision(std::vector<std::vector<block*>> map)
 {
+    int top_pos = floor((_velocity.y + _position.y - (8 * 4)) / (16 * 4));
+    int bottom_pos = floor((_velocity.y + _position.y + (8 * 4)) / (16 * 4));
+    int left_pos = floor((_velocity.x + _position.x - (6 * 4)) / (16 * 4));
+    int right_pos = floor((_velocity.x + _position.x + (6 * 4)) / (16 * 4));
 
+    printf("Position x : %f and square : %d %d\n", _position.x, left_pos, right_pos);
+    printf("Position y : %f and square : %d\n", _position.y, bottom_pos);
+    if (map[left_pos][top_pos] || map[right_pos][top_pos]) {
+        _velocity.x = 0;
+    }
+    if  (map[left_pos][bottom_pos - 1] || map[right_pos][bottom_pos - 1]) {
+        // printf("%f\n", _velocity.y);
+        _onGround = true;
+        _velocity.y = 0;
+    }
+    // if (map[pos_x][pos_y - 1] || map[pos_x + 1][pos_y - 1]) {
+    //     _velocity.y = 0;
+    //     _onGround = true;
+    //     // _position.y = pos_y  * 16 * 4;
+    // }
 }
