@@ -208,69 +208,69 @@ void player::_updateMovementRunning(int direction)
 void player::_handleJumping()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _onGround) {
-        if (_velocity.x < 1 * 4)
-            _velocity.y += V_L1_UP;
-        if (_velocity.x >= 1 * 4 && _velocity.x < 2.3125 * 4)
-            _velocity.y += V_1T24_UP;
-        if (_velocity.x >= 2.3125 * 4)
-            _velocity.y += V_25M_UP;
+        if (_velocity.x < 1 * _scale)
+            _velocity.y += V_L1_UP * _scale;
+        if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
+            _velocity.y += V_1T24_UP * _scale;
+        if (_velocity.x >= 2.3125 * _scale)
+            _velocity.y += V_25M_UP * _scale;
         _onGround = false;
         _jumpStartingVelocity = _velocity.x;
-        if (_velocity.x < MAXIMUM_WALK_SPEED)
-            _maxAirSpeed = MAXIMUM_WALK_SPEED;
+        if (_velocity.x < MAXIMUM_WALK_SPEED * _scale)
+            _maxAirSpeed = MAXIMUM_WALK_SPEED * _scale;
         else
-            _maxAirSpeed = MAXIMUM_RUNNING_SPEED;
+            _maxAirSpeed = MAXIMUM_RUNNING_SPEED * _scale;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !_onGround) {
-        if (_velocity.x < 1 * 4)
-            _velocity.y += V_L1_DWN_A;
-        if (_velocity.x >= 1 * 4 && _velocity.x < 2.3125 * 4)
-            _velocity.y += V_1T24_DWN_A;
-        if (_velocity.x >= 2.3125 * 4)
-            _velocity.y += V_25M_DWN_A;
+        if (_velocity.x < 1 * _scale)
+            _velocity.y += V_L1_DWN_A * _scale;
+        if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
+            _velocity.y += V_1T24_DWN_A * _scale;
+        if (_velocity.x >= 2.3125 * _scale)
+            _velocity.y += V_25M_DWN_A * _scale;
     }
     else if (!_onGround) {
-        if (_velocity.x < 1 * 4)
-            _velocity.y += V_L1_DWN;
-        if (_velocity.x >= 1 * 4 && _velocity.x < 2.3125 * 4)
-            _velocity.y += V_1T24_DWN;
-        if (_velocity.x >= 2.3125 * 4)
-            _velocity.y += V_25M_DWN;
+        if (_velocity.x < 1 * _scale)
+            _velocity.y += V_L1_DWN * _scale;
+        if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
+            _velocity.y += V_1T24_DWN * _scale;
+        if (_velocity.x >= 2.3125 * _scale)
+            _velocity.y += V_25M_DWN * _scale;
     }
-    if (_velocity.y > V_MAX)
-        _velocity.y = V_OVERFLOW;
+    if (_velocity.y > V_MAX * _scale)
+        _velocity.y = V_OVERFLOW * _scale;
 }
 
 void player::_airPhysics(int direction)
 {
     if (direction == 1 && _velocity.x >= 0) {
-        if (_velocity.x < MAXIMUM_WALK_SPEED)
-            _velocity.x += WALKING_ACCELERATION;
+        if (_velocity.x < MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x += WALKING_ACCELERATION * _scale;
         else
-            _velocity.x += RUNNING_ACCELERATION;
+            _velocity.x += RUNNING_ACCELERATION * _scale;
     }
     if (direction == 0 && _velocity.x >= 0) {
-        if (_velocity.x >= MAXIMUM_WALK_SPEED)
-            _velocity.x -= RUNNING_ACCELERATION;
-        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD)
-            _velocity.x -= RELEASE_DECELERATION;
+        if (_velocity.x >= MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x -= RUNNING_ACCELERATION * _scale;
+        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD * _scale)
+            _velocity.x -= RELEASE_DECELERATION * _scale;
         else
-            _velocity.x -= WALKING_ACCELERATION;
+            _velocity.x -= WALKING_ACCELERATION * _scale;
     }
 
     if (direction == 0 && _velocity.x < 0) {
-        if (_velocity.x > -MAXIMUM_WALK_SPEED)
-            _velocity.x -= WALKING_ACCELERATION;
+        if (_velocity.x > -MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x -= WALKING_ACCELERATION * _scale;
         else
-            _velocity.x -= RUNNING_ACCELERATION;
+            _velocity.x -= RUNNING_ACCELERATION * _scale;
     }
     if (direction == 1 && _velocity.x < 0) {
-        if (_velocity.x >= MAXIMUM_WALK_SPEED)
-            _velocity.x += RUNNING_ACCELERATION;
-        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD)
-            _velocity.x += RELEASE_DECELERATION;
+        if (_velocity.x >= MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x += RUNNING_ACCELERATION * _scale;
+        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD * _scale)
+            _velocity.x += RELEASE_DECELERATION * _scale;
         else
-            _velocity.x += WALKING_ACCELERATION;
+            _velocity.x += WALKING_ACCELERATION * _scale;
     }
     if (_velocity.x > _maxAirSpeed)
         _velocity.x = _maxAirSpeed;
@@ -311,9 +311,11 @@ void player::_handleInput()
 
 void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map)
 {
+    _onGround = false;
+    player::_checkCollision(map);
+
     player::_checkInvincibility();
     player::_handleInput();
-    player::_checkCollision(map);
 
     if (_velocity.x >= (MINIMUM_WALK_VELOCITY * _scale) || _velocity.x <= -(MINIMUM_WALK_VELOCITY * _scale)) {
         _position += _velocity;
@@ -333,17 +335,16 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
 
 void player::_checkCollision(std::vector<std::vector<block*>> map)
 {
-    int top_pos = floor((_velocity.y + _position.y - (8 * 4)) / (16 * 4));
-    int bottom_pos = floor((_velocity.y + _position.y + (8 * 4)) / (16 * 4));
-    int left_pos = floor((_velocity.x + _position.x - (6 * 4)) / (16 * 4));
-    int right_pos = floor((_velocity.x + _position.x + (6 * 4)) / (16 * 4));
+    int top_pos = floor((_velocity.y + _position.y - (8 * _scale)) / (16 * _scale));
+    int middle_pos = floor((_velocity.y + _position.y) / (16 * _scale));
+    int bottom_pos = floor((_velocity.y + _position.y + (8 * _scale)) / (16 * _scale));
+    int left_pos = floor((_velocity.x + _position.x - (6 * _scale)) / (16 * _scale));
+    int right_pos = floor((_velocity.x + _position.x + (6 * _scale)) / (16 * _scale));
 
-    printf("Position x : %f and square : %d %d\n", _position.x, left_pos, right_pos);
-    printf("Position y : %f and square : %d\n", _position.y, bottom_pos);
-    if (map[left_pos][top_pos] || map[right_pos][top_pos]) {
+    if (map[left_pos][middle_pos] || map[right_pos][middle_pos]) {
         _velocity.x = 0;
     }
-    if  (map[left_pos][bottom_pos - 1] || map[right_pos][bottom_pos - 1]) {
+    if  (map[left_pos][bottom_pos] || map[right_pos][bottom_pos]) {
         // printf("%f\n", _velocity.y);
         _onGround = true;
         _velocity.y = 0;
