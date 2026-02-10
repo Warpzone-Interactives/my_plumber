@@ -176,6 +176,13 @@ void game::key_event(sf::Event *event)
 void game::analyse_events(sf::Event *event)
 {
     switch (event->type) {
+        case sf::Event::Resized:
+            camera->setSize({float(event->size.width), float(event->size.height)});
+            camera->setCenter(_player->getPos().x, _window->getSize().y / 2);
+            if ((camera->getCenter().x - (camera->getSize().x / 2)) < 0)
+                camera->setCenter(float(event->size.width) / 2, _window->getSize().y / 2);
+            _window->setView(*camera);
+            break;
         case sf::Event::KeyPressed:
             key_event(event);
             break;
