@@ -205,6 +205,79 @@ void player::_updateMovementRunning(int direction)
     }
 } //actuellement mario "snap" à la walk speed directement quand il ne court plus (il ne ralentit pas progressivement).
 
+void player::_handleJumping()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _onGround) {
+        if (_velocity.x < 1 * _scale)
+            _velocity.y += V_L1_UP * _scale;
+        if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
+            _velocity.y += V_1T24_UP * _scale;
+        if (_velocity.x >= 2.3125 * _scale)
+            _velocity.y += V_25M_UP * _scale;
+        _onGround = false;
+        _jumpStartingVelocity = _velocity.x;
+        if (_velocity.x < MAXIMUM_WALK_SPEED * _scale)
+            _maxAirSpeed = MAXIMUM_WALK_SPEED * _scale;
+        else
+            _maxAirSpeed = MAXIMUM_RUNNING_SPEED * _scale;
+    }
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !_onGround) {
+        if (_velocity.x < 1 * _scale)
+            _velocity.y += V_L1_DWN_A * _scale;
+        if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
+            _velocity.y += V_1T24_DWN_A * _scale;
+        if (_velocity.x >= 2.3125 * _scale)
+            _velocity.y += V_25M_DWN_A * _scale;
+    }
+    else if (!_onGround) {
+        if (_velocity.x < 1 * _scale)
+            _velocity.y += V_L1_DWN * _scale;
+        if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
+            _velocity.y += V_1T24_DWN * _scale;
+        if (_velocity.x >= 2.3125 * _scale)
+            _velocity.y += V_25M_DWN * _scale;
+    }
+    if (_velocity.y > V_MAX * _scale)
+        _velocity.y = V_OVERFLOW * _scale;
+}
+
+void player::_airPhysics(int direction)
+{
+    if (direction == 1 && _velocity.x >= 0) {
+        if (_velocity.x < MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x += WALKING_ACCELERATION * _scale;
+        else
+            _velocity.x += RUNNING_ACCELERATION * _scale;
+    }
+    if (direction == 0 && _velocity.x >= 0) {
+        if (_velocity.x >= MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x -= RUNNING_ACCELERATION * _scale;
+        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD * _scale)
+            _velocity.x -= RELEASE_DECELERATION * _scale;
+        else
+            _velocity.x -= WALKING_ACCELERATION * _scale;
+    }
+
+    if (direction == 0 && _velocity.x < 0) {
+        if (_velocity.x > -MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x -= WALKING_ACCELERATION * _scale;
+        else
+            _velocity.x -= RUNNING_ACCELERATION * _scale;
+    }
+    if (direction == 1 && _velocity.x < 0) {
+        if (_velocity.x >= MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x += RUNNING_ACCELERATION * _scale;
+        else if (_jumpStartingVelocity > V_SLOW_TRESHOLD * _scale)
+            _velocity.x += RELEASE_DECELERATION * _scale;
+        else
+            _velocity.x += WALKING_ACCELERATION * _scale;
+    }
+    if (_velocity.x > _maxAirSpeed)
+        _velocity.x = _maxAirSpeed;
+    if (_velocity.x < -_maxAirSpeed)
+        _velocity.x = -_maxAirSpeed;
+}
+
 void player::_handleInput()
 {
     int direction = -1;
@@ -216,32 +289,31 @@ void player::_handleInput()
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         direction = 0;
-        _facingRight = false;
+        if (_onGround)
+            _facingRight = false;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         direction = 1;
-        _facingRight = true;
+        if (_onGround)
+            _facingRight = true;
     }
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::J) && _size == 1)
-        player::sizeDown();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::G) && _size == 0)
-        player::sizeUp();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::K) && _size == 2)
-        player::sizeDown();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::H) && _size == 1)
-        player::sizeUp();
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::L) && _size == 0)
-        player::sizeDown();
-
-    if (_runningFramesLeft == 0)
-        player::_updateMovementWalking(direction);
+    _handleJumping();
+    if (_onGround) {
+        if (_runningFramesLeft == 0)
+            player::_updateMovementWalking(direction);
+        else
+            player::_updateMovementRunning(direction);
+    }
     else
-        player::_updateMovementRunning(direction);
+        player::_airPhysics(direction);
 }
 
-void player::actualize(sf::RenderWindow &window, sf::View *camera)
+void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map)
 {
+    _onGround = false;
+    player::_checkCollision(map);
+
     player::_checkInvincibility();
     player::_handleInput();
 
@@ -253,11 +325,34 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera)
         }
         _sprite.setPosition(_position);
     }
-
     if (!_facingRight)
         _sprite.setScale({-_scale, _scale});
     else
         _sprite.setScale({_scale, _scale});
 
     player::_draw(window);
+}
+
+void player::_checkCollision(std::vector<std::vector<block*>> map)
+{
+    int top_pos = floor((_velocity.y + _position.y - (8 * _scale)) / (16 * _scale));
+    int middle_pos = floor((_velocity.y + _position.y) / (16 * _scale));
+    int bottom_pos = floor((_velocity.y + _position.y + (8 * _scale)) / (16 * _scale));
+    int left_pos = floor((_velocity.x + _position.x - (6 * _scale)) / (16 * _scale));
+    int right_pos = floor((_velocity.x + _position.x + (6 * _scale)) / (16 * _scale));
+
+    if (map[left_pos][middle_pos] || map[right_pos][middle_pos])
+        _velocity.x = 0;
+    if  (map[left_pos][bottom_pos] || map[right_pos][bottom_pos]) {
+        // printf("%f\n", _velocity.y);
+        _onGround = true;
+        _velocity.y = 0;
+    }
+    if (map[left_pos][top_pos] || map[right_pos][top_pos])
+        _velocity.y = 0;
+    // if (map[pos_x][pos_y - 1] || map[pos_x + 1][pos_y - 1]) {
+    //     _velocity.y = 0;
+    //     _onGround = true;
+    //     // _position.y = pos_y  * 16 * 4;
+    // }
 }

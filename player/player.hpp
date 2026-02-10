@@ -25,7 +25,7 @@ public:
 
     sf::Vector2f getPos();
 
-void actualize(sf::RenderWindow &window, sf::View *camera);
+void actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map);
 
 private:
     std::string _character; // mario ou luigi
@@ -51,6 +51,8 @@ private:
     sf::Texture _texture; //texture
     int _runningFramesLeft;
     bool _skidding;
+    float _maxAirSpeed;
+    float _jumpStartingVelocity;
 
     void _draw(sf::RenderWindow &window);
     void _kill();
@@ -63,6 +65,10 @@ private:
     void _handleIdleInput();
     void _updateMovementWalking(int direction);
     void _updateMovementRunning(int direction);
+    void _handleJumping();
+    void _airPhysics(int direction);
+    void _checkCollision(std::vector<std::vector<block*>> map);
+    // bool _isOnGround(std::vector<std::vector<block*>>);
 
     //Il reste bcp de méthodes à mettre et surement deux trois variables mais il est tard :(
 };

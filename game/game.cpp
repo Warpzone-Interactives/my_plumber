@@ -226,7 +226,7 @@ void game::loop()
             poll_event();
             _window->clear();
             manageBlock();
-            _player->actualize(*_window, camera);
+            _player->actualize(*_window, camera, lstBlock);
             _window->display();
             frames.restart();
             if (camera->getCenter().x < _player->getPos().x) {
