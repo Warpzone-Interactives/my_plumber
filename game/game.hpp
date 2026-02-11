@@ -40,12 +40,14 @@ private:
     void createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
     void createGrid(int x_size);
     void setScale(int ySize, int yNbElem);
+    sf::IntRect getPipeRect(int x, int y);
+    void init_pipe();
     
     // ---| init game |---
     void initLstBlock();
     int getWhere(std::string filepath);
     void loadMap(std::string filepath);
-    void initTexture();
+    void initBlockTexture();
 
     // ---| loop game |---
     void anime();
@@ -62,6 +64,7 @@ private:
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;
+    std::map<char, sf::Texture> _blockTextures;
 };
 
 #endif
