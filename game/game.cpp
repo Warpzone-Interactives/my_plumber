@@ -177,7 +177,6 @@ void game::init_pipe()
     }
 }
 
-void game::createLevel()
 void game::initLevel()
 {
     std::size_t count = 0;
