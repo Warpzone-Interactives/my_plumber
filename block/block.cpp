@@ -15,6 +15,7 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
     _position.x = (_position.x + 8) *_scale;
     _position.y = (_position.y + 8) *_scale;
     _direction = 0;
+    _nbAnime = 1;
     _rect = sf::IntRect({0, 0}, {16, 16});
     _texture = texture;
     _sprite = sf::Sprite();
@@ -50,12 +51,10 @@ void block::initLuckyBlock(char type)
     return;
 }
 
-void block::anime()
+void block::anime(sf::IntRect *rect)
 {
     if (_nbAnime > 1) {
-        _rect.left += _direction * 16;
-        if (_rect.left == (_nbAnime - 1) * 16 || _rect.left == 0)
-            _direction *= -1;
+        _rect = *rect;
         _sprite.setTextureRect(_rect);
     }
     return;
