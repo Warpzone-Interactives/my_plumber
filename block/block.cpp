@@ -66,7 +66,20 @@ void block::draw(sf::RenderWindow &window)
     return;
 }
 
-sf::Vector2f block::pos()
+void block::setTexture(sf::Texture newTexture, sf::IntRect nRect)
+{
+    _rect = nRect;
+    _texture = newTexture;
+    _sprite.setTexture(_texture);
+    _sprite.setTextureRect(_rect);
+}
+
+char block::getType()
+{
+    return _type;
+}
+
+sf::Vector2f block::getPos()
 {
     return _position;
 }

@@ -13,6 +13,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *v
 {
     _player = player;
     _window = window;
+    _window->setFramerateLimit(60);
     camera = view;
     _direction = 1;
     window->setView(*camera);
@@ -25,7 +26,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *v
     loadMap(filepath);
     get_Size();
     initLstBlock();
-    initTexture();
+    initBlockTexture();
 }
 
 void game::initLstBlock()
@@ -63,22 +64,22 @@ void game::loadMap(std::string filepath)
     return;
 }
 
-void game::initTexture()
+void game::initBlockTexture()
 {
     sf::Texture loading_texture;
 
     loading_texture.loadFromFile("ressources/" + _where + "/placeholder.png");
-    _textures.insert({ '/',  loading_texture});
+    _blockTextures.insert({ '/',  loading_texture});
     loading_texture.loadFromFile("ressources/" + _where + "/lucky_block.png");
-    _textures.insert({ '?',  loading_texture});
+    _blockTextures.insert({ '?',  loading_texture});
     loading_texture.loadFromFile("ressources/" + _where + "/brick.png");
-    _textures.insert({ 'b',  loading_texture});
+    _blockTextures.insert({ 'b',  loading_texture});
     loading_texture.loadFromFile("ressources/" + _where + "/floor.png");
-    _textures.insert({ 'x',  loading_texture});
+    _blockTextures.insert({ 'x',  loading_texture});
     loading_texture.loadFromFile("ressources/" + _where + "/hard_block.png");
-    _textures.insert({ 'X',  loading_texture});
-    loading_texture.loadFromFile("ressources/" + _where + "/coin.png");
-    _textures.insert({ 'c',  loading_texture});
+    _blockTextures.insert({ 'X',  loading_texture});
+    loading_texture.loadFromFile("ressources/" + _where + "/pipe.png");
+    _blockTextures.insert({ 'p',  loading_texture});
 }
 
 // -------------------| end init game |-------------------
@@ -141,6 +142,42 @@ void game::setScale(int ySize, int yNbElem)
     scale = ySize / yNbElem / 16;
 }
 
+sf::IntRect game::getPipeRect(int x, int y)
+{
+    int xSize = 0;
+    int ySize = 0;
+    if (lstBlock[x][y] == NULL)
+        return {xSize, y, 0, 0};
+    if (lstBlock[x][y]->getType() == '-') {
+        ySize += 16;
+        if (lstBlock[x][y - 1] != NULL && lstBlock[x][y - 1]->getType() == '-')
+            xSize += 16;
+    } else
+        if (lstBlock[x + 1][y] != NULL && lstBlock[x + 1][y]->getType() == '|') {
+            if (lstBlock[x - 1][y] != NULL && lstBlock[x - 1][y]->getType() == '-')
+                 ySize += 32;
+        }else
+            xSize += 16;
+    return {xSize, ySize, 16, 16};
+}
+
+void game::init_pipe()
+{
+    std::vector<char> pipeChar = {'|', '-', '<', '>', '_', '^'};
+    for (int x = 0; x < lstBlock.size(); x++) {
+        for (int y = 0; y < lstBlock[x].size(); y++) {
+            if (lstBlock[x][y] != NULL &&
+                (lstBlock[x][y]->getType() == '|' ||
+                lstBlock[x][y]->getType() == '-' ||
+                lstBlock[x][y]->getType() == '_' ||
+                lstBlock[x][y]->getType() == '^')) {
+                lstBlock[x][y]->setTexture(getTexture('p'), getPipeRect(x, y));
+            }
+        }
+    }
+}
+
+void game::createLevel()
 void game::initLevel()
 {
     std::size_t count = 0;
@@ -156,6 +193,7 @@ void game::initLevel()
     createGrid(length);
     for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
+    init_pipe();
 }
 
 // -------------------| init map end |-------------------
@@ -241,10 +279,10 @@ void game::loop()
 sf::Texture game::getTexture(char c)
 {
     if (c == 'a' || c == 's' || c == 'm' || c == 'f' || c == 'v')
-        return _textures['?'];
-    if (_textures.count(c)) {
-        return  _textures[c];
+        return _blockTextures['?'];
+    if (_blockTextures.count(c)) {
+        return  _blockTextures[c];
     } else {
-        return _textures['/'];
+        return _blockTextures['/'];
     }
 }
