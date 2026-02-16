@@ -46,7 +46,11 @@ private:
 
     int _sprite_nb;
 
-    sf::IntRect _rect; // rect for texture
+    sf::IntRect _rect;
+    sf::FloatRect _topRect;
+    sf::FloatRect _botRect;
+    sf::FloatRect _leftRect;
+    sf::FloatRect _rightRect;
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
     int _runningFramesLeft;
@@ -62,6 +66,7 @@ private:
     void _checkInvincibility();
 
     //Movement :
+    void _updateSquare();
     void _handleIdleInput();
     void _updateMovementWalking(int direction);
     void _updateMovementRunning(int direction);
