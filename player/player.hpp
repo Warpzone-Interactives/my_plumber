@@ -46,11 +46,8 @@ private:
 
     int _sprite_nb;
 
-    sf::IntRect _rect;
-    sf::FloatRect _topRect;
-    sf::FloatRect _botRect;
-    sf::FloatRect _leftRect;
-    sf::FloatRect _rightRect;
+    sf::IntRect _textureRect;
+    sf::RectangleShape _playerRect;
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
     int _runningFramesLeft;
@@ -66,12 +63,12 @@ private:
     void _checkInvincibility();
 
     //Movement :
-    void _updateSquare();
     void _handleIdleInput();
     void _updateMovementWalking(int direction);
     void _updateMovementRunning(int direction);
     void _handleJumping();
     void _airPhysics(int direction);
+    bool _verifyIfColliding(std::vector<std::vector<block*>> map, int pos1, int pos2, int pos3);
     void _checkCollision(std::vector<std::vector<block*>> map);
     // bool _isOnGround(std::vector<std::vector<block*>>);
 

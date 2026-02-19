@@ -1,1 +1,1 @@
-https://web.archive.org/web/20130807122227/http://i276.photobucket.com/albums/kk21/jdaster64/smb_playerphysics.png
+y'a un monde où comme le player est tt le temps pas onGround il est lent

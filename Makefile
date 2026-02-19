@@ -14,6 +14,7 @@ LIB_SRC	=	player/player.cpp	\
 		block/block.cpp	\
 		game/game.cpp	\
 		gameClock/gameClock.cpp	\
+		rect/rect.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
@@ -25,7 +26,7 @@ SRC	=	main.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
-CPPFLAGS	=	-I./include -I./player -I./game -I./block -I./gameClock -g
+CPPFLAGS	=	-I./include -I./player -I./game -I./block -I./gameClock -I./rect -g
 
 FLAG_SFML	=	-lsfml-graphics -lsfml-window -lsfml-system
 
@@ -55,7 +56,7 @@ now:clean	\
 	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
 	@echo "\033[1;33mGood Luck\033[0;0m"
 	@sleep 1
-	@./${NAME} testmap/pipeTest.txt
+	@./${NAME} testmap/parkour.txt
 
 pipe:$(OBJ)	\
 	$(LIB_OBJ)

@@ -25,7 +25,7 @@ player::player(int size, sf::Vector2f position, char m)
     _skidding= false;
     _chooseTexture();
     _sprite = sf::Sprite(_texture);
-    _sprite.setTextureRect(_rect);
+    _sprite.setTextureRect(_textureRect);
     _sprite.setPosition(_position);
     _sprite.setOrigin({8, 8});
     _sprite_nb = 1;
@@ -47,33 +47,30 @@ void player::_chooseTexture()
 
     if (_size == 0) {
         filePath += "small.png";
-        _rect = sf::IntRect({0, 0}, {16, 16});
+        _textureRect = sf::IntRect({0, 0}, {16, 16});
         _sprite.setOrigin({8, 8});
-        _sprite.setTextureRect(_rect);
-        _topRect   = sf::FloatRect({_position.x, _position.y - 9}, {16, 0.1});
-        _botRect   = sf::FloatRect({_position.x, _position.y + 9}, {16, 0.1});
-        _leftRect  = sf::FloatRect({_position.x - 9, _position.y}, {0.1, 16});
-        _rightRect = sf::FloatRect({_position.x + 9, _position.y}, {0.1, 16});
+        _sprite.setTextureRect(_textureRect);
+        _playerRect = sf::RectangleShape({12, 16});
+        _playerRect.setOrigin({8, 8});
+        _playerRect.setPosition({_position.x, _position.y});
+        _playerRect.setOutlineColor(sf::Color::Red);
+        _playerRect.setFillColor(sf::Color::Transparent);
+        _playerRect.setOutlineThickness(0.5f);
+        _playerRect.setScale({4, 4});
     }
     else if (_size == 1) {
         filePath += "big.png";
-        _rect = sf::IntRect({0, 0}, {16, 32});
+        _textureRect = sf::IntRect({0, 0}, {16, 32});
         _sprite.setOrigin({8, 24});
-        _sprite.setTextureRect(_rect);
-        _topRect   = sf::FloatRect({_position.x, _position.y - 25}, {16, 1});
-        _botRect   = sf::FloatRect({_position.x, _position.y + 9}, {16, 1});
-        _leftRect  = sf::FloatRect({_position.x - 9, _position.y}, {1, 16});
-        _rightRect = sf::FloatRect({_position.x + 9, _position.y}, {1, 16});
+        _sprite.setTextureRect(_textureRect);
+        // _playerRect = sf::FloatRect({_position.x - 8 * _scale, _position.y - 24 * _scale}, {16, 32});
     }
     else if (_size == 2) {
         filePath += "fire.png";
-        _rect = sf::IntRect({0, 0}, {16, 32});
+        _textureRect = sf::IntRect({0, 0}, {16, 32});
         _sprite.setOrigin({8, 24});
-        _sprite.setTextureRect(_rect);
-        _topRect   = sf::FloatRect({_position.x, _position.y - 25}, {16, 1});       
-        _botRect   = sf::FloatRect({_position.x, _position.y + 9}, {16, 1});
-        _leftRect  = sf::FloatRect({_position.x - 9, _position.y}, {1, 16});
-        _rightRect = sf::FloatRect({_position.x + 9, _position.y}, {1, 16});
+        _sprite.setTextureRect(_textureRect);
+        // _playerRect = sf::FloatRect({_position.x - 8 * _scale, _position.y - 24 * _scale}, {16, 32});
     }
     _setTexture(filePath);
 }
@@ -96,6 +93,7 @@ void player::_kill()
 void player::_draw(sf::RenderWindow &window)
 {
     window.draw(_sprite);
+    window.draw(_playerRect);
 }
 
 void player::sizeUp()
@@ -321,20 +319,6 @@ void player::_handleInput()
         player::_airPhysics(direction);
 }
 
-void _moveSquare(sf::FloatRect _rect, sf::Vector2f _velocity)
-{
-    _rect.left += _velocity.x;
-    _rect.top += _velocity.y;
-}
-
-void player::_updateSquare()
-{
-    _moveSquare(_topRect, _velocity);
-    _moveSquare(_botRect, _velocity);
-    _moveSquare(_leftRect, _velocity);
-    _moveSquare(_rightRect, _velocity);
-}
-
 void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map)
 {
     _onGround = false;
@@ -345,13 +329,15 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
 
     if (_velocity.x >= (MINIMUM_WALK_VELOCITY * _scale) || _velocity.x <= -(MINIMUM_WALK_VELOCITY * _scale)) {
         _position += _velocity;
-        _updateSquare();
         if (_position.x < int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale))) {
             _position.x = int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale));
             _velocity.x = 0;
         }
-        _sprite.setPosition(_position);
     }
+    else if (!_onGround)
+        _position.y += _velocity.y;
+    _sprite.setPosition({_position.x - 2 * _scale, _position.y});
+    _playerRect.setPosition(_position);
     if (!_facingRight)
         _sprite.setScale({-_scale, _scale});
     else
@@ -359,6 +345,8 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
 
     player::_draw(window);
 }
+
+
 
 void player::_checkCollision(std::vector<std::vector<block*>> map)
 {
@@ -369,12 +357,27 @@ void player::_checkCollision(std::vector<std::vector<block*>> map)
     int left_pos = floor((_velocity.x + _position.x - (6 * _scale)) / (16 * _scale));
     int right_pos = floor((_velocity.x + _position.x + (6 * _scale)) / (16 * _scale));
 
-    if  (map[left_pos][bottom_pos] || map[right_pos][bottom_pos]) {
+    float distance = 0.f;
+
+    if ((map[left_pos][bottom_pos] && _playerRect.getGlobalBounds().intersects(map[left_pos][bottom_pos]->verticalRect->getRect().getGlobalBounds()))
+        || (map[right_pos][bottom_pos] && _playerRect.getGlobalBounds().intersects(map[right_pos][bottom_pos]->verticalRect->getRect().getGlobalBounds()))) {
         _onGround = true;
         _velocity.y = 0;
+        // while ((map[left_pos][bottom_pos] && _playerRect.getGlobalBounds().intersects(map[left_pos][bottom_pos]->verticalRect->getRect().getGlobalBounds()))
+            // || (map[right_pos][bottom_pos] && _playerRect.getGlobalBounds().intersects(map[right_pos][bottom_pos]->verticalRect->getRect().getGlobalBounds())))
+            // _playerRect.move({0, -_scale});
+        // _position = _playerRect.getPosition();
     }
-    if (map[left_pos][top_pos] || map[right_pos][top_pos])
+    if ((map[left_pos][top_pos] && _playerRect.getGlobalBounds().intersects(map[left_pos][top_pos]->verticalRect->getRect().getGlobalBounds()))
+        || (map[right_pos][top_pos] && _playerRect.getGlobalBounds().intersects(map[right_pos][top_pos]->verticalRect->getRect().getGlobalBounds())))
         _velocity.y = 0;
-    if (map[left_pos][middle_y_pos] || map[right_pos][middle_y_pos])
+    if ((map[left_pos][middle_y_pos] && _playerRect.getGlobalBounds().intersects(map[left_pos][middle_y_pos]->horizontalRect->getRect().getGlobalBounds()))
+        || (map[right_pos][middle_y_pos] && _playerRect.getGlobalBounds().intersects(map[right_pos][middle_y_pos]->horizontalRect->getRect().getGlobalBounds()))) {
         _velocity.x = 0;
+        if (map[right_pos][middle_y_pos])
+            distance = (map[right_pos][middle_y_pos]->getPos().x - 8 * _scale) - (_position.x + 6 * _scale);
+        else
+            distance = (map[left_pos][middle_y_pos]->getPos().x + 8 * _scale) - (_position.x - 6 * _scale);
+        _position.x += distance;
+        }
 }

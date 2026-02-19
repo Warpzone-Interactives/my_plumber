@@ -17,6 +17,7 @@
 #include <cstdio>
 #include <iostream>
 #include "gameClock.hpp"
+#include "rect.hpp"
 #include "block.hpp"
 #include "player.hpp"
 #include "game.hpp"

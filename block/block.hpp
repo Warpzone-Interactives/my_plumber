@@ -23,6 +23,8 @@ public:
     char getType();
     void setTexture(sf::Texture newTexture, sf::IntRect nRect);
     sf::Vector2f getPos();
+    rect *horizontalRect;
+    rect *verticalRect;
 
 
 private:

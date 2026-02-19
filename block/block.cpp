@@ -17,6 +17,8 @@ block::block(sf::Vector2f position, char type, sf::Texture texture, float scale)
     _direction = 0;
     _nbAnime = 1;
     _rect = sf::IntRect({0, 0}, {16, 16});
+    horizontalRect = new rect('w', position, scale);
+    verticalRect = new rect('f', position, scale);
     _texture = texture;
     _sprite = sf::Sprite();
     _sprite.setTexture(_texture);
@@ -63,6 +65,8 @@ void block::anime(sf::IntRect *rect)
 void block::draw(sf::RenderWindow &window)
 {
     window.draw(_sprite);
+    verticalRect->draw(window);
+    horizontalRect->draw(window);
     return;
 }
 
