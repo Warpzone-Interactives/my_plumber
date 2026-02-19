@@ -13,17 +13,17 @@
 class game
 {
 public:
-    game(char *map, sf::RenderWindow *window, player *player);
+    game(char *map, sf::RenderWindow *window, player *player, sf::View *view);
     ~game() = default;
 
     int getError();
-    void createLevel();
+    void initLevel();
     sf::Texture getTexture(char c);
     void loop();
 
     gameClock *animClock;
     int status;
-    block *_block; // next for chained list
+    sf::View *camera;
     sf::RenderWindow *_window;
     player *_player;
 
@@ -51,12 +51,19 @@ private:
     void loadMap(std::string filepath);
     void initBlockTexture();
 
+    // ---| loop game |---
+    void anime();
+
+    sf::IntRect _rect; // rect for texture
+    std::map<char, sf::Texture> _textures;
+    std::vector<std::vector<block *>> lstBlock;
+    int _direction; // how chosse next sprite
+
     int _debug;
     int length;
     int width;
     float scale;
     std::string _where;
-    std::vector<std::vector<block *>> lstBlock;
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;

@@ -11,11 +11,12 @@ int lauch_game(char **av)
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber");
     player player(0, {50.0f, 800.0f}, 'm');
-    game game(av[1], &window, &player);
+    sf::View view(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
+    game game(av[1], &window, &player, &view);
 
     if (game.getError() != 0)
         return 84;
-    game.createLevel();
+    game.initLevel();
     game.loop();
     return 0;
 }

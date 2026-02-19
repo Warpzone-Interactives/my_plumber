@@ -9,17 +9,20 @@
 
 // -------------------| init game |-------------------
 
-game::game(char *filepath, sf::RenderWindow *window, player *player)
+game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *view)
 {
     _player = player;
     _window = window;
     _window->setFramerateLimit(60);
+    camera = view;
+    _direction = 1;
+    window->setView(*camera);
     animClock = new gameClock({1, 0.25, 0.25, 0.25});
+    _rect = sf::IntRect({0, 0}, {16, 16});
     status = 0;
     scale = 1;
     if (getWhere(filepath) == 1)
         status += 1;
-    _block = NULL;
     _debug = -1;
     loadMap(filepath);
     get_Size();
@@ -239,7 +242,7 @@ void game::initHitBox()
 // -------------------| end init HitBox |-------------------
 // -------------------| init map |-------------------
 
-void game::createLevel()
+void game::initLevel()
 {
     std::size_t count = 0;
     int lvlHeight = 0;
@@ -250,6 +253,7 @@ void game::createLevel()
                 count++;
     }
     setScale(_window->getSize().y, lvlHeight);
+    _player->setScale(scale);
     createGrid(length);
     for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
@@ -300,16 +304,24 @@ void game::poll_event()
 void game::manageBlock()
 {
     int animate = 0;
-    if (animClock->actionNeed() == 1) // ça marche à moitié ça, tu regarderas, jsp
-        animate = 1;
-    for (std::size_t i = 0; i < lstBlock.size(); i++)
-        for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
+    if (animClock->actionNeed() == 1)
+        anime();
+    for (std::size_t i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * scale));
+        i < lstBlock.size() && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * scale)); i++)
+        for (std::size_t j = 0; j < lstBlock[i].size(); j++)
             if (lstBlock[i][j] != NULL) {
                 lstBlock[i][j]->draw(*_window, _debug);
                 if (lstBlock[i][j]->isAnimated() && animate == 1)
-                    lstBlock[i][j]->anime();
+                    lstBlock[i][j]->setRect(_rect);
             }
-        }
+}
+
+void game::anime()
+{
+    _rect.left += _direction * 16;
+    if (_rect.left == 32 || _rect.left == 0)
+        _direction *= -1;
+    return;
 }
 
 void game::loop()
@@ -321,8 +333,12 @@ void game::loop()
             poll_event();
             _window->clear();
             manageBlock();
-            _player->actualize(*_window);
+            _player->actualize(*_window, camera, lstBlock);
             _window->display();
+            if (camera->getCenter().x < _player->getPos().x) {
+                camera->setCenter(_player->getPos().x, _window->getSize().y / 2);
+                _window->setView(*camera);
+            }
         }
 }
 

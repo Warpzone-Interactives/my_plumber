@@ -17,11 +17,12 @@ public:
     ~block() = default;
 
     void initLuckyBlock(char type); //je peut la mettre en privé
-    void anime();
-    void try_break();
+    void anime(sf::IntRect *rect);
+    void try_break(sf::IntRect *rect);
     void draw(sf::RenderWindow &window, int debug);
     char getType();
     void setTexture(sf::Texture newTexture, sf::IntRect nRect);
+    void setRect(sf::IntRect rect);
     bool isAnimated();
     sf::Vector2f getPos();
     void setHitBox(int left, int right, int top, int bottom);
