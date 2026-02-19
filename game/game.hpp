@@ -42,7 +42,8 @@ private:
     void setScale(int ySize, int yNbElem);
     sf::IntRect getPipeRect(int x, int y);
     sf::IntRect getVerticalPipeRect(int x, int y);
-    void init_pipe();
+    void initPipe();
+    void initHitBox();
 
     // ---| init game |---
     void initLstBlock();
@@ -50,6 +51,7 @@ private:
     void loadMap(std::string filepath);
     void initBlockTexture();
 
+    int _debug;
     int length;
     int width;
     float scale;

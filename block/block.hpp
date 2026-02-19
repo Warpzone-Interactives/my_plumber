@@ -19,11 +19,12 @@ public:
     void initLuckyBlock(char type); //je peut la mettre en privé
     void anime();
     void try_break();
-    void draw(sf::RenderWindow &window);
+    void draw(sf::RenderWindow &window, int debug);
     char getType();
     void setTexture(sf::Texture newTexture, sf::IntRect nRect);
     bool isAnimated();
     sf::Vector2f getPos();
+    void setHitBox(int left, int right, int top, int bottom);
 
 
 private:
@@ -37,6 +38,11 @@ private:
     bool _canBreak; // if is breacable block
     sf::Vector2f _position; // Position
     float _scale;
+
+    sf::RectangleShape *_leftHitBox; // rect for hitbox
+    sf::RectangleShape *_rightHitBox; // rect for hitbox
+    sf::RectangleShape *_topHitBox; // rect for hitbox
+    sf::RectangleShape *_bottomHitBox; // rect for hitbox
 
     sf::IntRect _rect; // rect for texture
     sf::Texture _texture; //texture

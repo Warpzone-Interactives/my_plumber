@@ -20,6 +20,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player)
     if (getWhere(filepath) == 1)
         status += 1;
     _block = NULL;
+    _debug = -1;
     loadMap(filepath);
     get_Size();
     initLstBlock();
@@ -34,7 +35,6 @@ void game::initLstBlock()
     }
     for (int x = 0; x < length; x++) {
         lstBlock.push_back(lst);
-        
     }
 }
 
@@ -193,7 +193,7 @@ sf::IntRect game::getPipeRect(int x, int y)
     return {xSize, ySize, 16, 16};
 }
 
-void game::init_pipe()
+void game::initPipe()
 {
     for (int x = 0; x < lstBlock.size(); x++) {
         for (int y = 0; y < lstBlock[x].size(); y++) {
@@ -206,8 +206,38 @@ void game::init_pipe()
     }
 }
 
-// -------------------| init map |-------------------
 // -------------------| end pipe part |-------------------
+// -------------------| init HitBox |-------------------
+
+void game::initHitBox()
+{
+    int left = 0;
+    int right = 0;
+    int top = 0;
+    int bottom = 0;
+    for (int x = 0; x < lstBlock.size(); x++) {
+        for (int y = 0; y < lstBlock[x].size(); y++) {
+            if (lstBlock[x][y] != NULL) {
+                if(x > 0 && lstBlock[x - 1][y] == NULL)
+                    left = 1;
+                if(x < length - 1 && lstBlock[x + 1][y] == NULL)
+                    right = 1;
+                if(y > 0 && lstBlock[x][y - 1] == NULL)
+                    top = 1;
+                if(y < lstBlock[x].size() - 1 && lstBlock[x][y + 1] == NULL)
+                    bottom = 1;
+                lstBlock[x][y]->setHitBox(left, right, top, bottom);
+                left = 0;
+                right = 0;
+                top = 0;
+                bottom = 0;
+            }
+        }
+    } 
+}
+
+// -------------------| end init HitBox |-------------------
+// -------------------| init map |-------------------
 
 void game::createLevel()
 {
@@ -223,7 +253,8 @@ void game::createLevel()
     createGrid(length);
     for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
-    init_pipe();
+    initPipe();
+    initHitBox();
 }
 
 // -------------------| init map end |-------------------
@@ -235,6 +266,9 @@ void game::key_event(sf::Event *event)
     switch (event->key.code) {
         case sf::Keyboard::Escape:
             _window->close();
+            break;
+        case sf::Keyboard::P:
+            _debug *= -1;
             break;
         default:
             return;
@@ -271,7 +305,7 @@ void game::manageBlock()
     for (std::size_t i = 0; i < lstBlock.size(); i++)
         for (std::size_t j = 0; j < lstBlock[i].size(); j++) {
             if (lstBlock[i][j] != NULL) {
-                lstBlock[i][j]->draw(*_window);
+                lstBlock[i][j]->draw(*_window, _debug);
                 if (lstBlock[i][j]->isAnimated() && animate == 1)
                     lstBlock[i][j]->anime();
             }
@@ -289,7 +323,6 @@ void game::loop()
             manageBlock();
             _player->actualize(*_window);
             _window->display();
-            frames.restart();
         }
 }
 
