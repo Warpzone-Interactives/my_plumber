@@ -34,6 +34,8 @@ private:
     void key_event(sf::Event *event);
     void analyse_events(sf::Event *event);
     void poll_event();
+    void debugMod();
+    void anime();
 
     // ---| init map |---
     void get_Size();
@@ -51,9 +53,6 @@ private:
     void loadMap(std::string filepath);
     void initBlockTexture();
 
-    // ---| loop game |---
-    void anime();
-
     sf::IntRect _rect; // rect for texture
     std::map<char, sf::Texture> _textures;
     std::vector<std::vector<block *>> lstBlock;
@@ -68,6 +67,8 @@ private:
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;
     std::map<char, sf::Texture> _blockTextures;
+
+    sf::Image icon;
     sf::RectangleShape _backGround;
 };
 

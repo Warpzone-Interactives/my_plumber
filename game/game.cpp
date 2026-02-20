@@ -16,6 +16,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *v
     _window->setFramerateLimit(60);
     camera = view;
     window->setView(*camera);
+    window->setMouseCursorVisible(false);
 
     animClock = new gameClock({1, 0.25, 0.25, 0.25});
     _rect = sf::IntRect({0, 0}, {16, 16});
@@ -24,7 +25,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *v
     _backGround = bg;
     _backGround.setOrigin(_backGround.getSize().x / 2, _backGround.getSize().y / 2);
     _backGround.setPosition(camera->getCenter());
-    _backGround.setFillColor(sf::Color(66, 190, 252, 255));
+    _backGround.setFillColor(sf::Color(148, 148, 255, 255));
 
     status = 0;
     scale = 1;
@@ -274,6 +275,16 @@ void game::initLevel()
 
 // -------------------| game loop |-------------------
 
+void game::debugMod()
+{
+    _debug *= -1;
+    if (_debug == 1) {
+        _window->setMouseCursorVisible(true);
+    } else {
+        _window->setMouseCursorVisible(false);
+    }
+}
+
 void game::key_event(sf::Event *event)
 {
     switch (event->key.code) {
@@ -281,7 +292,7 @@ void game::key_event(sf::Event *event)
             _window->close();
             break;
         case sf::Keyboard::P:
-            _debug *= -1;
+            debugMod();
             break;
         default:
             return;

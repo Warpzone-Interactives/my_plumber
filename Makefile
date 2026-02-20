@@ -56,6 +56,7 @@ now:clean	\
 	@echo "\033[1;33mGood Luck\033[0;0m"
 	@sleep 0.1
 	@./${NAME} testmap/1-1.txt
+	@rm $(NAME)
 
 pipe:$(OBJ)	\
 	$(LIB_OBJ)
