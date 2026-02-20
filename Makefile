@@ -55,7 +55,7 @@ now:clean	\
 	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
 	@echo "\033[1;33mGood Luck\033[0;0m"
 	@sleep 0.1
-	@./${NAME} testmap/pipeTest.txt
+	@./${NAME} testmap/1-1.txt
 
 pipe:$(OBJ)	\
 	$(LIB_OBJ)

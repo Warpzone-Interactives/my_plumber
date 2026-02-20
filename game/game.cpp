@@ -15,15 +15,24 @@ game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *v
     _window = window;
     _window->setFramerateLimit(60);
     camera = view;
-    _direction = 1;
     window->setView(*camera);
+
     animClock = new gameClock({1, 0.25, 0.25, 0.25});
     _rect = sf::IntRect({0, 0}, {16, 16});
+
+    sf::RectangleShape bg(camera->getSize());
+    _backGround = bg;
+    _backGround.setOrigin(_backGround.getSize().x / 2, _backGround.getSize().y / 2);
+    _backGround.setPosition(camera->getCenter());
+    _backGround.setFillColor(sf::Color(66, 190, 252, 255));
+
     status = 0;
     scale = 1;
+    _direction = 1;
     if (getWhere(filepath) == 1)
         status += 1;
     _debug = -1;
+
     loadMap(filepath);
     get_Size();
     initLstBlock();
@@ -304,8 +313,10 @@ void game::poll_event()
 void game::manageBlock()
 {
     int animate = 0;
-    if (animClock->actionNeed() == 1)
+    if (animClock->actionNeed() == 1) {
         anime();
+        animate = 1;
+    }
     for (std::size_t i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * scale));
         i < lstBlock.size() && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * scale)); i++)
         for (std::size_t j = 0; j < lstBlock[i].size(); j++)
@@ -332,12 +343,14 @@ void game::loop()
         if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
             poll_event();
             _window->clear();
+            _window->draw(_backGround);
             manageBlock();
             _player->actualize(*_window, camera, lstBlock);
             _window->display();
             if (camera->getCenter().x < _player->getPos().x) {
                 camera->setCenter(_player->getPos().x, _window->getSize().y / 2);
                 _window->setView(*camera);
+                _backGround.setPosition(camera->getCenter());
             }
         }
 }

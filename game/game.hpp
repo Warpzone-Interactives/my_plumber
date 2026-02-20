@@ -68,6 +68,7 @@ private:
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;
     std::map<char, sf::Texture> _blockTextures;
+    sf::RectangleShape _backGround;
 };
 
 #endif
