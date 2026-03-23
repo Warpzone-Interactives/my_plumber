@@ -43,6 +43,7 @@ private:
     void createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
     void createGrid(int x_size);
     void setScale(int ySize, int yNbElem);
+    sf::IntRect getVerticalPipeRect(int x, int y);
     sf::IntRect getPipeRect(int x, int y);
     sf::IntRect getVerticalPipeRect(int x, int y);
     void initPipe();
