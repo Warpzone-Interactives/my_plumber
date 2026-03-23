@@ -52,9 +52,11 @@ private:
 
     int _sprite_nb;
 
-    sf::IntRect _rect; // rect for texture
+    sf::IntRect _texture_rect; // rect for texture
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
+    gameClock *_animClock;
+
     int _runningFramesLeft;
     bool _skidding;
     float _maxAirSpeed;

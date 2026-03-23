@@ -12,9 +12,11 @@ player::player(int size, sf::Vector2f position, char m)
     _size = size;
     _position = position;
     if (m == 'm')
-        _character = "wario";
-    else
+        _character = "mario";
+    if (m == 'l')
         _character = "luigi";
+    if (m == 'w')
+        _character = "wario";
     _alive = true;
     _invincible = false;
     _invincibilityDuration = 0.0f;
@@ -24,8 +26,9 @@ player::player(int size, sf::Vector2f position, char m)
     _facingRight = true;
     _skidding= false;
     _chooseTexture();
+    _animClock = new gameClock({0.125});
     _sprite = sf::Sprite(_texture);
-    _sprite.setTextureRect(_rect);
+    _sprite.setTextureRect(_texture_rect);
     _sprite.setPosition(_position);
     _sprite.setOrigin({8, 8});
     _sprite_nb = 1;
@@ -91,21 +94,21 @@ void player::_chooseTexture()
     
     if (_size == 0) {
         filePath += "small.png";
-        _rect = sf::IntRect({0, 0}, {16, 16});
+        _texture_rect = sf::IntRect({0, 0}, {16, 16});
         _sprite.setOrigin({8, 8});
-        _sprite.setTextureRect(_rect);
+        _sprite.setTextureRect(_texture_rect);
     }
     else if (_size == 1) {
         filePath += "big.png";
-        _rect = sf::IntRect({0, 0}, {16, 32});
+        _texture_rect = sf::IntRect({0, 0}, {16, 32});
         _sprite.setOrigin({8, 24});
-        _sprite.setTextureRect(_rect);
+        _sprite.setTextureRect(_texture_rect);
     }
     else if (_size == 2) {
         filePath += "fire.png";
-        _rect = sf::IntRect({0, 0}, {16, 32});
+        _texture_rect = sf::IntRect({0, 0}, {16, 32});
         _sprite.setOrigin({8, 24});
-        _sprite.setTextureRect(_rect);
+        _sprite.setTextureRect(_texture_rect);
     }
     _setTexture(filePath);
 }
@@ -195,32 +198,24 @@ void player::_handleIdleInput()
 
 void player::_updateMovementWalking(int direction)
 {
+    int addapter = 1;
+
     if (direction == -1)
         return player::_handleIdleInput();
-    if (direction == 1) {
-        if (player::_velocity.x >= -(SKID_TURNAROUND_SPEED * _scale)) {
-            player::_velocity.x += (WALKING_ACCELERATION * _scale);
-            _skidding = false;
-        }
-        else {
-            player::_velocity.x += (SKIDDING_DECELERATION * _scale);
-            _skidding = true;
-        }
-        if (player::_velocity.x > (MAXIMUM_WALK_SPEED * _scale))
-            player::_velocity.x = (MAXIMUM_WALK_SPEED * _scale);
+    if (direction == 0)
+        addapter = -1;
+    if (player::_velocity.x * addapter >= addapter * -addapter * (SKID_TURNAROUND_SPEED * _scale)) {
+        player::_velocity.x += addapter * (WALKING_ACCELERATION * _scale);
+        _skidding = false;
+        if (_animClock->actionNeed() == 1)
+            player::_texture_rect.left = (player::_texture_rect.left % 48) + 16;
+    } else {
+        player::_velocity.x += addapter * (SKIDDING_DECELERATION * _scale);
+        _skidding = true;
     }
-    if (direction == 0) {
-        if (player::_velocity.x <= (SKID_TURNAROUND_SPEED * _scale)) {
-            player::_velocity.x -= (WALKING_ACCELERATION * _scale);
-            _skidding = false;
-        }
-        else {
-            player::_velocity.x -= (SKIDDING_DECELERATION * _scale);
-            _skidding = true;
-        }
-        if (player::_velocity.x < -(MAXIMUM_WALK_SPEED * _scale))
-            player::_velocity.x = -(MAXIMUM_WALK_SPEED * _scale);
-    }
+    if (player::_velocity.x * addapter > addapter * addapter * (MAXIMUM_WALK_SPEED * _scale))
+        player::_velocity.x = addapter * (MAXIMUM_WALK_SPEED * _scale);
+    player::_sprite.setTextureRect(_texture_rect);
 }
 
 void player::_updateMovementRunning(int direction)
