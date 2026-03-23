@@ -41,6 +41,50 @@ sf::Vector2f player::getPos()
     return _position;
 }
 
+sf::Vector2f player::getVel()
+{
+    return _velocity;
+}
+
+std::string player::getChar()
+{
+    return _character;
+}
+
+std::string player::getSize()
+{
+    if (_size == 1)
+        return "Small";
+    if (_size == 2)
+        return "Big";
+    if (_size == 3)
+        return "Fire";
+    return "Unknow";
+}
+
+std::string player::getFacing()
+{
+    if (_facingRight == true)
+        return "right";
+    return "left";
+}
+
+std::string player::getOnGround()
+{
+    if (_onGround)
+        return "true";
+    return "false";
+}
+
+std::string player::getAlive()
+{
+    if (_alive)
+        return "true";
+    return "false";
+}
+
+
+
 void player::_chooseTexture()
 {
     std::string filePath = "ressources/player/" + _character + "/";

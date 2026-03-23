@@ -24,6 +24,12 @@ public:
     void setScale(int scale);
 
     sf::Vector2f getPos();
+    sf::Vector2f getVel();
+    std::string getChar();
+    std::string getSize();
+    std::string getFacing();
+    std::string getOnGround();
+    std::string getAlive();
 
 void actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map);
 

@@ -35,6 +35,7 @@ private:
     void analyse_events(sf::Event *event);
     void poll_event();
     void debugMod();
+    void manageDebugMod();
     void anime();
 
     // ---| init map |---
@@ -58,17 +59,19 @@ private:
     std::vector<std::vector<block *>> lstBlock;
     int _direction; // how chosse next sprite
 
-    int _debug;
     int length;
     int width;
-    float scale;
+    float _scale;
     std::string _where;
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;
     std::map<char, sf::Texture> _blockTextures;
 
-    sf::Image icon;
+    int _debug;
+    sf::String _debugStr;
+    sf::Font _debugFont;
+    sf::Text _debugInfo;
     sf::RectangleShape _backGround;
 };
 

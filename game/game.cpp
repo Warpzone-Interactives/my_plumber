@@ -18,6 +18,16 @@ game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *v
     window->setView(*camera);
     window->setMouseCursorVisible(false);
 
+    _debugFont.loadFromFile("ressources/debugFont.ttf");
+    _debugStr.insert(0, "Debug Mod = True");
+    _debugInfo.setFont(_debugFont);
+    _debugInfo.setString(_debugStr);
+    _debugInfo.setCharacterSize(30);
+    _debugInfo.setFillColor(sf::Color::White);
+    _debugInfo.setOutlineColor(sf::Color::Black);
+    _debugInfo.setOutlineThickness(0.5);
+    _debugInfo.setPosition({camera->getCenter().x + (camera->getSize().x / 4), camera->getCenter().y - (camera->getSize().y / 2)});
+
     animClock = new gameClock({1, 0.25, 0.25, 0.25});
     _rect = sf::IntRect({0, 0}, {16, 16});
 
@@ -28,7 +38,7 @@ game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *v
     _backGround.setFillColor(sf::Color(148, 148, 255, 255));
 
     status = 0;
-    scale = 1;
+    _scale = 1;
     _direction = 1;
     if (getWhere(filepath) == 1)
         status += 1;
@@ -129,7 +139,7 @@ void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> gri
     for (std::size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        block *n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), scale);
+        block *n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), _scale);
         lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
     }
 }
@@ -149,7 +159,7 @@ void game::createGrid(int x_size)
 
 void game::setScale(int ySize, int yNbElem)
 {
-    scale = ySize / yNbElem / 16;
+    _scale = ySize / yNbElem / 16;
 }
 
 // -------------------| init map |-------------------
@@ -263,7 +273,7 @@ void game::initLevel()
                 count++;
     }
     setScale(_window->getSize().y, lvlHeight);
-    _player->setScale(scale);
+    _player->setScale(_scale);
     createGrid(length);
     for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
@@ -291,7 +301,7 @@ void game::key_event(sf::Event *event)
         case sf::Keyboard::Escape:
             _window->close();
             break;
-        case sf::Keyboard::P:
+        case sf::Keyboard::F3:
             debugMod();
             break;
         default:
@@ -328,8 +338,8 @@ void game::manageBlock()
         anime();
         animate = 1;
     }
-    for (std::size_t i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * scale));
-        i < lstBlock.size() && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * scale)); i++)
+    for (std::size_t i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * _scale));
+        i < lstBlock.size() && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * _scale)); i++)
         for (std::size_t j = 0; j < lstBlock[i].size(); j++)
             if (lstBlock[i][j] != NULL) {
                 lstBlock[i][j]->draw(*_window, _debug);
@@ -346,6 +356,26 @@ void game::anime()
     return;
 }
 
+void game::manageDebugMod()
+{
+    if (_debug == 1) {
+        _debugStr.clear();
+        std::string str = "Debug Mod =\ttrue\n";
+        str += "player type = \t" + _player->getChar() + "\n";
+        str += "player size = \t" + _player->getSize() + "\n";
+        str += "player facing = \t" + _player->getFacing() + "\n";
+        str += "player on Ground = \t" + _player->getOnGround() + "\n";
+        str += "player is Alive = \t" + _player->getAlive() + "\n";
+        str += "Player x pos =\t" + std::to_string(_player->getPos().x / (_scale * 16) - 0.5) + "\n";
+        str += "Player y pos =\t" + std::to_string(_player->getPos().y / (_scale * 16) - 0.5) + "\n";
+        str += "Player x vel =\t" + std::to_string(_player->getVel().x / _scale) + "\n";
+        str += "Player y vel =\t" + std::to_string(_player->getVel().y / _scale) + "\n";
+        _debugStr.insert(0, str);
+        _debugInfo.setString(_debugStr);
+        _window->draw(_debugInfo);
+    }
+}
+
 void game::loop()
 {
     sf::Clock frames;
@@ -357,10 +387,12 @@ void game::loop()
             _window->draw(_backGround);
             manageBlock();
             _player->actualize(*_window, camera, lstBlock);
+            manageDebugMod();
             _window->display();
             if (camera->getCenter().x < _player->getPos().x) {
                 camera->setCenter(_player->getPos().x, _window->getSize().y / 2);
                 _window->setView(*camera);
+                _debugInfo.setPosition({camera->getCenter().x + (camera->getSize().x / 4), camera->getCenter().y - (camera->getSize().y / 2)});
                 _backGround.setPosition(camera->getCenter());
             }
         }
