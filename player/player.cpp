@@ -26,6 +26,7 @@ player::player(int size, sf::Vector2f position, char m)
     _facingRight = true;
     _skidding= false;
     _chooseTexture();
+    _animated = 0;
     _animClock = new gameClock({0.125});
     _sprite = sf::Sprite(_texture);
     _sprite.setTextureRect(_texture_rect);
@@ -204,49 +205,59 @@ void player::_updateMovementWalking(int direction)
         return player::_handleIdleInput();
     if (direction == 0)
         addapter = -1;
-    if (player::_velocity.x * addapter >= addapter * -addapter * (SKID_TURNAROUND_SPEED * _scale)) {
+    if (player::_velocity.x * addapter >= -(SKID_TURNAROUND_SPEED * _scale)) {
         player::_velocity.x += addapter * (WALKING_ACCELERATION * _scale);
         _skidding = false;
-        if (_animClock->actionNeed() == 1)
-            player::_texture_rect.left = (player::_texture_rect.left % 48) + 16;
+        if (_animClock->actionNeed(0.125) == 1) {
+            _choosed_exture = (_choosed_exture % 3) + 1;
+            player::_texture_rect.left = _choosed_exture * 16;
+            player::_sprite.setTextureRect(_texture_rect);
+        }
     } else {
         player::_velocity.x += addapter * (SKIDDING_DECELERATION * _scale);
         _skidding = true;
     }
-    if (player::_velocity.x * addapter > addapter * addapter * (MAXIMUM_WALK_SPEED * _scale))
+    if (player::_velocity.x * addapter > (MAXIMUM_WALK_SPEED * _scale))
         player::_velocity.x = addapter * (MAXIMUM_WALK_SPEED * _scale);
-    player::_sprite.setTextureRect(_texture_rect);
 }
 
 void player::_updateMovementRunning(int direction)
 {
+    int addapter = 1;
+
     if (direction == -1) {
         _runningFramesLeft = 0;
         return player::_handleIdleInput();
     }
-    if (direction == 1) {
-        if (player::_velocity.x >= -(SKID_TURNAROUND_SPEED * _scale))
-            player::_velocity.x += (RUNNING_ACCELERATION * _scale);
-        else {
-            player::_velocity.x += (SKIDDING_DECELERATION * _scale);
-            _runningFramesLeft = 0;
+    if (direction == 0)
+        addapter = -1;
+    if (player::_velocity.x * addapter >= addapter * -addapter * (SKID_TURNAROUND_SPEED * _scale)) {
+        player::_velocity.x += addapter * (RUNNING_ACCELERATION * _scale);
+        _skidding = false;
+        if (_animClock->actionNeed(0.0635) == 1) {
+            _choosed_exture = (_choosed_exture % 3) + 1;
+            player::_texture_rect.left = _choosed_exture * 16;
+            player::_sprite.setTextureRect(_texture_rect);
         }
-        if (player::_velocity.x > (MAXIMUM_RUNNING_SPEED * _scale))
-            player::_velocity.x = (MAXIMUM_RUNNING_SPEED * _scale);
+    } else {
+        player::_velocity.x += addapter * (SKIDDING_DECELERATION * _scale);
+        _skidding = true;
+        if (_animClock->actionNeed(0.0635) == 1) {
+            _choosed_exture = 4;
+            player::_texture_rect.left = _choosed_exture * 16;
+            player::_sprite.setTextureRect(_texture_rect);
+        }
     }
-    if (direction == 0) {
-        if (player::_velocity.x <= (SKID_TURNAROUND_SPEED * _scale))
-            player::_velocity.x -= (RUNNING_ACCELERATION * _scale);
-        else
-            player::_velocity.x -= (SKIDDING_DECELERATION * _scale);
-        if (player::_velocity.x < -(MAXIMUM_RUNNING_SPEED * _scale))
-            player::_velocity.x = -(MAXIMUM_RUNNING_SPEED * _scale);
-    }
+    if (player::_velocity.x * addapter > addapter * addapter * (MAXIMUM_RUNNING_SPEED * _scale))
+        player::_velocity.x = addapter * (MAXIMUM_RUNNING_SPEED * _scale);
 } //actuellement mario "snap" à la walk speed directement quand il ne court plus (il ne ralentit pas progressivement).
 
 void player::_handleJumping()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _onGround) {
+        player::_texture_rect.left = 80;
+        player::_sprite.setTextureRect(_texture_rect);
+        _animated = 1;
         if (_velocity.x < 1 * _scale)
             _velocity.y += V_L1_UP * _scale;
         if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
@@ -255,12 +266,15 @@ void player::_handleJumping()
             _velocity.y += V_25M_UP * _scale;
         _onGround = false;
         _jumpStartingVelocity = _velocity.x;
-        if (_velocity.x < MAXIMUM_WALK_SPEED * _scale)
+        if (-MAXIMUM_WALK_SPEED * _scale < _velocity.x && _velocity.x < MAXIMUM_WALK_SPEED * _scale)
             _maxAirSpeed = MAXIMUM_WALK_SPEED * _scale;
         else
             _maxAirSpeed = MAXIMUM_RUNNING_SPEED * _scale;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && !_onGround) {
+        player::_texture_rect.left = 80;
+        player::_sprite.setTextureRect(_texture_rect);
+        _animated = 1;
         if (_velocity.x < 1 * _scale)
             _velocity.y += V_L1_DWN_A * _scale;
         if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
@@ -269,6 +283,7 @@ void player::_handleJumping()
             _velocity.y += V_25M_DWN_A * _scale;
     }
     else if (!_onGround) {
+        _animated = 1;
         if (_velocity.x < 1 * _scale)
             _velocity.y += V_L1_DWN * _scale;
         if (_velocity.x >= 1 * _scale && _velocity.x < 2.3125 * _scale)
@@ -282,12 +297,6 @@ void player::_handleJumping()
 
 void player::_airPhysics(int direction)
 {
-    if (direction == 1 && _velocity.x >= 0) {
-        if (_velocity.x < MAXIMUM_WALK_SPEED * _scale)
-            _velocity.x += WALKING_ACCELERATION * _scale;
-        else
-            _velocity.x += RUNNING_ACCELERATION * _scale;
-    }
     if (direction == 0 && _velocity.x >= 0) {
         if (_velocity.x >= MAXIMUM_WALK_SPEED * _scale)
             _velocity.x -= RUNNING_ACCELERATION * _scale;
@@ -302,6 +311,12 @@ void player::_airPhysics(int direction)
             _velocity.x -= WALKING_ACCELERATION * _scale;
         else
             _velocity.x -= RUNNING_ACCELERATION * _scale;
+    }
+    if (direction == 1 && _velocity.x >= 0) {
+        if (_velocity.x < MAXIMUM_WALK_SPEED * _scale)
+            _velocity.x += WALKING_ACCELERATION * _scale;
+        else
+            _velocity.x += RUNNING_ACCELERATION * _scale;
     }
     if (direction == 1 && _velocity.x < 0) {
         if (_velocity.x >= MAXIMUM_WALK_SPEED * _scale)
@@ -321,18 +336,20 @@ void player::_handleInput()
 {
     int direction = -1;
 
+    _animated = 0;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
         _runningFramesLeft = 10;
     else if (_runningFramesLeft != 0)
         _runningFramesLeft--;
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
         direction = 0;
+        _animated = 1;
         if (_onGround)
             _facingRight = false;
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         direction = 1;
+        _animated = 1;
         if (_onGround)
             _facingRight = true;
     }
@@ -346,6 +363,10 @@ void player::_handleInput()
     }
     else
         player::_airPhysics(direction);
+    if(_animated == 0) {
+        player::_texture_rect.left = 0;
+        player::_sprite.setTextureRect(_texture_rect);
+    }
 }
 
 void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map)
@@ -360,6 +381,10 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
         _position += _velocity;
         if (_position.x < int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale))) {
             _position.x = int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale));
+            _velocity.x = 0;
+        }
+        if (_position.x > (map.size() - 0.5) * 16 * _scale) {
+            _position.x = (map.size() - 0.5) * 16 * _scale;
             _velocity.x = 0;
         }
         _sprite.setPosition(_position);

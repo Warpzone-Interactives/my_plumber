@@ -10,9 +10,9 @@
 int lauch_game(char **av)
 {
     sf::RenderWindow window(sf::VideoMode(1920, 1080), "my_plumber");
-    player player(0, {50.0f, 800.0f}, 'm');
+    player player1(0, {50.0f, 800.0f}, 'w');
     sf::View view(sf::FloatRect(0, 0, window.getSize().x, window.getSize().y));
-    game game(av[1], &window, &player, &view);
+    game game(av[1], &window, &view, &player1, NULL);
 
     if (game.getError() != 0)
         return 84;

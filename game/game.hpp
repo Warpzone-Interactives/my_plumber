@@ -13,7 +13,7 @@
 class game
 {
 public:
-    game(char *map, sf::RenderWindow *window, player *player, sf::View *view);
+    game(char *filepath, sf::RenderWindow *window, sf::View *view, player *player1, player *player2);
     ~game() = default;
 
     int getError();
@@ -25,7 +25,8 @@ public:
     int status;
     sf::View *camera;
     sf::RenderWindow *_window;
-    player *_player;
+    player *_player1;
+    player *_player2;
 
 private:
 

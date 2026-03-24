@@ -9,9 +9,10 @@
 
 // -------------------| init game |-------------------
 
-game::game(char *filepath, sf::RenderWindow *window, player *player, sf::View *view)
+game::game(char *filepath, sf::RenderWindow *window, sf::View *view, player *player1, player *player2)
 {
-    _player = player;
+    _player1 = player1;
+    _player2 = player2;
     _window = window;
     _window->setFramerateLimit(60);
     camera = view;
@@ -273,7 +274,9 @@ void game::initLevel()
                 count++;
     }
     setScale(_window->getSize().y, lvlHeight);
-    _player->setScale(_scale);
+    _player1->setScale(_scale);
+    if (_player2 != NULL)
+        _player2->setScale(_scale);
     createGrid(length);
     for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
@@ -334,7 +337,7 @@ void game::poll_event()
 void game::manageBlock()
 {
     int animate = 0;
-    if (animClock->actionNeed() == 1) {
+    if (animClock->actionNeed(0) == 1) {
         anime();
         animate = 1;
     }
@@ -361,15 +364,15 @@ void game::manageDebugMod()
     if (_debug == 1) {
         _debugStr.clear();
         std::string str = "Debug Mod =\ttrue\n";
-        str += "player type = \t" + _player->getChar() + "\n";
-        str += "player size = \t" + _player->getSize() + "\n";
-        str += "player facing = \t" + _player->getFacing() + "\n";
-        str += "player on Ground = \t" + _player->getOnGround() + "\n";
-        str += "player is Alive = \t" + _player->getAlive() + "\n";
-        str += "Player x pos =\t" + std::to_string(_player->getPos().x / (_scale * 16) - 0.5) + "\n";
-        str += "Player y pos =\t" + std::to_string(_player->getPos().y / (_scale * 16) - 0.5) + "\n";
-        str += "Player x vel =\t" + std::to_string(_player->getVel().x / _scale) + "\n";
-        str += "Player y vel =\t" + std::to_string(_player->getVel().y / _scale) + "\n";
+        str += "player type = \t" + _player1->getChar() + "\n";
+        str += "player size = \t" + _player1->getSize() + "\n";
+        str += "player facing = \t" + _player1->getFacing() + "\n";
+        str += "player on Ground = \t" + _player1->getOnGround() + "\n";
+        str += "player is Alive = \t" + _player1->getAlive() + "\n";
+        str += "Player x pos =\t" + std::to_string(_player1->getPos().x / (_scale * 16) - 0.5) + "\n";
+        str += "Player y pos =\t" + std::to_string(_player1->getPos().y / (_scale * 16) - 0.5) + "\n";
+        str += "Player x vel =\t" + std::to_string(_player1->getVel().x / _scale) + "\n";
+        str += "Player y vel =\t" + std::to_string(_player1->getVel().y / _scale) + "\n";
         _debugStr.insert(0, str);
         _debugInfo.setString(_debugStr);
         _window->draw(_debugInfo);
@@ -386,11 +389,13 @@ void game::loop()
             _window->clear();
             _window->draw(_backGround);
             manageBlock();
-            _player->actualize(*_window, camera, lstBlock);
+            _player1->actualize(*_window, camera, lstBlock);
+            if (_player2 != NULL)
+                _player2->actualize(*_window, camera, lstBlock);
             manageDebugMod();
             _window->display();
-            if (camera->getCenter().x < _player->getPos().x) {
-                camera->setCenter(_player->getPos().x, _window->getSize().y / 2);
+            if (camera->getCenter().x < _player1->getPos().x) {
+                camera->setCenter(_player1->getPos().x, _window->getSize().y / 2);
                 _window->setView(*camera);
                 _debugInfo.setPosition({camera->getCenter().x + (camera->getSize().x / 4), camera->getCenter().y - (camera->getSize().y / 2)});
                 _backGround.setPosition(camera->getCenter());

@@ -56,6 +56,8 @@ private:
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
     gameClock *_animClock;
+    int _choosed_exture;
+    int _animated;
 
     int _runningFramesLeft;
     bool _skidding;

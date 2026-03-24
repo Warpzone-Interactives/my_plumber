@@ -27,10 +27,12 @@ void gameClock::reset()
     seconds = 0;
 }
 
-int gameClock::actionNeed()
+int gameClock::actionNeed(double timer_reset)
 {
+    if (timer_reset <= 0)
+        timer_reset = resetTime[resetId];
     clockUpdater();
-    if ((seconds) > resetTime[resetId]) {
+    if ((seconds) > timer_reset) {
         reset();
         return 1;
     }
