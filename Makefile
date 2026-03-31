@@ -54,8 +54,9 @@ now:clean	\
 	@ar rc $(LIB_NAME) $(LIB_OBJ)
 	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
 	@echo "\033[1;33mGood Luck\033[0;0m"
-	@sleep 1
-	@./${NAME} testmap/pipeTest.txt
+	@sleep 0.1
+	@./${NAME} testmap/1-1.txt
+	@rm $(NAME)
 
 pipe:$(OBJ)	\
 	$(LIB_OBJ)
@@ -68,8 +69,6 @@ vnow:$(OBJ)	\
 	$(LIB_OBJ)
 	@ar rc $(LIB_NAME) $(LIB_OBJ)
 	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
-	@echo "\033[1;33mGood Luck\033[0;0m"
-	@sleep 1
 	@valgrind ./${NAME} testmap/pipeTest.txt
 
 test:clean	\

@@ -24,6 +24,12 @@ public:
     void setScale(int scale);
 
     sf::Vector2f getPos();
+    sf::Vector2f getVel();
+    std::string getChar();
+    std::string getSize();
+    std::string getFacing();
+    std::string getOnGround();
+    std::string getAlive();
 
 void actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map);
 
@@ -46,9 +52,13 @@ private:
 
     int _sprite_nb;
 
-    sf::IntRect _rect; // rect for texture
+    sf::IntRect _texture_rect; // rect for texture
     sf::Sprite _sprite; //sprite
     sf::Texture _texture; //texture
+    gameClock *_animClock;
+    int _choosed_exture;
+    int _animated;
+
     int _runningFramesLeft;
     bool _skidding;
     float _maxAirSpeed;

@@ -13,7 +13,7 @@
 class game
 {
 public:
-    game(char *map, sf::RenderWindow *window, player *player, sf::View *view);
+    game(char *filepath, sf::RenderWindow *window, sf::View *view, player *player1, player *player2);
     ~game() = default;
 
     int getError();
@@ -25,7 +25,8 @@ public:
     int status;
     sf::View *camera;
     sf::RenderWindow *_window;
-    player *_player;
+    player *_player1;
+    player *_player2;
 
 private:
 
@@ -34,24 +35,25 @@ private:
     void key_event(sf::Event *event);
     void analyse_events(sf::Event *event);
     void poll_event();
+    void debugMod();
+    void manageDebugMod();
+    void anime();
 
     // ---| init map |---
     void get_Size();
     void createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line);
     void createGrid(int x_size);
     void setScale(int ySize, int yNbElem);
-    sf::IntRect getVerticalPipeRect(int x, int y);
     sf::IntRect getPipeRect(int x, int y);
-    void init_pipe();
-    
+    sf::IntRect getVerticalPipeRect(int x, int y);
+    void initPipe();
+    void initHitBox();
+
     // ---| init game |---
     void initLstBlock();
     int getWhere(std::string filepath);
     void loadMap(std::string filepath);
     void initBlockTexture();
-
-    // ---| loop game |---
-    void anime();
 
     sf::IntRect _rect; // rect for texture
     std::map<char, sf::Texture> _textures;
@@ -60,12 +62,18 @@ private:
 
     int length;
     int width;
-    float scale;
+    float _scale;
     std::string _where;
     std::vector<std::vector<sf::Vector2f>> grid;
     std::vector<std::string> _map;
     std::vector<sf::Sprite> _sprites;
     std::map<char, sf::Texture> _blockTextures;
+
+    int _debug;
+    sf::String _debugStr;
+    sf::Font _debugFont;
+    sf::Text _debugInfo;
+    sf::RectangleShape _backGround;
 };
 
 #endif

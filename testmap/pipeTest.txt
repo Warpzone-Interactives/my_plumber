@@ -11,6 +11,6 @@ ow
             ||---x||>
            <||---x||>
            <||   x__xxxxxxx
-xxxxxxxxxxxxxxxxxx  x
+         xxxxxxxxx  x
 xxxxxxxxxxxxxxxxxx  x
 xxxxxxxxxxxxxxxxxx  x
