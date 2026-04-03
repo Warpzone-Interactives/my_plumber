@@ -14,6 +14,7 @@ LIB_SRC	=	player/player.cpp	\
 		block/block.cpp	\
 		game/game.cpp	\
 		gameClock/gameClock.cpp	\
+		entity/entity.cpp	\
 
 FLAG_LIB	=	-L./ -lmy
 
@@ -25,7 +26,7 @@ SRC	=	main.cpp
 
 OBJ	=	$(SRC:.cpp=.o)
 
-CPPFLAGS	=	-I./include -I./player -I./game -I./block -I./gameClock -g
+CPPFLAGS	=	-I./include -I./player -I./game -I./block -I./entity -I./gameClock -g -Wextra -Wall
 
 FLAG_SFML	=	-lsfml-graphics -lsfml-window -lsfml-system
 
@@ -69,7 +70,7 @@ vnow:$(OBJ)	\
 	$(LIB_OBJ)
 	@ar rc $(LIB_NAME) $(LIB_OBJ)
 	@$(CC) -o $(NAME) $(OBJ) $(FLAG_LIB) $(FLAG_SFML)
-	@valgrind ./${NAME} testmap/pipeTest.txt
+	@valgrind ./${NAME} testmap/1-1.txt
 
 test:clean	\
 	$(OBJ)	\

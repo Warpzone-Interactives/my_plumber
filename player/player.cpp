@@ -28,10 +28,6 @@ player::player(int size, sf::Vector2f position, char m)
     _chooseTexture();
     _animated = 0;
     _animClock = new gameClock({0.125});
-    _sprite = sf::Sprite(_texture);
-    _sprite.setTextureRect(_texture_rect);
-    _sprite.setPosition(_position);
-    _sprite.setOrigin({8, 8});
     _sprite_nb = 1;
 }
 
@@ -182,19 +178,19 @@ void player::_checkInvincibility()
 void player::_handleIdleInput()
 {
     if (_skidding == false) {
-        if (player::_velocity.x > (RELEASE_DECELERATION * _scale))
-            player::_velocity.x -= (RELEASE_DECELERATION * _scale);
-        if (player::_velocity.x < -(RELEASE_DECELERATION * _scale))
-            player::_velocity.x += (RELEASE_DECELERATION * _scale);
+        if (_velocity.x > (RELEASE_DECELERATION * _scale))
+            _velocity.x -= (RELEASE_DECELERATION * _scale);
+        if (_velocity.x < -(RELEASE_DECELERATION * _scale))
+            _velocity.x += (RELEASE_DECELERATION * _scale);
     }
     else {
-        if (player::_velocity.x > (SKIDDING_DECELERATION * _scale))
-            player::_velocity.x -= (SKIDDING_DECELERATION * _scale);
-        if (player::_velocity.x < -(SKIDDING_DECELERATION * _scale))
-            player::_velocity.x += (SKIDDING_DECELERATION * _scale);
+        if (_velocity.x > (SKIDDING_DECELERATION * _scale))
+            _velocity.x -= (SKIDDING_DECELERATION * _scale);
+        if (_velocity.x < -(SKIDDING_DECELERATION * _scale))
+            _velocity.x += (SKIDDING_DECELERATION * _scale);
     }
-    if (-(RELEASE_DECELERATION * _scale) <= player::_velocity.x && player::_velocity.x <= RELEASE_DECELERATION)
-        player::_velocity.x = 0;
+    if (-(RELEASE_DECELERATION * _scale) <= _velocity.x && _velocity.x <= RELEASE_DECELERATION)
+        _velocity.x = 0;
 }
 
 void player::_updateMovementWalking(int direction)
@@ -202,23 +198,23 @@ void player::_updateMovementWalking(int direction)
     int addapter = 1;
 
     if (direction == -1)
-        return player::_handleIdleInput();
+        return _handleIdleInput();
     if (direction == 0)
         addapter = -1;
-    if (player::_velocity.x * addapter >= -(SKID_TURNAROUND_SPEED * _scale)) {
-        player::_velocity.x += addapter * (WALKING_ACCELERATION * _scale);
+    if (_velocity.x * addapter >= -(SKID_TURNAROUND_SPEED * _scale)) {
+        _velocity.x += addapter * (WALKING_ACCELERATION * _scale);
         _skidding = false;
         if (_animClock->actionNeed(0.125) == 1) {
             _choosed_exture = (_choosed_exture % 3) + 1;
-            player::_texture_rect.left = _choosed_exture * 16;
-            player::_sprite.setTextureRect(_texture_rect);
+            _texture_rect.left = _choosed_exture * 16;
+            _sprite.setTextureRect(_texture_rect);
         }
     } else {
-        player::_velocity.x += addapter * (SKIDDING_DECELERATION * _scale);
+        _velocity.x += addapter * (SKIDDING_DECELERATION * _scale);
         _skidding = true;
     }
-    if (player::_velocity.x * addapter > (MAXIMUM_WALK_SPEED * _scale))
-        player::_velocity.x = addapter * (MAXIMUM_WALK_SPEED * _scale);
+    if (_velocity.x * addapter > (MAXIMUM_WALK_SPEED * _scale))
+        _velocity.x = addapter * (MAXIMUM_WALK_SPEED * _scale);
 }
 
 void player::_updateMovementRunning(int direction)
@@ -227,36 +223,38 @@ void player::_updateMovementRunning(int direction)
 
     if (direction == -1) {
         _runningFramesLeft = 0;
-        return player::_handleIdleInput();
+        return _handleIdleInput();
     }
     if (direction == 0)
         addapter = -1;
-    if (player::_velocity.x * addapter >= addapter * -addapter * (SKID_TURNAROUND_SPEED * _scale)) {
-        player::_velocity.x += addapter * (RUNNING_ACCELERATION * _scale);
+    if (_velocity.x * addapter >= addapter * -addapter * (SKID_TURNAROUND_SPEED * _scale)) {
+        _velocity.x += addapter * (RUNNING_ACCELERATION * _scale);
         _skidding = false;
         if (_animClock->actionNeed(0.0635) == 1) {
             _choosed_exture = (_choosed_exture % 3) + 1;
-            player::_texture_rect.left = _choosed_exture * 16;
-            player::_sprite.setTextureRect(_texture_rect);
+            _texture_rect.left = _choosed_exture * 16;
+            _sprite.setTextureRect(_texture_rect);
         }
     } else {
-        player::_velocity.x += addapter * (SKIDDING_DECELERATION * _scale);
+        _velocity.x += addapter * (SKIDDING_DECELERATION * _scale);
         _skidding = true;
         if (_animClock->actionNeed(0.0635) == 1) {
             _choosed_exture = 4;
-            player::_texture_rect.left = _choosed_exture * 16;
-            player::_sprite.setTextureRect(_texture_rect);
+            _texture_rect.left = _choosed_exture * 16;
+            _sprite.setTextureRect(_texture_rect);
         }
     }
-    if (player::_velocity.x * addapter > addapter * addapter * (MAXIMUM_RUNNING_SPEED * _scale))
-        player::_velocity.x = addapter * (MAXIMUM_RUNNING_SPEED * _scale);
+    if (_velocity.x * addapter > addapter * addapter * (MAXIMUM_RUNNING_SPEED * _scale))
+        _velocity.x = addapter * (MAXIMUM_RUNNING_SPEED * _scale);
 } //actuellement mario "snap" à la walk speed directement quand il ne court plus (il ne ralentit pas progressivement).
 
 void player::_handleJumping()
 {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && _onGround) {
-        player::_texture_rect.left = 80;
-        player::_sprite.setTextureRect(_texture_rect);
+        if (_texture_rect.left != 80) {
+            _texture_rect.left = 80;
+            _sprite.setTextureRect(_texture_rect);
+        }
         _animated = 1;
         if (_velocity.x < 1 * _scale)
             _velocity.y += V_L1_UP * _scale;
@@ -341,17 +339,32 @@ void player::_handleInput()
         _runningFramesLeft = 10;
     else if (_runningFramesLeft != 0)
         _runningFramesLeft--;
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
-        direction = 0;
-        _animated = 1;
-        if (_onGround)
-            _facingRight = false;
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        direction = 1;
-        _animated = 1;
-        if (_onGround)
-            _facingRight = true;
+    if (_character == "mario") {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q)) {
+            direction = 0;
+            _animated = 1;
+            if (_onGround)
+                _facingRight = false;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
+            direction = 1;
+            _animated = 1;
+            if (_onGround)
+                _facingRight = true;
+        }
+    } else {
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+            direction = 0;
+            _animated = 1;
+            if (_onGround)
+                _facingRight = false;
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
+            direction = 1;
+            _animated = 1;
+            if (_onGround)
+                _facingRight = true;
+        }
     }
 
     _handleJumping();
@@ -376,24 +389,28 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
 
     player::_checkInvincibility();
     player::_handleInput();
-
+     
+    if (_position.x < int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale))) {
+        _position.x = int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale));
+    }
+    _position.y += _velocity.y;
     if (_velocity.x >= (MINIMUM_WALK_VELOCITY * _scale) || _velocity.x <= -(MINIMUM_WALK_VELOCITY * _scale)) {
-        _position += _velocity;
+        _position.x += _velocity.x;
         if (_position.x < int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale))) {
             _position.x = int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale));
             _velocity.x = 0;
         }
-        if (_position.x > (map.size() - 0.5) * 16 * _scale) {
-            _position.x = (map.size() - 0.5) * 16 * _scale;
+        if (_position.x > (map.size() - 0.75) * 16 * _scale) {
+            _position.x = (map.size() - 0.75) * 16 * _scale;
             _velocity.x = 0;
         }
-        _sprite.setPosition(_position);
     }
     if (!_facingRight)
         _sprite.setScale({-_scale, _scale});
     else
         _sprite.setScale({_scale, _scale});
 
+    _sprite.setPosition(_position);
     player::_draw(window);
 }
 

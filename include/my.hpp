@@ -19,6 +19,7 @@
 #include "gameClock.hpp"
 #include "block.hpp"
 #include "player.hpp"
+#include "entity.hpp"
 #include "game.hpp"
 #include "constant.hpp"
 

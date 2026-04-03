@@ -34,7 +34,7 @@ public:
 void actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map);
 
 private:
-    std::string _character; // mario ou luigi
+    std::string _character; // mario, luigi ou wario
 
     int _size;              // 0: small, 1: big, 2: fire
     bool _alive;            // true: vivant, false: mort

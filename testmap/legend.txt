@@ -28,8 +28,7 @@ V = block invisible avec un one up
 // et la quantité de pièces dans un block
 
 g = goomba
-k = shell but if is k it's a koopa troopa
-                    k
+k = shell but if is K it's a koopa troopa
 
 c = coin
 u = mushroom
