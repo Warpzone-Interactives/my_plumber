@@ -27,6 +27,7 @@ public:
     sf::RenderWindow *_window;
     player *_player1;
     player *_player2;
+    entity *_enemy;
 
 private:
 
@@ -38,6 +39,7 @@ private:
     void debugMod();
     void manageDebugMod();
     void anime();
+    void actualized_camera();
 
     // ---| init map |---
     void get_Size();

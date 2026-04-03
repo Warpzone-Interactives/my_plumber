@@ -16,8 +16,12 @@ game::game(char *filepath, sf::RenderWindow *window, sf::View *view, player *pla
     _window = window;
     _window->setFramerateLimit(60);
     camera = view;
-    window->setView(*camera);
-    window->setMouseCursorVisible(false);
+    _window->setView(*camera);
+    _window->setMouseCursorVisible(false);
+    sf::Image icon;
+    icon.loadFromFile("ressources/ow/placeholder.png"); 
+    _window->setIcon(icon.getSize().x, icon.getSize().y, icon.getPixelsPtr());
+    _enemy = NULL;
 
     _debugFont.loadFromFile("ressources/debugFont.ttf");
     _debugStr.insert(0, "Debug Mod = True");
@@ -51,17 +55,6 @@ game::game(char *filepath, sf::RenderWindow *window, sf::View *view, player *pla
     initBlockTexture();
 }
 
-void game::initLstBlock()
-{
-    std::vector<block *> lst;
-    for (int y = 0; y < width; y++) {
-        lst.push_back(NULL);
-    }
-    for (int x = 0; x < length; x++) {
-        lstBlock.push_back(lst);
-    }
-}
-
 int game::getWhere(std::string filepath)
 {
     std::ifstream input(filepath);
@@ -85,6 +78,18 @@ void game::loadMap(std::string filepath)
     return;
 }
 
+void game::initLstBlock()
+{
+    std::vector<block *> lst;
+
+    for (int y = 0; y < width; y++) {
+        lst.push_back(NULL);
+    }
+    for (int x = 0; x < length; x++) {
+        lstBlock.push_back(lst);
+    }
+}
+
 void game::initBlockTexture()
 {
     sf::Texture loading_texture;
@@ -101,6 +106,14 @@ void game::initBlockTexture()
     _blockTextures.insert({ 'X',  loading_texture});
     loading_texture.loadFromFile("ressources/" + _where + "/pipe.png");
     _blockTextures.insert({ 'p',  loading_texture});
+    loading_texture.loadFromFile("ressources/" + _where + "/power_up/one_up.png");
+    _blockTextures.insert({ 'o',  loading_texture});
+    loading_texture.loadFromFile("ressources/" + _where + "/power_up/mushroom.png");
+    _blockTextures.insert({ 'u',  loading_texture});
+    loading_texture.loadFromFile("ressources/" + _where + "/power_up/fire_flower.png");
+    _blockTextures.insert({ 'i',  loading_texture});
+    loading_texture.loadFromFile("ressources/" + _where + "/coin.png");
+    _blockTextures.insert({ 'c',  loading_texture});
 }
 
 // -------------------| end init game |-------------------
@@ -136,11 +149,23 @@ void game::get_Size()
 
 void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> grid_line)
 {
+    std::string test = "gkKcuoi";
+    block *n_block = NULL;
+    entity *n_entity = NULL;
+
     for (std::size_t i = 0; i < map_line.size(); i++) {
         if (map_line[i] == ' ')
             continue;
-        block *n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), _scale);
-        lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
+        if (test.find(map_line[i]) < test.size()) {
+            n_entity = new entity(grid_line[i], map_line[i], getTexture(map_line[i]), _scale);
+            if (_enemy == NULL)
+                _enemy = n_entity;
+            else
+                _enemy->append(n_entity);
+        } else {
+            n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), _scale);
+            lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
+        }
     }
 }
 
@@ -169,7 +194,7 @@ sf::IntRect game::getVerticalPipeRect(int x, int y)
 {
     int xSize = 0;
     int ySize = 0;
-    if ((x + 1 < lstBlock.size()) && lstBlock[x + 1][y] != NULL && lstBlock[x + 1][y]->getType() == '|') // si a droite c'est un pipe Vertical
+    if ((x + 1 < int(lstBlock.size())) && lstBlock[x + 1][y] != NULL && lstBlock[x + 1][y]->getType() == '|') // si a droite c'est un pipe Vertical
     {
         if ((x > 0) && lstBlock[x - 1][y] != NULL &&
             (lstBlock[x - 1][y]->getType() == '-' || // si a droite c'est un pipe horizontal
@@ -184,7 +209,7 @@ sf::IntRect game::getVerticalPipeRect(int x, int y)
     }
     else
     {
-        if ((x + 1 < lstBlock.size()) && lstBlock[x + 1][y] != NULL &&
+        if ((x + 1 < int(lstBlock.size())) && lstBlock[x + 1][y] != NULL &&
             (lstBlock[x + 1][y]->getType() == '-' ||
              lstBlock[x + 1][y]->getType() == '>'))
         {
@@ -218,8 +243,8 @@ sf::IntRect game::getPipeRect(int x, int y)
 
 void game::initPipe()
 {
-    for (int x = 0; x < lstBlock.size(); x++) {
-        for (int y = 0; y < lstBlock[x].size(); y++) {
+    for (int x = 0; x < int(lstBlock.size()); x++) {
+        for (int y = 0; y < int(lstBlock[x].size()); y++) {
             if (lstBlock[x][y] != NULL &&
                 (lstBlock[x][y]->getType() == '|' ||
                 lstBlock[x][y]->getType() == '-')) {
@@ -238,8 +263,8 @@ void game::initHitBox()
     int right = 0;
     int top = 0;
     int bottom = 0;
-    for (int x = 0; x < lstBlock.size(); x++) {
-        for (int y = 0; y < lstBlock[x].size(); y++) {
+    for (int x = 0; x < int(lstBlock.size()); x++) {
+        for (int y = 0; y < int(lstBlock[x].size()); y++) {
             if (lstBlock[x][y] != NULL) {
                 if(x > 0 && lstBlock[x - 1][y] == NULL)
                     left = 1;
@@ -247,7 +272,7 @@ void game::initHitBox()
                     right = 1;
                 if(y > 0 && lstBlock[x][y - 1] == NULL)
                     top = 1;
-                if(y < lstBlock[x].size() - 1 && lstBlock[x][y + 1] == NULL)
+                if(y < int(lstBlock[x].size()) - 1 && lstBlock[x][y + 1] == NULL)
                     bottom = 1;
                 lstBlock[x][y]->setHitBox(left, right, top, bottom);
                 left = 0;
@@ -340,9 +365,9 @@ void game::manageBlock()
         anime();
         animate = 1;
     }
-    for (std::size_t i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * _scale));
-        i < lstBlock.size() && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * _scale)); i++)
-        for (std::size_t j = 0; j < lstBlock[i].size(); j++)
+    for (int i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * _scale));
+        i < int(lstBlock.size()) && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * _scale)); i++)
+        for (int j = 0; j < int(lstBlock[i].size()); j++)
             if (lstBlock[i][j] != NULL) {
                 lstBlock[i][j]->draw(*_window, _debug);
                 if (lstBlock[i][j]->isAnimated() && animate == 1)
@@ -363,18 +388,47 @@ void game::manageDebugMod()
     if (_debug == 1) {
         _debugStr.clear();
         std::string str = "Debug Mod =\ttrue\n";
-        str += "player type = \t" + _player1->getChar() + "\n";
-        str += "player size = \t" + _player1->getSize() + "\n";
-        str += "player facing = \t" + _player1->getFacing() + "\n";
-        str += "player on Ground = \t" + _player1->getOnGround() + "\n";
-        str += "player is Alive = \t" + _player1->getAlive() + "\n";
-        str += "Player x pos =\t" + std::to_string(_player1->getPos().x / (_scale * 16) - 0.5) + "\n";
-        str += "Player y pos =\t" + std::to_string(_player1->getPos().y / (_scale * 16) - 0.5) + "\n";
-        str += "Player x vel =\t" + std::to_string(_player1->getVel().x / _scale) + "\n";
-        str += "Player y vel =\t" + std::to_string(_player1->getVel().y / _scale) + "\n";
+        str += "player1 type = \t" + _player1->getChar() + "\n";
+        str += "player1 size = \t" + _player1->getSize() + "\n";
+        str += "player1 facing = \t" + _player1->getFacing() + "\n";
+        str += "player1 on Ground = \t" + _player1->getOnGround() + "\n";
+        str += "player1 is Alive = \t" + _player1->getAlive() + "\n";
+        str += "Player1 x pos =\t" + std::to_string(_player1->getPos().x / (_scale * 16) - 0.5) + "\n";
+        str += "Player1 y pos =\t" + std::to_string(_player1->getPos().y / (_scale * 16) - 0.5) + "\n";
+        str += "Player1 x vel =\t" + std::to_string(_player1->getVel().x / _scale) + "\n";
+        str += "Player1 y vel =\t" + std::to_string(_player1->getVel().y / _scale) + "\n";
+        if (_player2 != NULL) {
+            str += "player2 type = \t" + _player2->getChar() + "\n";
+            str += "player2 size = \t" + _player2->getSize() + "\n";
+            str += "player2 facing = \t" + _player2->getFacing() + "\n";
+            str += "player2 on Ground = \t" + _player2->getOnGround() + "\n";
+            str += "player2 is Alive = \t" + _player2->getAlive() + "\n";
+            str += "Player2 x pos =\t" + std::to_string(_player2->getPos().x / (_scale * 16) - 0.5) + "\n";
+            str += "Player2 y pos =\t" + std::to_string(_player2->getPos().y / (_scale * 16) - 0.5) + "\n";
+            str += "Player2 x vel =\t" + std::to_string(_player2->getVel().x / _scale) + "\n";
+            str += "Player2 y vel =\t" + std::to_string(_player2->getVel().y / _scale) + "\n";
+        }
+        str += "nb enemy alive =\t" + std::to_string(0) + "\n";
+        str += "nb enemy total =\t" + std::to_string(0) + "\n";
         _debugStr.insert(0, str);
         _debugInfo.setString(_debugStr);
         _window->draw(_debugInfo);
+    }
+}
+
+void game::actualized_camera()
+{
+    if (camera->getCenter().x < _player1->getPos().x) {
+        camera->setCenter(_player1->getPos().x, _window->getSize().y / 2);
+        _window->setView(*camera);
+        _debugInfo.setPosition({camera->getCenter().x + (camera->getSize().x / 4), camera->getCenter().y - (camera->getSize().y / 2)});
+        _backGround.setPosition(camera->getCenter());
+    }
+    if (_player2 != NULL && camera->getCenter().x < _player2->getPos().x) {
+        camera->setCenter(_player2->getPos().x, _window->getSize().y / 2);
+        _window->setView(*camera);
+        _debugInfo.setPosition({camera->getCenter().x + (camera->getSize().x / 4), camera->getCenter().y - (camera->getSize().y / 2)});
+        _backGround.setPosition(camera->getCenter());
     }
 }
 
@@ -392,13 +446,10 @@ void game::loop()
             if (_player2 != NULL)
                 _player2->actualize(*_window, camera, lstBlock);
             manageDebugMod();
+            if (_enemy != NULL)
+                _enemy->actualize(*_window, camera, lstBlock);
             _window->display();
-            if (camera->getCenter().x < _player1->getPos().x) {
-                camera->setCenter(_player1->getPos().x, _window->getSize().y / 2);
-                _window->setView(*camera);
-                _debugInfo.setPosition({camera->getCenter().x + (camera->getSize().x / 4), camera->getCenter().y - (camera->getSize().y / 2)});
-                _backGround.setPosition(camera->getCenter());
-            }
+            actualized_camera();
         }
 }
 
