@@ -86,7 +86,7 @@ void game::initLstBlock()
         lst.push_back(NULL);
     }
     for (int x = 0; x < length; x++) {
-        lstBlock.push_back(lst);
+        _lstBlock.push_back(lst);
     }
 }
 
@@ -164,7 +164,7 @@ void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> gri
                 _enemy->append(_enemy, n_entity);
         } else {
             n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), _scale);
-            lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
+            _lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
         }
     }
 }
@@ -194,29 +194,29 @@ sf::IntRect game::getVerticalPipeRect(int x, int y)
 {
     int xSize = 0;
     int ySize = 0;
-    if ((x + 1 < int(lstBlock.size())) && lstBlock[x + 1][y] != NULL && lstBlock[x + 1][y]->getType() == '|') // si a droite c'est un pipe Vertical
+    if ((x + 1 < int(_lstBlock.size())) && _lstBlock[x + 1][y] != NULL && _lstBlock[x + 1][y]->getType() == '|') // si a droite c'est un pipe Vertical
     {
-        if ((x > 0) && lstBlock[x - 1][y] != NULL &&
-            (lstBlock[x - 1][y]->getType() == '-' || // si a droite c'est un pipe horizontal
-             lstBlock[x - 1][y]->getType() == '<'))  // ou une sortie
+        if ((x > 0) && _lstBlock[x - 1][y] != NULL &&
+            (_lstBlock[x - 1][y]->getType() == '-' || // si a droite c'est un pipe horizontal
+             _lstBlock[x - 1][y]->getType() == '<'))  // ou une sortie
         {
             ySize += 32;
-            if ((y > 0) && lstBlock[x - 1][y - 1] != NULL &&
-                (lstBlock[x - 1][y - 1]->getType() == '-' || // si c'est la partie du bas ou pas
-                 lstBlock[x - 1][y - 1]->getType() == '<'))
+            if ((y > 0) && _lstBlock[x - 1][y - 1] != NULL &&
+                (_lstBlock[x - 1][y - 1]->getType() == '-' || // si c'est la partie du bas ou pas
+                 _lstBlock[x - 1][y - 1]->getType() == '<'))
                 ySize += 16;
         }
     }
     else
     {
-        if ((x + 1 < int(lstBlock.size())) && lstBlock[x + 1][y] != NULL &&
-            (lstBlock[x + 1][y]->getType() == '-' ||
-             lstBlock[x + 1][y]->getType() == '>'))
+        if ((x + 1 < int(_lstBlock.size())) && _lstBlock[x + 1][y] != NULL &&
+            (_lstBlock[x + 1][y]->getType() == '-' ||
+             _lstBlock[x + 1][y]->getType() == '>'))
         {
             ySize += 32;
-            if ((y > 0) && lstBlock[x + 1][y - 1] != NULL &&
-                (lstBlock[x + 1][y - 1]->getType() == '-' ||
-                 lstBlock[x + 1][y - 1]->getType() == '>'))
+            if ((y > 0) && _lstBlock[x + 1][y - 1] != NULL &&
+                (_lstBlock[x + 1][y - 1]->getType() == '-' ||
+                 _lstBlock[x + 1][y - 1]->getType() == '>'))
                 ySize += 16;
         }
         xSize += 16;
@@ -228,11 +228,11 @@ sf::IntRect game::getPipeRect(int x, int y)
 {
     int xSize = 0;
     int ySize = 0;
-    if (lstBlock[x][y] == NULL)
+    if (_lstBlock[x][y] == NULL)
         return {xSize, y, 0, 0};
-    if (lstBlock[x][y]->getType() == '-') { // si tuyaux horizontal
+    if (_lstBlock[x][y]->getType() == '-') { // si tuyaux horizontal
         ySize += 16;
-        if ((y > 0) && lstBlock[x][y - 1] != NULL && lstBlock[x][y - 1]->getType() == '-') // si au dessus c'est un tuyaux vertical
+        if ((y > 0) && _lstBlock[x][y - 1] != NULL && _lstBlock[x][y - 1]->getType() == '-') // si au dessus c'est un tuyaux vertical
             xSize += 16;
         return {xSize, ySize, 16, 16};
     } else {                                 // sinon tyaux vertical
@@ -243,12 +243,12 @@ sf::IntRect game::getPipeRect(int x, int y)
 
 void game::initPipe()
 {
-    for (int x = 0; x < int(lstBlock.size()); x++) {
-        for (int y = 0; y < int(lstBlock[x].size()); y++) {
-            if (lstBlock[x][y] != NULL &&
-                (lstBlock[x][y]->getType() == '|' ||
-                lstBlock[x][y]->getType() == '-')) {
-                lstBlock[x][y]->setTexture(getTexture('p'), getPipeRect(x, y));
+    for (int x = 0; x < int(_lstBlock.size()); x++) {
+        for (int y = 0; y < int(_lstBlock[x].size()); y++) {
+            if (_lstBlock[x][y] != NULL &&
+                (_lstBlock[x][y]->getType() == '|' ||
+                _lstBlock[x][y]->getType() == '-')) {
+                _lstBlock[x][y]->setTexture(getTexture('p'), getPipeRect(x, y));
             }
         }
     }
@@ -263,18 +263,18 @@ void game::initHitBox()
     int right = 0;
     int top = 0;
     int bottom = 0;
-    for (int x = 0; x < int(lstBlock.size()); x++) {
-        for (int y = 0; y < int(lstBlock[x].size()); y++) {
-            if (lstBlock[x][y] != NULL) {
-                if(x > 0 && lstBlock[x - 1][y] == NULL)
+    for (int x = 0; x < int(_lstBlock.size()); x++) {
+        for (int y = 0; y < int(_lstBlock[x].size()); y++) {
+            if (_lstBlock[x][y] != NULL) {
+                if(x > 0 && _lstBlock[x - 1][y] == NULL)
                     left = 1;
-                if(x < length - 1 && lstBlock[x + 1][y] == NULL)
+                if(x < length - 1 && _lstBlock[x + 1][y] == NULL)
                     right = 1;
-                if(y > 0 && lstBlock[x][y - 1] == NULL)
+                if(y > 0 && _lstBlock[x][y - 1] == NULL)
                     top = 1;
-                if(y < int(lstBlock[x].size()) - 1 && lstBlock[x][y + 1] == NULL)
+                if(y < int(_lstBlock[x].size()) - 1 && _lstBlock[x][y + 1] == NULL)
                     bottom = 1;
-                lstBlock[x][y]->setHitBox(left, right, top, bottom);
+                _lstBlock[x][y]->setHitBox(left, right, top, bottom);
                 left = 0;
                 right = 0;
                 top = 0;
@@ -366,12 +366,12 @@ void game::manageBlock()
         animate = 1;
     }
     for (int i = int((camera->getCenter().x - (camera->getSize().x / 2)) / (16 * _scale));
-        i < int(lstBlock.size()) && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * _scale)); i++)
-        for (int j = 0; j < int(lstBlock[i].size()); j++)
-            if (lstBlock[i][j] != NULL) {
-                lstBlock[i][j]->draw(*_window, _debug);
-                if (lstBlock[i][j]->isAnimated() && animate == 1)
-                    lstBlock[i][j]->setRect(_rect);
+        i < int(_lstBlock.size()) && i < int(1 + (camera->getCenter().x + (camera->getSize().x / 2)) / (16 * _scale)); i++)
+        for (int j = 0; j < int(_lstBlock[i].size()); j++)
+            if (_lstBlock[i][j] != NULL) {
+                _lstBlock[i][j]->draw(*_window, _debug);
+                if (_lstBlock[i][j]->isAnimated() && animate == 1)
+                    _lstBlock[i][j]->setRect(_rect);
             }
 }
 
@@ -432,7 +432,7 @@ void game::actualized_camera()
     }
 }
 
-void game::loop(game *self)
+void game::loop()
 {
     sf::Clock frames;
 
@@ -442,12 +442,12 @@ void game::loop(game *self)
             _window->clear();
             _window->draw(_backGround);
             manageBlock();
-            _player1->actualize(*_window, camera, lstBlock);
+            _player1->actualize(this);
             if (_player2 != NULL)
-                _player2->actualize(*_window, camera, lstBlock);
+                _player2->actualize(this);
             manageDebugMod();
             if (_enemy != NULL)
-                _enemy->actualize(self);
+                _enemy->actualize(this);
             _window->display();
             actualized_camera();
         }
@@ -464,4 +464,9 @@ sf::Texture game::getTexture(char c)
     } else {
         return _blockTextures['/'];
     }
+}
+
+std::vector<std::vector<block*>> game::getMap()
+{
+    return _lstBlock;
 }

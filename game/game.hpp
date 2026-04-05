@@ -24,7 +24,8 @@ public:
     int getError();
     void initLevel();
     sf::Texture getTexture(char c);
-    void loop(game *self);
+    void loop();
+    std::vector<std::vector<block*>> getMap();
 
     gameClock *animClock;
     int status;
@@ -64,7 +65,7 @@ private:
 
     sf::IntRect _rect; // rect for texture
     std::map<char, sf::Texture> _textures;
-    std::vector<std::vector<block *>> lstBlock;
+    std::vector<std::vector<block *>> _lstBlock;
     int _direction; // how chosse next sprite
 
     int length;

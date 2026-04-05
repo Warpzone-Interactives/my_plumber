@@ -31,7 +31,7 @@ public:
     std::string getOnGround();
     std::string getAlive();
 
-void actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map);
+    void actualize(game *game);
 
 private:
     std::string _character; // mario, luigi ou wario
@@ -50,6 +50,11 @@ private:
     bool _onGround; //Pour check si il peut sauter
     bool _facingRight; // true: droite, false: gauche
 
+    sf::RectangleShape *_leftHitBox; // rect for hitbox
+    sf::RectangleShape *_rightHitBox; // rect for hitbox
+    sf::RectangleShape *_topHitBox; // rect for hitbox
+    sf::RectangleShape *_bottomHitBox; // rect for hitbox
+
     int _sprite_nb;
 
     sf::IntRect _texture_rect; // rect for texture
@@ -64,7 +69,7 @@ private:
     float _maxAirSpeed;
     float _jumpStartingVelocity;
 
-    void _draw(sf::RenderWindow &window);
+    void _draw(sf::RenderWindow *window);
     void _kill();
     void _chooseTexture();
     void _setTexture(std::string filePath);

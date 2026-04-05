@@ -125,9 +125,9 @@ void player::_kill()
     //3 blocs + 7 pixels vers le haut
 }
 
-void player::_draw(sf::RenderWindow &window)
+void player::_draw(sf::RenderWindow *window)
 {
-    window.draw(_sprite);
+    (*window).draw(_sprite);
 }
 
 void player::sizeUp()
@@ -176,26 +176,26 @@ void player::_checkInvincibility()
 }
 
 
-void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map)
+void player::actualize(game *game)
 {
     _onGround = false;
-    player::_checkCollision(map);
+    player::_checkCollision(game->getMap());
 
     player::_checkInvincibility();
     player::_handleInput();
      
-    if (_position.x < int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale))) {
-        _position.x = int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale));
+    if (_position.x < int(game->camera->getCenter().x - (game->camera->getSize().x / 2) + (8 * _scale))) {
+        _position.x = int(game->camera->getCenter().x - (game->camera->getSize().x / 2) + (8 * _scale));
     }
     _position.y += _velocity.y;
     if (_velocity.x >= (MINIMUM_WALK_VELOCITY * _scale) || _velocity.x <= -(MINIMUM_WALK_VELOCITY * _scale)) {
         _position.x += _velocity.x;
-        if (_position.x < int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale))) {
-            _position.x = int(camera->getCenter().x - (camera->getSize().x / 2) + (8 * _scale));
+        if (_position.x < int(game->camera->getCenter().x - (game->camera->getSize().x / 2) + (8 * _scale))) {
+            _position.x = int(game->camera->getCenter().x - (game->camera->getSize().x / 2) + (8 * _scale));
             _velocity.x = 0;
         }
-        if (_position.x > (map.size() - 0.75) * 16 * _scale) {
-            _position.x = (map.size() - 0.75) * 16 * _scale;
+        if (_position.x > (game->getMap().size() - 0.75) * 16 * _scale) {
+            _position.x = (game->getMap().size() - 0.75) * 16 * _scale;
             _velocity.x = 0;
         }
     }
@@ -205,7 +205,7 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
         _sprite.setScale({_scale, _scale});
 
     _sprite.setPosition(_position);
-    player::_draw(window);
+    player::_draw(game->_window);
 }
 
 void player::_checkCollision(std::vector<std::vector<block*>> map)
