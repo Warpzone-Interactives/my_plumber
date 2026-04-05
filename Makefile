@@ -11,6 +11,7 @@ CC	=	g++
 LIB_NAME	=	libmy.a
 
 LIB_SRC	=	player/player.cpp	\
+		player/playerMovement.cpp	\
 		block/block.cpp	\
 		game/game.cpp	\
 		gameClock/gameClock.cpp	\
