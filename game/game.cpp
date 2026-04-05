@@ -161,7 +161,7 @@ void game::createLine(const std::string &map_line, std::vector<sf::Vector2f> gri
             if (_enemy == NULL)
                 _enemy = n_entity;
             else
-                _enemy->append(n_entity);
+                _enemy->append(_enemy, n_entity);
         } else {
             n_block = new block(grid_line[i], map_line[i], getTexture(map_line[i]), _scale);
             lstBlock[grid_line[i].x / 16][grid_line[i].y / 16] = n_block;
@@ -432,7 +432,7 @@ void game::actualized_camera()
     }
 }
 
-void game::loop()
+void game::loop(game *self)
 {
     sf::Clock frames;
 
@@ -447,7 +447,7 @@ void game::loop()
                 _player2->actualize(*_window, camera, lstBlock);
             manageDebugMod();
             if (_enemy != NULL)
-                _enemy->actualize(*_window, camera, lstBlock);
+                _enemy->actualize(self);
             _window->display();
             actualized_camera();
         }

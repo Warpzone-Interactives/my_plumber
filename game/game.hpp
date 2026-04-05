@@ -10,6 +10,11 @@
 #ifndef GENERAL_HPP
     #define GENERAL_HPP
 
+class entity;
+class player;
+class block;
+class gameClock;
+
 class game
 {
 public:
@@ -19,7 +24,7 @@ public:
     int getError();
     void initLevel();
     sf::Texture getTexture(char c);
-    void loop();
+    void loop(game *self);
 
     gameClock *animClock;
     int status;

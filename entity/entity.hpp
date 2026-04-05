@@ -22,14 +22,15 @@ public:
 
     sf::Vector2f getPos();
 
-    void actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map);
-    void append(entity *n_entity);
+    void actualize(game *game);
+    void append(entity *_self, entity *n_entity);
 
 private:
 
     void _is_object();
     void _anime();
-    void _draw(sf::RenderWindow &window);
+    void _draw(sf::RenderWindow *window);
+    void _destroy();
 
     char _what;  // coin, goomba, koopa, shroom etc
 
@@ -56,6 +57,7 @@ private:
 
     int _runningFramesLeft;
 
+    entity *_previous;
     entity *_next;
 
     void _kill();

@@ -18,7 +18,7 @@ int lauch_game(char **av)
     if (game.getError() != 0)
         return 84;
     game.initLevel();
-    game.loop();
+    game.loop(&game);
     return 0;
 }
 

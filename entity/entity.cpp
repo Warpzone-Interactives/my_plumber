@@ -25,6 +25,7 @@ entity::entity(sf::Vector2f position, char m, sf::Texture texture, float scale)
     _topHitBox = NULL;
     _bottomHitBox = NULL;
     _next = NULL;
+    _previous = NULL;
     if (_what == 'o' || _what == 'u' || _what == 'i' || _what == 'c')
         _is_object();
 }
@@ -45,26 +46,27 @@ void entity::_is_object()
         _nbAnime = 1;
 }
 
-void entity::append(entity *n_entity)
+void entity::append(entity *_self, entity *n_entity)
 {
-    if (_next == NULL)
+    if (_next == NULL) {
         _next = n_entity;
-    else
-        _next->append(n_entity);
+        n_entity->_previous = _self;
+    } else
+        _next->append(_next, n_entity);
 }
 
-void entity::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map)
+void entity::actualize(game *game)
 {
-    _draw(window);
+    _draw(game->_window);
     if (_animClock != NULL && _animClock->actionNeed(0.03125) == 1)
         _anime();
     if (_next != NULL)
-        _next->actualize(window, camera, map);
+        _next->actualize(game);
 }
 
-void entity::_draw(sf::RenderWindow &window)
+void entity::_draw(sf::RenderWindow *window)
 {
-    window.draw(_sprite);
+    (*window).draw(_sprite);
 }
 
 void entity::_anime()
@@ -73,4 +75,12 @@ void entity::_anime()
         _texture_rect.left = (_texture_rect.left + 16) % (_nbAnime * 16);
         _sprite.setTextureRect(_texture_rect);
     }
+}
+
+void entity::_destroy()
+{
+    if (_previous != NULL)
+        _previous->_next = _next;
+    if (_next != NULL)
+        _next->_previous = _previous;
 }

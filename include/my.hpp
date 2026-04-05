@@ -16,11 +16,11 @@
 #include <fstream>
 #include <cstdio>
 #include <iostream>
+#include "game.hpp"
 #include "gameClock.hpp"
 #include "block.hpp"
 #include "player.hpp"
 #include "entity.hpp"
-#include "game.hpp"
 #include "constant.hpp"
 
 #endif
