@@ -23,6 +23,8 @@ public:
 
     void setScale(int scale);
 
+    sf::FloatRect hitbox;
+
     sf::Vector2f getPos();
     sf::Vector2f getVel();
     std::string getChar();

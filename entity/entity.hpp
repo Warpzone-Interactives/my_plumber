@@ -10,6 +10,8 @@
 #ifndef ENTITY_HPP_
     #define ENTITY_HPP_
 
+class game;
+
 class entity
 {
 public:
@@ -20,16 +22,21 @@ public:
 
     void setScale(int scale);
 
+    void kill();
+
     sf::Vector2f getPos();
 
-    void actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map);
+    void actualize(game *game);
     void append(entity *n_entity);
+
+    void isColliding(game *game);
 
 private:
 
     void _is_object();
     void _anime();
     void _draw(sf::RenderWindow &window);
+    void _determineCollisionEffect(char what);
 
     char _what;  // coin, goomba, koopa, shroom etc
 
@@ -45,6 +52,7 @@ private:
     sf::RectangleShape *_rightHitBox; // rect for hitbox
     sf::RectangleShape *_topHitBox; // rect for hitbox
     sf::RectangleShape *_bottomHitBox; // rect for hitbox
+    sf::FloatRect _hitBox; // rect for hitbox
 
     float _scale; //scale of the map
     sf::IntRect _texture_rect; // rect for texture
@@ -58,7 +66,8 @@ private:
 
     entity *_next;
 
-    void _kill();
+    void (*_onCollisionEffect)(game *game, entity *self);
+
     void _chooseTexture();
     void _setTexture(std::string filePath);
 

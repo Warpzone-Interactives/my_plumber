@@ -22,7 +22,10 @@ public:
     void loop();
 
     gameClock *animClock;
+    int coinCount;
+    int lifeCount;
     int status;
+    std::vector<std::vector<block *>> lstBlock;
     sf::View *camera;
     sf::RenderWindow *_window;
     player *_player1;
@@ -59,7 +62,6 @@ private:
 
     sf::IntRect _rect; // rect for texture
     std::map<char, sf::Texture> _textures;
-    std::vector<std::vector<block *>> lstBlock;
     int _direction; // how chosse next sprite
 
     int length;

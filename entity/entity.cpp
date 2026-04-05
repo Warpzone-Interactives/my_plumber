@@ -7,6 +7,39 @@
 
 #include "entity.hpp"
 
+void addCoin(game *game, entity *entity)
+{
+    game->coinCount++;
+    printf("coin\n");
+    entity->kill();
+}
+
+void addLife(game *game, entity *entity)
+{
+    game->lifeCount++;
+    printf("oneup\n");
+    entity->kill();
+}
+
+void sizeUp(game *game, entity *entity)
+{
+    //trouver le player le plus proche
+    game->_player1->sizeUp();
+    printf("up\n");
+    entity->kill();
+}
+
+void sizeDown(game *game, entity *entity)
+{
+    //trouver le player le plus proche
+    game->_player1->sizeDown();
+}
+
+void shellThrow(game *game, entity *entity)
+{
+    entity->kill();
+}
+
 entity::entity(sf::Vector2f position, char m, sf::Texture texture, float scale)
 {
     _scale = int(scale);
@@ -25,8 +58,43 @@ entity::entity(sf::Vector2f position, char m, sf::Texture texture, float scale)
     _topHitBox = NULL;
     _bottomHitBox = NULL;
     _next = NULL;
+
+    sf::FloatRect rect({position.x, position.y}, {16 * scale, 16 *scale});
+    _hitBox = rect;
+
+    _determineCollisionEffect(_what);
     if (_what == 'o' || _what == 'u' || _what == 'i' || _what == 'c')
         _is_object();
+}
+
+void entity::_determineCollisionEffect(char what)
+{
+    switch (what) {
+        case 'o':
+            _onCollisionEffect = &addLife;
+            return;
+        case 'u':
+            _onCollisionEffect = &sizeUp;
+            return;
+        case 'i':
+            _onCollisionEffect = &sizeUp;
+            return;
+        case 'c':
+            _onCollisionEffect = &addCoin;
+            return;
+        case 'k':
+            _onCollisionEffect = &shellThrow;
+            return;
+        case 'K':
+            _onCollisionEffect = &sizeDown;
+            return;
+        case 'g':
+            _onCollisionEffect = &sizeDown;
+            return;
+        default:
+            _onCollisionEffect = NULL;
+            return;
+    }
 }
 
 void entity::_is_object()
@@ -53,13 +121,16 @@ void entity::append(entity *n_entity)
         _next->append(n_entity);
 }
 
-void entity::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<std::vector<block*>> map)
+void entity::actualize(game *game)
 {
-    _draw(window);
+    if (!_alive)
+        return;
+    _draw(*(game->_window));
+    isColliding(game);
     if (_animClock != NULL && _animClock->actionNeed(0.03125) == 1)
         _anime();
     if (_next != NULL)
-        _next->actualize(window, camera, map);
+        _next->actualize(game);
 }
 
 void entity::_draw(sf::RenderWindow &window)
@@ -73,4 +144,15 @@ void entity::_anime()
         _texture_rect.left = (_texture_rect.left + 16) % (_nbAnime * 16);
         _sprite.setTextureRect(_texture_rect);
     }
+}
+
+void entity::isColliding(game *game)
+{
+    if (_hitBox.intersects(game->_player1->hitbox))
+        _onCollisionEffect(game, this); //this c'est l'objet entité
+}
+
+void entity::kill()
+{
+    _alive = false;
 }

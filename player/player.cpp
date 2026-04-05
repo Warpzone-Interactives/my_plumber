@@ -29,6 +29,7 @@ player::player(int size, sf::Vector2f position, char m)
     _animated = 0;
     _animClock = new gameClock({0.125});
     _sprite_nb = 1;
+    hitbox = sf::FloatRect({position.x, position.y}, {16 * _scale, 16 * _scale});
 }
 
 void player::setScale(int scale)
@@ -135,6 +136,7 @@ void player::sizeUp()
     if (_size < 2)
         _size++;
     //powerup_animation ?
+    hitbox.height = 32 * _scale;
     _chooseTexture();
 }
 
@@ -145,7 +147,9 @@ void player::sizeDown()
     else
         return _kill();
     //dmg_animation ?
-    _invincible = true;
+    _invincible = true; //doit mettre un timer d'invicibilté
+    _invincibilityDuration = 1.f;
+    hitbox.height = 16 * _scale;
     _chooseTexture();
 } // https://youtube.com/clip/UgkxKB8VUWV1k7F8slDmzFQhL8ufuSxesyAu?si=4pkCQniZGHPhfBQH
 
@@ -409,7 +413,8 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
         _sprite.setScale({-_scale, _scale});
     else
         _sprite.setScale({_scale, _scale});
-
+    hitbox.left = _position.x;
+    hitbox.top = _position.y;
     _sprite.setPosition(_position);
     player::_draw(window);
 }

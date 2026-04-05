@@ -43,6 +43,8 @@ game::game(char *filepath, sf::RenderWindow *window, sf::View *view, player *pla
     _backGround.setFillColor(sf::Color(148, 148, 255, 255));
 
     status = 0;
+    coinCount = 0;
+    lifeCount = 3;
     _scale = 1;
     _direction = 1;
     if (getWhere(filepath) == 1)
@@ -447,7 +449,7 @@ void game::loop()
                 _player2->actualize(*_window, camera, lstBlock);
             manageDebugMod();
             if (_enemy != NULL)
-                _enemy->actualize(*_window, camera, lstBlock);
+                _enemy->actualize(this);
             _window->display();
             actualized_camera();
         }
