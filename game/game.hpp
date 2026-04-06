@@ -18,7 +18,7 @@ class gameClock;
 class game
 {
 public:
-    game(char *filepath, sf::RenderWindow *window, sf::View *view, player *player1, player *player2);
+    game(char *filepath, sf::RenderWindow *window, sf::View *view);
     ~game() = default;
 
     int getError();
@@ -26,6 +26,7 @@ public:
     sf::Texture getTexture(char c);
     void loop();
     std::vector<std::vector<block*>> getMap();
+    int getDebug();
 
     gameClock *animClock;
     int status;

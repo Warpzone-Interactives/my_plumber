@@ -13,7 +13,7 @@
 class player
 {
 public:
-    player(int size, sf::Vector2f position, char m);
+    player(int size, sf::Vector2f position, char m, int scale);
     ~player() = default;
 
     void sizeUp();
@@ -69,12 +69,14 @@ private:
     float _maxAirSpeed;
     float _jumpStartingVelocity;
 
-    void _draw(sf::RenderWindow *window);
+    void _draw(sf::RenderWindow *window, int debug);
     void _kill();
     void _chooseTexture();
     void _setTexture(std::string filePath);
     void _handleInput();
     void _checkInvincibility();
+
+    void setHitBox();
 
     //Movement :
     void _handleIdleInput();

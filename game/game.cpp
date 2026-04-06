@@ -9,10 +9,8 @@
 
 // -------------------| init game |-------------------
 
-game::game(char *filepath, sf::RenderWindow *window, sf::View *view, player *player1, player *player2)
+game::game(char *filepath, sf::RenderWindow *window, sf::View *view)
 {
-    _player1 = player1;
-    _player2 = player2;
     _window = window;
     _window->setFramerateLimit(60);
     camera = view;
@@ -53,6 +51,11 @@ game::game(char *filepath, sf::RenderWindow *window, sf::View *view, player *pla
     get_Size();
     initLstBlock();
     initBlockTexture();
+    if (status != 0)
+        return;
+    initLevel();
+    _player1 = new player(0, {32.0f, 800.0f}, 'm', int(_scale));
+    _player2 = new player(0, {100.0f, 800.0f}, 'l', int(_scale));
 }
 
 int game::getWhere(std::string filepath)
@@ -298,9 +301,6 @@ void game::initLevel()
                 count++;
     }
     setScale(_window->getSize().y, lvlHeight);
-    _player1->setScale(_scale);
-    if (_player2 != NULL)
-        _player2->setScale(_scale);
     createGrid(length);
     for (std::size_t i = 0; i < _map.size(); i++)
         createLine(_map[i], grid[i]);
@@ -469,4 +469,9 @@ sf::Texture game::getTexture(char c)
 std::vector<std::vector<block*>> game::getMap()
 {
     return _lstBlock;
+}
+
+int game::getDebug()
+{
+    return _debug;
 }

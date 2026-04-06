@@ -7,7 +7,7 @@
 
 #include "player.hpp"
 
-player::player(int size, sf::Vector2f position, char m)
+player::player(int size, sf::Vector2f position, char m, int scale)
 {
     _size = size;
     _position = position;
@@ -17,6 +17,7 @@ player::player(int size, sf::Vector2f position, char m)
         _character = "luigi";
     if (m == 'w')
         _character = "wario";
+    _scale = scale;
     _alive = true;
     _invincible = false;
     _invincibilityDuration = 0.0f;
@@ -29,6 +30,40 @@ player::player(int size, sf::Vector2f position, char m)
     _animated = 0;
     _animClock = new gameClock({0.125});
     _sprite_nb = 1;
+    setHitBox();
+}
+
+void player::setHitBox()
+{
+    printf("pos x/y = %.2f/%.2f sclale = %.2f\n", _position.x, _position.y, _scale);
+        _leftHitBox = new sf::RectangleShape({2 * _scale, 16 * _scale});
+        _leftHitBox->setOrigin({1 * _scale, 8 * _scale});
+        _leftHitBox->setPosition({_position.x - 8 * _scale, _position.y});
+        _leftHitBox->setFillColor(sf::Color::Transparent);
+        _leftHitBox->setOutlineThickness(1);
+        _leftHitBox->setOutlineColor(sf::Color::Blue);
+
+        _rightHitBox = new sf::RectangleShape({2 * _scale, 16 * _scale});
+        _rightHitBox->setOrigin({1 * _scale, 8 * _scale});
+        _rightHitBox->setPosition({_position.x + 8 * _scale, _position.y});
+        _rightHitBox->setFillColor(sf::Color::Transparent);
+        _rightHitBox->setOutlineThickness(1);
+        _rightHitBox->setOutlineColor(sf::Color::Green);
+
+        _topHitBox = new sf::RectangleShape({16 * _scale, 2 * _scale});
+        _topHitBox->setOrigin({8 * _scale, 1 * _scale});
+        _topHitBox->setPosition({_position.x, _position.y - 8 * _scale});
+        _topHitBox->setFillColor(sf::Color::Transparent);
+        _topHitBox->setOutlineThickness(1);
+        _topHitBox->setOutlineColor(sf::Color::Red);
+
+        _bottomHitBox = new sf::RectangleShape({16 * _scale, 2 * _scale});
+        _bottomHitBox->setOrigin({8 * _scale, 1 * _scale});
+        _bottomHitBox->setPosition({_position.x, _position.y + 8 * _scale});
+        _bottomHitBox->setFillColor(sf::Color::Transparent);
+        _bottomHitBox->setOutlineThickness(1);
+        _bottomHitBox->setOutlineColor(sf::Color::Yellow);
+
 }
 
 void player::setScale(int scale)
@@ -125,9 +160,15 @@ void player::_kill()
     //3 blocs + 7 pixels vers le haut
 }
 
-void player::_draw(sf::RenderWindow *window)
+void player::_draw(sf::RenderWindow *window, int debug)
 {
     (*window).draw(_sprite);
+    if (debug == 1) {
+        (*window).draw(*_leftHitBox);
+        (*window).draw(*_rightHitBox);
+        (*window).draw(*_topHitBox);
+        (*window).draw(*_bottomHitBox);
+    }
 }
 
 void player::sizeUp()
@@ -204,8 +245,12 @@ void player::actualize(game *game)
     else
         _sprite.setScale({_scale, _scale});
 
+    _leftHitBox->setPosition({_position.x - 8 * _scale, _position.y});
+    _rightHitBox->setPosition({_position.x + 8 * _scale, _position.y});
+    _topHitBox->setPosition({_position.x, _position.y - 8 * _scale});
+    _bottomHitBox->setPosition({_position.x, _position.y + 8 * _scale});
     _sprite.setPosition(_position);
-    player::_draw(game->_window);
+    player::_draw(game->_window, game->getDebug());
 }
 
 void player::_checkCollision(std::vector<std::vector<block*>> map)
