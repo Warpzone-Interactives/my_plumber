@@ -10,29 +10,34 @@
 void addCoin(game *game, entity *entity)
 {
     game->coinCount++;
-    printf("coin\n");
     entity->kill();
 }
 
 void addLife(game *game, entity *entity)
 {
     game->lifeCount++;
-    printf("oneup\n");
     entity->kill();
 }
 
-void sizeUp(game *game, entity *entity)
+void mushroomSizeUp(game *game, entity *entity)
+{
+    //trouver le player le plus proche
+    if (game->_player1->getSize() == "Small")
+        game->_player1->sizeUp();
+    entity->kill();
+}
+
+void flowerSizeUp(game *game, entity *entity)
 {
     //trouver le player le plus proche
     game->_player1->sizeUp();
-    printf("up\n");
     entity->kill();
 }
 
 void sizeDown(game *game, entity *entity)
 {
     //trouver le player le plus proche
-    game->_player1->sizeDown();
+    // game->_player1->sizeDown();
 }
 
 void shellThrow(game *game, entity *entity)
@@ -59,7 +64,7 @@ entity::entity(sf::Vector2f position, char m, sf::Texture texture, float scale)
     _bottomHitBox = NULL;
     _next = NULL;
 
-    sf::FloatRect rect({position.x, position.y}, {16 * scale, 16 *scale});
+    sf::FloatRect rect({position.x * scale, position.y * scale}, {16 * scale, 16 *scale});
     _hitBox = rect;
 
     _determineCollisionEffect(_what);
@@ -74,10 +79,10 @@ void entity::_determineCollisionEffect(char what)
             _onCollisionEffect = &addLife;
             return;
         case 'u':
-            _onCollisionEffect = &sizeUp;
+            _onCollisionEffect = &mushroomSizeUp;
             return;
         case 'i':
-            _onCollisionEffect = &sizeUp;
+            _onCollisionEffect = &flowerSizeUp;
             return;
         case 'c':
             _onCollisionEffect = &addCoin;

@@ -29,7 +29,7 @@ player::player(int size, sf::Vector2f position, char m)
     _animated = 0;
     _animClock = new gameClock({0.125});
     _sprite_nb = 1;
-    hitbox = sf::FloatRect({position.x, position.y}, {16 * _scale, 16 * _scale});
+    hitbox = sf::FloatRect({0, 0}, {16, 16});
 }
 
 void player::setScale(int scale)
@@ -54,11 +54,11 @@ std::string player::getChar()
 
 std::string player::getSize()
 {
-    if (_size == 1)
+    if (_size == 0)
         return "Small";
-    if (_size == 2)
+    if (_size == 1)
         return "Big";
-    if (_size == 3)
+    if (_size == 2)
         return "Fire";
     return "Unknow";
 }
@@ -413,8 +413,15 @@ void player::actualize(sf::RenderWindow &window, sf::View *camera, std::vector<s
         _sprite.setScale({-_scale, _scale});
     else
         _sprite.setScale({_scale, _scale});
-    hitbox.left = _position.x;
-    hitbox.top = _position.y;
+
+    hitbox.left = _position.x - 8 * _scale;
+    hitbox.top = _position.y - 8 * _scale;
+    hitbox.width = 16 * _scale;
+    if (_size == 0)
+        hitbox.height = 16 * _scale;
+    else
+        hitbox.height = 32 * _scale;
+
     _sprite.setPosition(_position);
     player::_draw(window);
 }
