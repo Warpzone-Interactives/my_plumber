@@ -47,6 +47,7 @@ game::game(char *filepath, sf::RenderWindow *window, sf::View *view)
         status += 1;
     _debug = -1;
 
+    framelimite = new gameClock({0.015625});
     loadMap(filepath);
     get_Size();
     initLstBlock();
@@ -54,8 +55,8 @@ game::game(char *filepath, sf::RenderWindow *window, sf::View *view)
     if (status != 0)
         return;
     initLevel();
-    _player1 = new player(0, {32.0f, 800.0f}, 'm', int(_scale));
-    _player2 = new player(0, {100.0f, 800.0f}, 'l', int(_scale));
+    _player1 = new player(0, {100.0f, 750.0f}, 'm', int(_scale));
+    _player2 = new player(0, {100.0f, 750.0f}, 'l', int(_scale));
 }
 
 int game::getWhere(std::string filepath)
@@ -397,6 +398,8 @@ void game::manageDebugMod()
         str += "Player1 y pos =\t" + std::to_string(_player1->getPos().y / (_scale * 16) - 0.5) + "\n";
         str += "Player1 x vel =\t" + std::to_string(_player1->getVel().x / _scale) + "\n";
         str += "Player1 y vel =\t" + std::to_string(_player1->getVel().y / _scale) + "\n";
+        str += "Player1 x block = \t" + std::to_string(floor((_player1->getVel().x + _player1->getPos().x) / (16 * _scale))) + "\n";
+        str += "Player1 y block = \t" + std::to_string(floor((_player1->getVel().y + _player1->getPos().y) / (16 * _scale))) + "\n";
         if (_player2 != NULL) {
             str += "player2 type = \t" + _player2->getChar() + "\n";
             str += "player2 size = \t" + _player2->getSize() + "\n";
@@ -434,10 +437,8 @@ void game::actualized_camera()
 
 void game::loop()
 {
-    sf::Clock frames;
-
     while (_window->isOpen())
-        if (frames.getElapsedTime().asMilliseconds() > (1.0f)/60*1000) {
+        if (framelimite->actionNeed(0) == true) {
             poll_event();
             _window->clear();
             _window->draw(_backGround);

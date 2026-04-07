@@ -18,7 +18,7 @@ public:
 
     void clockUpdater();
     void reset();
-    int actionNeed(double timer_reset);
+    bool actionNeed(double timer_reset);
     
 private:
     sf::Clock _clock;

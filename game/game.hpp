@@ -65,9 +65,11 @@ private:
     void initBlockTexture();
 
     sf::IntRect _rect; // rect for texture
-    std::map<char, sf::Texture> _textures;
-    std::vector<std::vector<block *>> _lstBlock;
+    std::map<char, sf::Texture> _textures; // preloaded texture for block
+    std::vector<std::vector<block *>> _lstBlock; // lst of block It's in Name
     int _direction; // how chosse next sprite
+
+    gameClock *framelimite; // for limite the frame nb
 
     int length;
     int width;

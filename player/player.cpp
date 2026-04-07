@@ -253,26 +253,61 @@ void player::actualize(game *game)
     player::_draw(game->_window, game->getDebug());
 }
 
+bool rectDetectCol(sf::RectangleShape *rect1, sf::RectangleShape *rect2)
+{
+    if (rect1 == NULL || rect2 == NULL)
+        return false;
+
+    bool isColisoned = false;
+    sf::Vector2f pos1 = rect1->getPosition();
+    sf::Vector2f size1 = rect1->getSize();
+    sf::Vector2f pos2 = rect2->getPosition();
+    sf::Vector2f size2 = rect2->getSize();
+
+    if (pos1.x - (size1.x / 2) < pos2.x - (size2.x / 2) && pos2.x - (size2.x / 2) < pos1.x + (size1.x / 2)) {
+        if (pos1.y + (size1.y / 2) > pos2.y - (size2.y / 2) && pos2.y - (size2.y / 2) > pos1.y - (size1.y / 2))
+            isColisoned = true;
+        if (pos1.y + (size1.y / 2) > pos2.y + (size2.y / 2) && pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2))
+            isColisoned = true;
+    }
+    if (pos1.x - (size1.x / 2) < pos2.x + (size2.x / 2) && pos2.x + (size2.x / 2) < pos1.x + (size1.x / 2)) {
+        if (pos1.y + (size1.y / 2) > pos2.y - (size2.y / 2) && pos2.y - (size2.y / 2) > pos1.y - (size1.y / 2))
+            isColisoned = true;
+        if (pos1.y + (size1.y / 2) > pos2.y + (size2.y / 2) && pos2.y + (size2.y / 2) > pos1.y - (size1.y / 2))
+            isColisoned = true;
+    }
+    if (isColisoned == true) {
+        (*rect1).setFillColor(sf::Color::White);
+        (*rect2).setFillColor(sf::Color::White);
+    } else {
+        (*rect1).setFillColor(sf::Color::Transparent);
+        (*rect2).setFillColor(sf::Color::Transparent);
+    }
+    return isColisoned;
+}
+
 void player::_checkCollision(std::vector<std::vector<block*>> map)
 {
-    int top_pos = floor((_velocity.y + _position.y - (8 * _scale)) / (16 * _scale));
-    int middle_pos = floor((_velocity.y + _position.y) / (16 * _scale));
-    int bottom_pos = floor((_velocity.y + _position.y + (8 * _scale)) / (16 * _scale));
-    int left_pos = floor((_velocity.x + _position.x - (6 * _scale)) / (16 * _scale));
-    int right_pos = floor((_velocity.x + _position.x + (6 * _scale)) / (16 * _scale));
+    int middleYPos = floor((_velocity.y + _position.y) / (16 * _scale));
+    int middleXPos = floor((_velocity.x + _position.x) / (16 * _scale));
 
-    if (map[left_pos][middle_pos] || map[right_pos][middle_pos])
+    if (int(map.size()) > middleXPos && _velocity.x > 0 &&
+        ((map[middleXPos + 1][middleYPos - 1] != NULL && rectDetectCol(map[middleXPos + 1][middleYPos - 1]->leftHitBox, _rightHitBox) == true) ||
+        (map[middleXPos + 1][middleYPos] != NULL && rectDetectCol(map[middleXPos + 1][middleYPos]->leftHitBox, _rightHitBox) == true) ||
+        (map[middleXPos + 1][middleYPos + 1] != NULL && rectDetectCol(map[middleXPos + 1][middleYPos + 1]->leftHitBox, _rightHitBox) == true)))
         _velocity.x = 0;
-    if  (map[left_pos][bottom_pos] || map[right_pos][bottom_pos]) {
-        // printf("%f\n", _velocity.y);
+    if (middleXPos > 0 && _velocity.x < 0 &&
+        ((map[middleXPos - 1][middleYPos - 1] != NULL && rectDetectCol(map[middleXPos - 1][middleYPos - 1]->rightHitBox, _leftHitBox) == true) ||
+        (map[middleXPos - 1][middleYPos] != NULL && rectDetectCol(map[middleXPos - 1][middleYPos]->rightHitBox, _leftHitBox) == true) ||
+        (map[middleXPos - 1][middleYPos + 1] != NULL && rectDetectCol(map[middleXPos - 1][middleYPos + 1]->rightHitBox, _leftHitBox) == true)))
+        _velocity.x = 0;
+    printf("before %f\n", _velocity.y);
+    if  (middleXPos > 0 &&
+        ((middleXPos > 0 &&map[middleXPos - 1][middleYPos + 1] != NULL && rectDetectCol(map[middleXPos - 1][middleYPos + 1]->topHitBox, _bottomHitBox) == true) ||
+        (map[middleXPos][middleYPos + 1] != NULL && rectDetectCol(map[middleXPos][middleYPos + 1]->topHitBox, _bottomHitBox) == true) ||
+        (map[middleXPos + 1][middleYPos + 1] != NULL && rectDetectCol(map[middleXPos + 1][middleYPos + 1]->topHitBox, _bottomHitBox) == true))) {
         _onGround = true;
         _velocity.y = 0;
     }
-    if (map[left_pos][top_pos] || map[right_pos][top_pos])
-        _velocity.y = 0;
-    // if (map[pos_x][pos_y - 1] || map[pos_x + 1][pos_y - 1]) {
-    //     _velocity.y = 0;
-    //     _onGround = true;
-    //     // _position.y = pos_y  * 16 * 4;
-    // }
+    printf("after %f\n", _velocity.y);
 }

@@ -27,6 +27,10 @@ public:
     sf::Vector2f getPos();
     void setHitBox(int left, int right, int top, int bottom);
 
+    sf::RectangleShape *leftHitBox; // rect for hitbox
+    sf::RectangleShape *rightHitBox; // rect for hitbox
+    sf::RectangleShape *topHitBox; // rect for hitbox
+    sf::RectangleShape *bottomHitBox; // rect for hitbox
 
 private:
 
@@ -39,11 +43,6 @@ private:
     bool _canBreak; // if is breacable block
     sf::Vector2f _position; // Position
     float _scale;
-
-    sf::RectangleShape *_leftHitBox; // rect for hitbox
-    sf::RectangleShape *_rightHitBox; // rect for hitbox
-    sf::RectangleShape *_topHitBox; // rect for hitbox
-    sf::RectangleShape *_bottomHitBox; // rect for hitbox
 
     sf::IntRect _rect; // rect for texture
     sf::Texture _texture; //texture
